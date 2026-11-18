@@ -1,0 +1,99 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link rel="stylesheet" href="node_modules/@fontsource/noto-serif-sc/900.css">
+<style>
+  html,body{margin:0;background:#f6eee1;overflow:hidden}
+  #wrap{position:relative;width:720px;height:1280px;overflow:hidden;background:#f6eee1}
+  #gl{position:absolute;left:0;top:0}
+  #game,#hud3,#fade{position:absolute;inset:0;pointer-events:none}
+  .pill{position:absolute;padding:12px 20px;border-radius:999px;background:rgba(255,250,242,.9);box-shadow:0 12px 30px rgba(120,90,60,.15);font:600 18px 'WenQuanYi Zen Hei',sans-serif;color:#3a2b2a;letter-spacing:.08em;display:flex;align-items:center;gap:12px}
+</style>
+<script type="importmap">{"imports":{"three":"./node_modules/three/build/three.module.js","three/addons/":"./node_modules/three/examples/jsm/"}}</script>
+</head><body><div id="wrap"><div id="game"></div><div id="hud3"></div><div id="fade"></div></div>
+<script type="module">
+import * as SEA from './sea.js';
+import * as GAME from './game.js';
+import { BEATS, kick, clamp, lerp, range, smooth, easeIn, easeOut, backOut, GRID, PINK_GRID, drawGrid } from './common.js';
+const wrap = document.getElementById('wrap'); SEA.renderer.domElement.id = 'gl'; wrap.prepend(SEA.renderer.domElement);
+GAME.build(document.getElementById('game'));
+const hud = document.getElementById('hud3'), fade = document.getElementById('fade');
+const el = (tag, css, parent, html) => { const e = document.createElement(tag); if (css) e.style.cssText = css; if (html !== undefined) e.innerHTML = html; (parent || hud).appendChild(e); return e; };
+const sprite = (grid, s, parent, css = '') => { const c = el('canvas', `image-rendering:pixelated;width:${grid[0].length * s}px;height:${grid.length * s}px;${css}`, parent); c.width = grid[0].length; c.height = grid.length; drawGrid(c.getContext('2d'), grid); return c; };
+// "多年以后" — a game-style tag with a year counter racing during the time-lapse
+const years = el('div', '', hud); years.className = 'pill'; years.style.cssText += 'left:36px;top:60px';
+years.innerHTML = '<span style="width:12px;height:12px;border-radius:50%;background:#b9a6ff;display:inline-block"></span><span>多年以后</span><b id="yr" style="font:900 22px Noto Serif SC,serif;color:#8a74e0">+1 年</b>';
+const yr = years.querySelector('#yr');
+// toast: the pink one left a flower
+const toast = el('div', '', hud); toast.className = 'pill'; toast.style.cssText += 'left:50%;top:70px;white-space:nowrap';
+sprite(PINK_GRID, 3, toast, 'border-radius:8px;background:#ffe9f0;padding:4px');
+el('span', '', toast, '<b style="color:#ff6f9a">粉粉</b> 在这里留下了一朵小白花');
+// the exit dialog
+const modal = el('div', 'position:absolute;left:90px;top:470px;width:540px;padding:40px 36px 34px;border-radius:34px;background:rgba(255,250,242,.96);box-shadow:0 30px 70px rgba(80,50,40,.25);text-align:center', hud);
+sprite(GRID, 7, modal, 'display:block;margin:0 auto 18px');
+el('div', "font:900 34px 'Noto Serif SC',serif;color:#3a2b2a;letter-spacing:.04em", modal, '确定退出 地球 <span style="color:#ff9a5c">Online</span> 吗？');
+el('div', "margin-top:12px;font:500 17px 'WenQuanYi Zen Hei',sans-serif;color:#8a7a72;letter-spacing:.06em", modal, '你的存档，会被好好保存。');
+const row = el('div', 'display:flex;gap:18px;margin-top:30px;justify-content:center', modal);
+const stay = el('div', "padding:16px 0;width:200px;border-radius:999px;background:#f1e7dc;font:600 20px 'WenQuanYi Zen Hei',sans-serif;color:#8a7a72", row, '再玩一会');
+const quit = el('div', "position:relative;padding:16px 0;width:200px;border-radius:999px;background:#ff9a5c;font:600 20px 'WenQuanYi Zen Hei',sans-serif;color:#fff;box-shadow:0 10px 24px rgba(255,140,80,.35);overflow:hidden", row, '退出');
+const ripple = el('div', 'position:absolute;left:50%;top:50%;width:20px;height:20px;margin:-10px;border-radius:50%;background:rgba(255,255,255,.55)', quit);
+// kinetic captions: one game-voice line per lyric line, every character pops in on the groove, the keyword lands on a beat
+const CAP = [
+  [0.116, 2.2, '今天，我下线啦', '下线', '#ff9a5c'],
+  [2.322, 4.4, '躺在家附近的草地上', '草地', '#5cc9a0'],
+  [4.528, 6.6, '这一生，好好过完了', '过完了', '#ff7fa5'],
+  [6.734, 9.3, '把行李，一件件放下', '放下', '#9a86f0'],
+  [9.474, 11.0, '推开窗，是海', '海', '#3fa9c9'],
+  [11.122, 13.2, '后来，很多年过去了', '很多年', '#9a86f0'],
+  [13.328, 15.4, '有人，来看我了', '看我', '#ff7fa5'],
+  [15.511, 16.9, '那就，再见啦', '再见', '#ff9a5c'],
+];
+const capBand = el('div', 'position:absolute;left:0;right:0;bottom:0;height:330px;background:linear-gradient(180deg,rgba(246,238,225,0),rgba(246,238,225,.9) 55%)', hud);
+const capBox = el('div', 'position:absolute;left:0;right:0;top:1060px;height:90px;text-align:center;white-space:nowrap', hud);
+const capLines = CAP.map(([t0, t1, txt, key, col]) => { const line = el('div', 'position:absolute;left:0;right:0;top:0;opacity:0', capBox); const ki = txt.indexOf(key);
+  const chars = [...txt].map((ch, i) => { const isKey = i >= ki && i < ki + key.length;
+    const sp = el('span', `display:inline-block;font:900 ${isKey ? 60 : 50}px 'Noto Serif SC',serif;color:${isKey ? col : '#3a2b2a'};margin:0 1px;text-shadow:0 2px 0 #fff,0 0 2px #fff,0 0 2px #fff,0 8px 22px rgba(255,248,238,.95);will-change:transform`, line, ch === '，' ? '<span style="opacity:.5">，</span>' : ch);
+    return { sp, isKey, i }; });
+  return { t0, t1, chars, line, ki, n: chars.length }; });
+const nextBeat = (t) => BEATS.find(b => b > t + .02) || t;
+function updateCaptions(t) {
+  capBand.style.opacity = t < 10.3 ? 1 : .55;
+  capLines.forEach(L => { const on = t >= L.t0 - .02 && t < L.t1 + .15; L.line.style.opacity = on ? 1 : 0; if (!on) return;
+    const keyBeat = nextBeat(L.t0 + L.ki * .07);
+    L.chars.forEach(c => { const ta = c.isKey ? keyBeat + (c.i - L.ki) * .05 : L.t0 + c.i * .07;
+      const a = range(t, ta, ta + (c.isKey ? .3 : .26)), out = range(t, L.t1 - .2 + c.i * .012, L.t1 - .04 + c.i * .012);
+      const bounce = kick(t, 10) * (c.isKey ? .1 : .04), rot = ((c.i * 37) % 11 - 5) * 2;
+      c.sp.style.opacity = (a > 0 ? Math.min(1, a * 3) : 0) * (1 - out);
+      c.sp.style.transform = `translateY(${(1 - easeOut(a)) * 34 - out * 26}px) rotate(${rot * (1 - easeOut(a))}deg) scale(${(a > 0 ? backOut(a, c.isKey ? 3.2 : 2.2) : 0) * (1 + bounce)})`;
+      c.sp.style.filter = out > 0 ? `blur(${out * 6}px)` : 'none'; }); });
+}
+// thanks for playing
+const thanks = el('div', 'position:absolute;left:0;right:0;top:540px;text-align:center', fade);
+thanks.innerHTML = `<div style="font:900 52px 'Noto Serif SC',serif;color:#3a2b2a;letter-spacing:.2em">感谢游玩</div><div style="margin-top:16px;font:600 18px 'WenQuanYi Zen Hei',sans-serif;color:#8a7a72;letter-spacing:.3em">地球 ONLINE</div>`;
+
+window.renderAt = (t) => {
+  const show3d = t > 9.0;
+  SEA.renderer.domElement.style.visibility = show3d ? 'visible' : 'hidden';
+  if (show3d) { SEA.update(t); SEA.render(); }
+  GAME.update(t); updateCaptions(t);
+  const kb = kick(t, 9);
+  // years tag (11.0 → 13.1)
+  const ya = range(t, 11.0, 11.25), yo = 1 - smooth(range(t, 12.95, 13.15));
+  years.style.opacity = ya > 0 ? yo : 0; years.style.transform = `scale(${backOut(ya, 2.2) * (1 + kb * .04)})`;
+  yr.textContent = '+' + Math.max(1, Math.round(1 + 36 * easeIn(range(t, 11.2, 12.9)))) + ' 年';
+  // toast (14.95 → 15.45)
+  const ta = easeOut(range(t, 14.95, 15.15)), to = 1 - smooth(range(t, 15.3, 15.5));
+  toast.style.opacity = ta * to; toast.style.transform = `translate(-50%, ${-30 * (1 - ta)}px)`;
+  // modal: pops in on the beat, "退出" is pressed on the next-but-one beat
+  const ma = range(t, 16.068, 16.33), mo = 1 - smooth(range(t, 16.95, 17.15));
+  modal.style.opacity = (ma > 0 ? 1 : 0) * mo; modal.style.transform = `scale(${backOut(ma, 1.9) * lerp(1, .96, smooth(range(t, 16.95, 17.15)))})`;
+  const pr = t - 16.625; quit.style.transform = pr > 0 && pr < .25 ? `scale(${1 - .08 * Math.sin(Math.PI * pr / .25)})` : 'none';
+  quit.style.background = pr > 0 ? '#ff8448' : '#ff9a5c';
+  ripple.style.opacity = pr > 0 ? Math.max(0, 1 - pr / .4) : 0; ripple.style.transform = `scale(${pr > 0 ? 1 + pr * 30 : 0})`;
+  // fade to warm paper, then "感谢游玩"
+  fade.style.background = `rgba(246,238,225,${smooth(range(t, 16.95, 17.3)).toFixed(3)})`;
+  const th = range(t, 17.15, 17.45); thanks.style.opacity = th; thanks.style.transform = `translateY(${12 * (1 - easeOut(th))}px)`;
+};
+await document.fonts.ready; await new Promise(r => setTimeout(r, 50));
+SEA.update(12); SEA.render();
+window.__ready = true;
+</script></body></html>
