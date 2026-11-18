@@ -11,7 +11,7 @@
    npx playwright install chromium
    ```
    （第二步可跳过：用 Edge 加速时不需要）
-3. 把歌曲放进本文件夹，命名为 **`song.mp3`**。
+3. 歌曲 `song.mp3` 已在仓库里，不用另外放。
 4. 出片：
    ```
    npm run draft     # 预览：720p，无运动模糊，最快
