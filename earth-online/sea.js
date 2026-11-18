@@ -135,6 +135,7 @@ const ghost = makeMascot({ color: '#ff9a68', cup: '#ffb38a', led: 'note', glow: 
 ghost.userData.mats.forEach(m => { if (m.emissive) { m.emissive.set('#fff0f6'); m.emissiveIntensity = .16; } });
 const ghostL = new THREE.PointLight('#ffe8f4', .5, 3, 2); scene.add(ghostL);
 const pinkOne = makeMascot({ color: '#ff9cba', cup: '#ff86ad', led: 'heart', scale: .9 }); scene.add(pinkOne);
+const kids = [makeMascot({ color: '#8fe3c4', cup: '#5fcaa6', led: 'note', scale: .45 }), makeMascot({ color: '#c6b6ff', cup: '#a58ff2', led: 'heart', scale: .45 })]; kids.forEach(k => scene.add(k));
 const rims = [0, 1, 2, 3].map(i => { const l = new THREE.PointLight(i < 2 ? '#ffe2c4' : '#ffc7dc', 0, 2.8, 2); scene.add(l); return l; });
 const flowerG = new THREE.Group(); scene.add(flowerG);
 { const stem = new THREE.Mesh(new THREE.CylinderGeometry(.012, .012, .32, 6), new THREE.MeshStandardMaterial({ color: '#6fae6a' })); stem.position.y = .16; flowerG.add(stem);
@@ -261,6 +262,15 @@ export function update(t) {
   const rim = (i0, pos, on) => { const dir = cam.position.clone().sub(pos).setY(0).normalize(); [1, -1].forEach((s, q) => { const r = dir.clone().applyAxisAngle(V(0, 1, 0), s * Math.PI * .75); rims[i0 + q].position.copy(pos).addScaledVector(r, 1.0).add(V(0, .9, 0)); rims[i0 + q].intensity = 3 * on; }); };
   sparks.forEach(s => { const u = s.userData; s.visible = t > 15.6; const lt = (t * u.v + u.ph) % 2; s.position.copy(gpos).add(V(Math.cos(u.a + t) * u.r, -1 + lt * 1.5, Math.sin(u.a + t) * u.r)); s.scale.setScalar((1 - lt / 2) * (.6 + kb * .6)); });
   motes.forEach((m, i) => { const b = m.userData; m.position.set(b.x + Math.sin(t * .4 + i) * .3, b.y + Math.sin(t * .6 + i * 2) * .2, b.z); m.visible = t > 10.4; });
+  // the children: chasing each other on the pier, then running past the camera back to the beach
+  kids.forEach((kd, i) => { kd.visible = t > 8.9 && t < 11.0; if (!kd.visible) return;
+    const lb = lastBeat(t), ph = clamp((t - lb) / T.beat, 0, 1), hop = Math.abs(Math.sin(Math.PI * ph)) * .16;
+    const a = t * 3.4 + i * Math.PI, play = V(1.6 + Math.cos(a) * .36, .78, 6.0 + Math.sin(a) * .55);
+    const lane = V(i ? 2.08 : 1.12, .78, 6.0 + Math.max(0, t - 10.35) * 3.4 + Math.max(0, t - 10.35) ** 2 * 2), run = smooth(range(t, 10.3, 10.48));
+    const p = play.clone().lerp(lane, run); p.y += hop * (1 - run * .4); kd.position.copy(p);
+    const face = Math.atan2(-Math.sin(a), Math.cos(a)) * (i ? 1 : -1); kd.rotation.y = lerp(face, 0, run) + Math.sin(t * 9 + i) * .12 * run;
+    const w = Math.exp(-(t - lb) * 9) * Math.cos((t - lb) * 30);
+    pose(kd, { sy: 1 - .16 * w, sx: 1 / Math.sqrt(1 - .16 * w), lean: Math.sin(t * 7 + i * 2) * .12, arms: .3 + .9 * run + Math.abs(Math.sin(t * 9 + i)) * .5 }); });
   const c = camAt(t);
   sky.position.copy(c.pos);
   cam.position.copy(c.pos).add(V(Math.sin(t * .9) * .025, Math.sin(t * 1.3) * .02, 0)); cam.fov = c.fov - kb * .9; cam.updateProjectionMatrix(); cam.lookAt(c.tgt);

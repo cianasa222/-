@@ -40,19 +40,21 @@ const stay = el('div', "padding:16px 0;width:200px;border-radius:999px;backgroun
 const quit = el('div', "position:relative;padding:16px 0;width:200px;border-radius:999px;background:#ff9a5c;font:600 20px Noto Sans SC,sans-serif;color:#fff;box-shadow:0 10px 24px rgba(255,140,80,.35);overflow:hidden", row, '退出');
 const ripple = el('div', 'position:absolute;left:50%;top:50%;width:20px;height:20px;margin:-10px;border-radius:50%;background:rgba(255,255,255,.55)', quit);
 // kinetic captions: one game-voice line per lyric line, every character pops in on the groove, the keyword lands on a beat
+// real lyrics; per-character onsets from word-level ASR timings (seconds)
 const CAP = [
-  [0.116, 2.2, '今天，我下线啦', '下线', '#ff9a5c'],
-  [2.322, 4.4, '躺在家附近的草地上', '草地', '#5cc9a0'],
-  [4.528, 6.6, '这一生，好好过完了', '过完了', '#ff7fa5'],
-  [6.734, 9.3, '把行李，一件件放下', '放下', '#9a86f0'],
-  [9.474, 11.0, '推开窗，是海', '海', '#3fa9c9'],
-  [11.122, 13.2, '后来，很多年过去了', '很多年', '#9a86f0'],
-  [13.328, 15.4, '有人，来看我了', '看我', '#ff7fa5'],
-  [15.511, 16.9, '那就，再见啦', '再见', '#ff9a5c'],
-];
+  ['我参加了我的葬礼', '葬礼', '#9a86f0', [0.0, .46, .78, 1.0, 1.14, 1.29, 1.44, 1.86]],
+  ['我凝视着我的身体', '身体', '#ff9a5c', [2.26, 2.72, 2.94, 3.16, 3.32, 3.48, 3.64, 4.04]],
+  ['他静静地躺在那里', '静静', '#5cc9a0', [4.58, 4.94, 5.18, 5.38, 5.52, 5.76, 6.02, 6.32]],
+  ['像说一切都毫无意义', '毫无意义', '#9a86f0', [6.58, 6.82, 7.08, 7.46, 7.6, 7.74, 8.0, 8.36, 8.58]],
+  ['窗外有孩童在嬉戏', '孩童', '#3fa9c9', [9.06, 9.3, 9.62, 9.8, 10.0, 10.24, 10.46, 10.64]],
+  ['他多年以后也会在这里', '多年以后', '#9a86f0', [11.0, 11.26, 11.52, 11.66, 11.82, 11.98, 12.1, 12.26, 12.58, 12.8]],
+  ['会不会有人能记得', '记得', '#ff7fa5', [13.16, 13.68, 13.86, 14.04, 14.3, 14.56, 14.86, 15.1]],
+  ['终点前风景多么靓丽', '靓丽', '#ff9a5c', [15.38, 15.62, 15.82, 15.96, 16.18, 16.48, 16.76, 17.02, 17.32]],
+].map(([txt, key, col, ts], i, arr) => [ts[0], i < 7 ? arr[i + 1][3][0] - .1 : 99, txt, key, col, ts]);
+const capTop = el('div', 'position:absolute;inset:0;pointer-events:none', wrap);   // above the fade so the last line stays
 const capBand = el('div', 'position:absolute;left:0;right:0;bottom:0;height:360px;background:linear-gradient(180deg,rgba(246,238,225,0),rgba(246,238,225,.88) 60%)', hud);
-const capBox = el('div', 'position:absolute;left:56px;right:40px;top:1030px;height:130px', hud);
-const capLines = CAP.map(([t0, t1, txt, key, col], li) => {
+const capBox = el('div', 'position:absolute;left:56px;right:40px;top:1030px;height:130px', capTop);
+const capLines = CAP.map(([t0, t1, txt, key, col, ts], li) => {
   const line = el('div', 'position:absolute;left:0;top:0;opacity:0;white-space:nowrap', capBox); const ki = txt.indexOf(key);
   const tag = el('div', `font:500 14px Noto Sans SC,sans-serif;letter-spacing:.32em;color:#a3928a;margin-bottom:10px;overflow:hidden;height:20px`, line);
   const tagIn = el('div', 'will-change:transform', tag, `<span style="color:${col}">0${li + 1}</span> &nbsp;/ 08 &nbsp;·&nbsp; 地球 ONLINE`);
@@ -62,14 +64,14 @@ const capLines = CAP.map(([t0, t1, txt, key, col], li) => {
     const sp = el('div', `font:900 60px/1.12 Noto Sans SC,sans-serif;letter-spacing:-.01em;color:${isKey ? col : '#2e2422'};will-change:transform`, w, ch === '，' ? '<span style="color:#c9b8ae">，</span>' : ch);
     return { sp, isKey, i }; });
   const under = el('div', `height:6px;border-radius:3px;background:${col};margin-top:12px;transform-origin:0 50%;width:${(ki + key.length) * 62}px;clip-path:inset(0 0 0 ${ki * 62}px)`, line);
-  return { t0, t1, chars, line, ki, n: chars.length, tagIn, under }; });
+  return { t0, t1, chars, line, ki, n: chars.length, tagIn, under, ts }; });
 const nextBeat = (t) => BEATS.find(b => b > t + .02) || t;
 function updateCaptions(t) {
   capBand.style.opacity = t < 10.3 ? 1 : .6;
   capLines.forEach(L => { const on = t >= L.t0 - .02 && t < L.t1 + .1; L.line.style.opacity = on ? 1 : 0; if (!on) return;
-    const keyBeat = nextBeat(L.t0 + L.ki * .045), exitK = (i) => easeIn(range(t, L.t1 - .26 + i * .018, L.t1 - .06 + i * .018));
+    const keyBeat = L.ts[L.ki] - .05, exitK = (i) => easeIn(range(t, L.t1 - .26 + i * .018, L.t1 - .06 + i * .018));
     L.tagIn.style.transform = `translateY(${(1 - spring(t - L.t0 + .06, SPR.ui)) * 110 - exitK(0) * 110}%)`;
-    L.chars.forEach(c => { const ta = c.isKey ? keyBeat + (c.i - L.ki) * .04 : L.t0 + c.i * .045;
+    L.chars.forEach(c => { const ta = L.ts[c.i] - .05;   // lead slightly so the character is up as the syllable lands
       const k = spring(t - ta, c.isKey ? SPR.toy : SPR.ui), out = exitK(c.i), pulse = c.isKey ? kick(t, 9) * .06 : 0;
       c.sp.style.transform = `translateY(${(1 - k) * 105 - out * 105}%) scale(${1 + pulse})`; });
     const u = spring(t - keyBeat - .08, SPR.ui) * (1 - exitK(L.n)); L.under.style.transform = `scaleX(${u})`; L.under.style.opacity = u > .01 ? 1 : 0; });
