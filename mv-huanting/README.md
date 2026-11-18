@@ -13,9 +13,8 @@
 ## 渲染
 ```
 npm i
-ln -s node_modules/three three
 node render.js mv.html frames range 0 30.6 60
 ffmpeg -framerate 60 -i frames/f_%05d.png -i song.mp3 -t 30.6 \
   -c:v libx264 -crf 17 -pix_fmt yuv420p -c:a aac -b:a 192k -movflags +faststart mv.mp4
 ```
-需要 Node 20+、Playwright（Chromium）、ffmpeg 7+。`song.mp3` 为歌曲音频（未放入仓库）。
+需要 Node 20+、Playwright、ffmpeg 7+。有显卡的电脑先设 `RENDER_BROWSER=msedge`（或 chrome）用本机浏览器硬件加速。完整说明见 `HANDOFF.md`。`song.mp3` 为歌曲音频（未放入仓库）。
