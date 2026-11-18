@@ -95,7 +95,7 @@ export function blobsAt(t) { const oy = camAt(t)[1], kb = kick(t, 9), py = (oy -
 const CK = [
   [0.0, 360, 960, 1.04, 0, -1], [2.1, 360, 940, 1.14, 0, 1],
   [2.26, 360, 940, 1.14, 0, 1, 1], [2.75, 360, 1430, 1.16, 4, -1.5], [4.4, 360, 1420, 1.27, 3, 1],
-  [4.58, 360, 1420, 1.27, 3, 1, 1], [5.05, 360, 1830, 1.2, 0, 0], [6.4, 360, 1830, 1.33, 2, -1],
+  [5.45, 355, 1400, 2.05, 0, -1], [5.5, 355, 1400, 2.05, 0, -1, 1], [5.9, 360, 1830, 1.2, 0, 0], [6.4, 360, 1830, 1.33, 2, -1],   // 「他静静地躺在那里」: slow push onto the body, then the quest
   [6.58, 360, 1830, 1.33, 2, -1, 1], [7.05, 360, 2260, 1.14, 0, 1], [8.9, 360, 2240, 1.26, 0, -1],
   [9.06, 360, 2240, 1.26, 0, -1, 1], [9.30, 360, 395, 1.12, 0, 0, 1],
 ];
@@ -106,7 +106,7 @@ function camAt(t) {
   return a.slice(1, 6).map((v, j) => lerp(v, b[j + 1], k));
 }
 // ghost path in page coordinates: [t, x, y, scale]
-const GK = [[.3, 240, 930, .5], [1.4, 430, 790, 1], [2.26, 440, 800, 1], [2.9, 330, 1320, 1], [4.58, 340, 1330, 1], [5.2, 560, 1730, .95], [6.58, 560, 1740, .95], [7.15, 560, 2080, .9], [9.06, 560, 2090, .9], [9.30, 300, 500, .9]];
+const GK = [[.3, 240, 930, .5], [1.4, 430, 790, 1], [2.26, 440, 800, 1], [2.9, 330, 1320, 1], [4.58, 340, 1330, 1], [5.45, 395, 1335, 1.05], [5.9, 600, 1650, .95], [6.58, 600, 1660, .95], [7.15, 560, 2080, .9], [9.06, 560, 2090, .9], [9.30, 300, 500, .9]];
 function ghostAt(t) { let i = 0; while (i < GK.length - 2 && t >= GK[i + 1][0]) i++; const a = GK[i], b = GK[i + 1], k = easeInOut(range(t, a[0], b[0])); return [lerp(a[1], b[1], k), lerp(a[2], b[2], k), lerp(a[3], b[3], k)]; }
 
 export function update(t) {
@@ -124,17 +124,17 @@ export function update(t) {
   // intro: panels settle in at the very start
   document.querySelectorAll('.pnl').forEach((pn, i) => { const k = spring(t - i * .06, SPR.ui); pn.style.transform = t < 1.6 ? `translateY(${(1 - k) * 80}px) scale(${.92 + .08 * k})` : 'none'; pn.style.opacity = t < 1.6 ? clamp(range(t, i * .06, i * .06 + .18), 0, 1) : 1; });
   // finger taps: the quest checkbox, then each inventory item as it is let go
-  const TAPS = [[4.53, QUEST.x + 47, QUEST.y + 121], [6.734, invSlots[0].sx + 36, invSlots[0].sy + 40], [7.268, invSlots[1].sx + 36, invSlots[1].sy + 40], [7.802, invSlots[2].sx + 36, invSlots[2].sy + 40], [8.382, invSlots[3].sx + 36, invSlots[3].sy + 40], [8.94, invSlots[4].sx + 36, invSlots[4].sy + 40]];
+  const TAPS = [[6.02, QUEST.x + 47, QUEST.y + 121], [6.734, invSlots[0].sx + 36, invSlots[0].sy + 40], [7.268, invSlots[1].sx + 36, invSlots[1].sy + 40], [7.802, invSlots[2].sx + 36, invSlots[2].sy + 40], [8.382, invSlots[3].sx + 36, invSlots[3].sy + 40], [8.94, invSlots[4].sx + 36, invSlots[4].sy + 40]];
   { let j = TAPS.findIndex(q => q[0] > t); if (j < 0) j = TAPS.length; const prev = TAPS[Math.max(0, j - 1)], next = TAPS[Math.min(TAPS.length - 1, j)];
     const span = next[0] - prev[0], u = span > 0 ? easeInOut(range(t, prev[0] + .12, next[0] - .06)) : 1;
     let cx = lerp(prev[1], next[1], u), cy = lerp(prev[2], next[2], u) - Math.sin(Math.PI * u) * 40;
-    if (t < TAPS[0][0]) { const e = easeOut(range(t, 3.9, 4.4)); cx = lerp(QUEST.x + 300, TAPS[0][1], e); cy = lerp(QUEST.y + 330, TAPS[0][2], e); }
-    const vis = smooth(range(t, 3.9, 4.15)) * (1 - smooth(range(t, 5.0, 5.3))) + smooth(range(t, 6.3, 6.55)) * (1 - smooth(range(t, 9.0, 9.15)));
+    if (t < TAPS[0][0]) { const e = easeOut(range(t, 5.6, 5.95)); cx = lerp(QUEST.x + 300, TAPS[0][1], e); cy = lerp(QUEST.y + 330, TAPS[0][2], e); }
+    const vis = smooth(range(t, 5.6, 5.8)) * (1 - smooth(range(t, 9.0, 9.15)));
     const lt = Math.min(...TAPS.map(q => t >= q[0] ? t - q[0] : 9)), press = lt < .22 ? Math.sin(Math.PI * lt / .22) : 0;
     cursor.style.opacity = vis; cursor.style.transform = `translate(${cx}px,${cy}px) scale(${1 - press * .22})`;
     cRing.style.opacity = vis * (lt < .45 ? 1 - lt / .45 : 0); cRing.style.transform = `translate(${cx}px,${cy}px) scale(${1 + lt * 4})`; }
   // sparkles: little stars that pop on the big moments
-  const SP = [[1.23, CARD.x + 330, CARD.y + 150], [4.53, QUEST.x + 47, QUEST.y + 121], [5.06, QUEST.x + 440, QUEST.y + 70], [9.0, INV.x + 280, INV.y + 200]];
+  const SP = [[1.23, CARD.x + 330, CARD.y + 150], [6.02, QUEST.x + 47, QUEST.y + 121], [6.177, QUEST.x + 440, QUEST.y + 70], [9.0, INV.x + 280, INV.y + 200]];
   sparkles.forEach((sp, i) => { let best = null; SP.forEach(q => { if (t >= q[0] && t - q[0] < .7) best = q; }); if (!best) { sp.style.opacity = 0; return; }
     const d = t - best[0], a = i / 10 * 6.28 + best[0], rr = 30 + 70 * easeOut(range(d, 0, .5)) + (i % 3) * 14;
     sp.style.opacity = 1 - smooth(range(d, .35, .7)); sp.style.transform = `translate(${best[1] + Math.cos(a) * rr}px,${best[2] + Math.sin(a) * rr}px) rotate(${d * 300}deg) scale(${backOut(range(d, 0, .2), 3) * (1 - d)})`; });
@@ -151,10 +151,10 @@ export function update(t) {
   // body on the map: gentle breath of light; flower beside it
   bodyEl.style.filter = `brightness(${1 + .06 * Math.sin(t * 2)})`;
   // quest: tick on the beat, then the stamp slams down, reward fades in, EXP fills
-  const tk = range(t, 4.53, 4.75); tick.style.opacity = tk > 0 ? 1 : 0; tick.style.transform = `scale(${spring(t - 4.53, SPR.toy)})`;
-  expFill.style.width = (60 + 40 * easeOut(range(t, 4.6, 5.0))) + '%';
-  const st = range(t, 5.06, 5.24); stamp.style.opacity = st > 0 ? .92 : 0; stamp.style.transform = `rotate(${lerp(-24, -12, spring(t - 5.06, SPR.snap))}deg) scale(${t < 5.18 ? lerp(2.2, .92, easeIn(range(t, 5.06, 5.18))) : lerp(.92, 1, spring(t - 5.18, SPR.toy))})`;
-  reward.style.opacity = smooth(range(t, 5.62, 6.0)); reward.style.transform = `translateY(${10 * (1 - smooth(range(t, 5.62, 6.0)))}px)`;
+  const tk = range(t, 6.02, 6.24); tick.style.opacity = tk > 0 ? 1 : 0; tick.style.transform = `scale(${spring(t - 6.02, SPR.toy)})`;
+  expFill.style.width = (60 + 40 * easeOut(range(t, 6.05, 6.4))) + '%';
+  const st = range(t, 6.177, 6.357); stamp.style.opacity = st > 0 ? .92 : 0; stamp.style.transform = `rotate(${lerp(-24, -12, spring(t - 6.177, SPR.snap))}deg) scale(${t < 6.297 ? lerp(2.2, .92, easeIn(range(t, 6.177, 6.297))) : lerp(.92, 1, spring(t - 6.297, SPR.toy))})`;
+  reward.style.opacity = smooth(range(t, 6.3, 6.55)); reward.style.transform = `translateY(${10 * (1 - smooth(range(t, 6.3, 6.55)))}px)`;
   // inventory: one item per beat bursts into pixels that float up; the coin counter runs down to zero
   const IT = [6.734, 7.268, 7.802, 8.382, 8.94, 8.94 + .12];
   fxc.clearRect(0, 0, PW, PH); fxc.imageSmoothingEnabled = false;
