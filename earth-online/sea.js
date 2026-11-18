@@ -10,6 +10,7 @@ import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import { T, kick, clamp, lerp, smooth, easeIn, easeOut, easeInOut, range, rng, lastBeat } from './common.js';
+import { ZW, VOX, ghost3, voxelWorld, T_BURST, T_HAND } from './ghostpath.js';
 import { makeMascot, setOpacity, pose, samplePoints, BD } from './mascot3d.js';
 
 const W = 720, H = 1280, R = rng(5);
@@ -148,7 +149,7 @@ const STONE = V(-1.7, 0, 13.4); STONE.y = groundY(STONE.x, STONE.z) + .12; stone
 const heart = new THREE.Mesh(new THREE.ExtrudeGeometry((() => { const s = new THREE.Shape(), z = .16; s.moveTo(0, -z); s.bezierCurveTo(z * 1.3, -z * .1, z * .7, z, 0, z * .45); s.bezierCurveTo(-z * .7, z, -z * 1.3, -z * .1, 0, -z); return s; })(), { depth: .05, bevelEnabled: true, bevelSize: .015, bevelThickness: .015, bevelSegments: 3 }),
   new THREE.MeshStandardMaterial({ color: '#ff8fb8', emissive: '#ff6f9a', emissiveIntensity: .6, transparent: true })); scene.add(heart);
 const gPts = samplePoints({ body: '#ffd9c6', top: '#ffe8da', cheek: '#ffb0c0', cream: '#fff6ee', cup: '#ffc3a0' });
-const gPar = new THREE.InstancedMesh(new THREE.BoxGeometry(.045, .045, .045), new THREE.MeshBasicMaterial({ color: new THREE.Color(1.3, 1.3, 1.3) }), gPts.length); gPts.forEach((q, i) => gPar.setColorAt(i, q.c)); gPar.frustumCulled = false; scene.add(gPar);
+const gPar = new THREE.InstancedMesh(new THREE.BoxGeometry(.03, .03, .03), new THREE.MeshBasicMaterial({ color: new THREE.Color(1.9, 1.9, 1.9) }), gPts.length); gPts.forEach((q, i) => gPar.setColorAt(i, q.c)); gPar.frustumCulled = false; scene.add(gPar);
 const gRand = gPts.map(() => V(R() - .5, R() - .5, R() - .5));
 const sparks = []; { const g = new THREE.OctahedronGeometry(.04); for (let i = 0; i < 46; i++) { const m = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ color: new THREE.Color(R() < .5 ? '#fff0c8' : '#ffe2ef').multiplyScalar(1.6) })); m.userData = { a: R() * 6.28, r: .35 + R() * .8, v: .4 + R() * .8, ph: R() * 3 }; scene.add(m); sparks.push(m); } }
 const motes = []; { const g = new THREE.SphereGeometry(.02, 6, 4), m = new THREE.MeshBasicMaterial({ color: new THREE.Color('#fff6e4').multiplyScalar(1.4), transparent: true, opacity: .8 }); for (let i = 0; i < 60; i++) { const s = new THREE.Mesh(g, m); s.userData = V(-4 + R() * 9, .3 + R() * 3, 4 + R() * 14); scene.add(s); motes.push(s); } }
@@ -175,9 +176,11 @@ composer.addPass(grade);
 
 // ---------------- shots (hard cuts sit on the line changes)
 const camKeys = [
-  [8.8, V(0, 2.3, 25.5), V(0, 2.0, -40), 36],
-  [9.35, V(0, 2.3, 25.2), V(0, 2.0, -40), 36],
-  [10.45, V(.3, 1.55, 15.0), V(1.2, .9, 0), 48],
+  // hand-off: exactly the DOM framing, then a slow drift reveals depth, then the dive through the window to the pier
+  [9.30, V(0, 2.3, 25.2), V(0, 2.3, -40), 36],
+  [9.75, V(-.32, 2.14, 24.0), V(-.05, 2.12, -40), 37],
+  [10.2, V(.32, 1.8, 14.0), V(.9, 1.2, -6), 44],
+  [10.6, V(.95, 1.35, 10.9), V(1.5, 1.0, 0), 47],
   [11.0, V(1.4, 1.15, 9.2), V(1.6, 1.0, 2.0), 46],
   // cut: beside the little one on the pier, a slow orbit as the sun goes down
   [11.01, V(2.3, 1.9, 9.0), V(1.5, 1.0, -6), 46],
@@ -189,21 +192,28 @@ const camKeys = [
   [15.3, V(-1.4, 1.35, 19.1), V(-2.0, .62, 13.6), 34],
   // cut: the farewell — a crane up following the rise
   [15.38, V(4.4, 1.5, 7.6), V(1.6, 1.4, 1.8), 42],
-  [16.5, V(4.6, 3.6, 9.4), V(1.5, 3.2, -2), 45],
-  [17.75, V(3.4, 7.4, 11.8), V(1.4, 5.9, -30), 48],
+  [16.0, V(4.6, 3.0, 9.0), V(1.5, 2.8, -1), 44],
+  [16.6, V(4.5, 4.2, 10.0), V(1.5, 3.9, -4), 46],
+  // cut on 「退出」: from just inside the window, pull back into the room; the world becomes the flat page again
+  [16.625, V(.45, 2.05, 14.9), V(1.0, 3.4, -20), 44],
+  [17.3, V(0, 2.3, 25.2), V(0, 2.3, -40), 36],
+  [17.8, V(0, 2.3, 25.2), V(0, 2.3, -40), 36],
 ];
 const shots = []; { let cur = [camKeys[0]]; for (let i = 1; i < camKeys.length; i++) { if (camKeys[i][0] - camKeys[i - 1][0] < .1) { shots.push(cur); cur = []; } cur.push(camKeys[i]); } shots.push(cur); }
-shots.forEach(sh => { if (sh.length > 2) { sh.pc = new THREE.CatmullRomCurve3(sh.map(k => k[1]), false, 'centripetal'); sh.tc = new THREE.CatmullRomCurve3(sh.map(k => k[2]), false, 'centripetal'); } });
+// monotone (Fritsch–Carlson) time → spline-parameter map: velocity is continuous, nothing stops mid-shot
+function pchip(xs, ys, m0) { const n = xs.length, d = [], m = [];
+  for (let i = 0; i < n - 1; i++) d.push((ys[i + 1] - ys[i]) / (xs[i + 1] - xs[i]));
+  m[0] = m0 !== undefined ? m0 : d[0]; m[n - 1] = d[n - 2];
+  for (let i = 1; i < n - 1; i++) m[i] = d[i - 1] * d[i] <= 0 ? 0 : 3 * (xs[i + 1] - xs[i - 1]) / ((2 * xs[i + 1] - xs[i] - xs[i - 1]) / d[i - 1] + (xs[i + 1] + xs[i] - 2 * xs[i - 1]) / d[i]);
+  return (x) => { let i = 0; while (i < n - 2 && x > xs[i + 1]) i++; const h = xs[i + 1] - xs[i], u = clamp((x - xs[i]) / h, 0, 1);
+    const h00 = 2 * u ** 3 - 3 * u ** 2 + 1, h10 = u ** 3 - 2 * u ** 2 + u, h01 = -2 * u ** 3 + 3 * u ** 2, h11 = u ** 3 - u ** 2;
+    return h00 * ys[i] + h10 * h * m[i] + h01 * ys[i + 1] + h11 * h * m[i + 1]; }; }
+shots.forEach((sh, si) => { const n = sh.length;
+  sh.pc = new THREE.CatmullRomCurve3(sh.map(k => k[1]), false, 'centripetal'); sh.tc = new THREE.CatmullRomCurve3(sh.map(k => k[2]), false, 'centripetal');
+  sh.map_ = pchip(sh.map(k => k[0]), sh.map((k, i) => i / (n - 1)), si === 0 ? 0 : undefined); });
 function camAt(t) {
   let sh = shots[0]; for (const x of shots) if (t >= x[0][0]) sh = x;
-  if (sh === shots[0]) {   // the dive through the window: matched to the 2D zoom, keep the piecewise timing
-    let i = 0; while (i < sh.length - 2 && t >= sh[i + 1][0]) i++; const a = sh[i], b = sh[i + 1]; const u = range(t, a[0], b[0]);
-    const k = i === 1 ? Math.pow(u, 1.7) : easeInOut(u); return { pos: a[1].clone().lerp(b[1], k), tgt: a[2].clone().lerp(b[2], k), fov: lerp(a[3], b[3], k) }; }
-  const t0 = sh[0][0], t1 = sh[sh.length - 1][0], u = range(t, t0, t1);
-  const e = lerp(u, u * u * (3 - 2 * u), .45), tau = t0 + e * (t1 - t0);   // glide: soft start/settle, never stops mid-shot
-  let i = 0; while (i < sh.length - 2 && tau >= sh[i + 1][0]) i++; const seg = range(tau, sh[i][0], sh[i + 1][0]);
-  const s = (i + seg) / (sh.length - 1), fov = lerp(sh[i][3], sh[i + 1][3], seg);
-  if (!sh.pc) return { pos: sh[0][1].clone().lerp(sh[1][1], s), tgt: sh[0][2].clone().lerp(sh[1][2], s), fov };
+  const s = clamp(sh.map_(t), 0, 1), n = sh.length, f = s * (n - 1), i = Math.min(n - 2, Math.floor(f)), fov = lerp(sh[i][3], sh[i + 1][3], f - i);
   return { pos: sh.pc.getPoint(s), tgt: sh.tc.getPoint(s), fov };
 }
 
@@ -238,12 +248,13 @@ export function update(t) {
   pose(ghost, { sy: 1 - .1 * wob + hp * .06, sx: 1 / Math.sqrt(1 - .1 * wob + hp * .06), lean: Math.sin(t * Math.PI / (T.beat * 2)) * .09, tilt: -hp * .08, hop: hp * .14, arms: .15 + rise * 1.2 + j * .25 + hp * .5 });
   setOpacity(ghost, formed * (1 - smooth(range(t, 17.1, 17.6))) * .93);
   ghostL.position.copy(gpos).add(V(0, .8, .6)); ghostL.intensity = .5 * formed;
-  gPar.visible = t > 9.9 && t < 11.1;
-  if (gPar.visible) { ghost.updateMatrixWorld(true); const o = new THREE.Object3D(), w = V(0, 0, 0), from = V(0, 2.3, 24);
-    for (let i = 0; i < gPts.length; i++) { const home = w.copy(gPts[i].p).applyMatrix4(ghost.matrixWorld).clone(); const dl = (i % 23) / 23 * .3, k = easeInOut(range(t, 9.95 + dl, 10.75 + dl * .5));
-      const mid = from.clone().lerp(home, .5).add(V(gRand[i].x * 3, 1.5 + gRand[i].y * 2, gRand[i].z * 3));
+  gPar.visible = t >= T_BURST && t < 11.1;
+  if (gPar.visible) { ghost.updateMatrixWorld(true); const o = new THREE.Object3D(), w = V(0, 0, 0), g0 = ghost3(T_BURST - 1e-4);
+    for (let i = 0; i < gPts.length; i++) { const home = w.copy(gPts[i].p).applyMatrix4(ghost.matrixWorld).clone(); const dl = (i % 23) / 23 * .3, k = easeInOut(range(t, T_BURST + dl * .25, 10.75 + dl * .5));
+      const f = voxelWorld(VOX[i % VOX.length], g0), from = V(f[0] + gRand[i].x * .12, f[1] + gRand[i].y * .12, f[2] + gRand[i].z * .12);
+      const mid = from.clone().lerp(home, .5).add(V(gRand[i].x * .9, .5 + gRand[i].y * .7, gRand[i].z * .9));
       const a = from.clone().lerp(mid, k), b = mid.clone().lerp(home, k); const p = a.lerp(b, k);
-      o.position.copy(p); o.rotation.set(t * 4 + i, t * 3, 0); o.scale.setScalar((1 - smooth(range(t, 10.75 + dl * .5, 11.05))) * (k > 0 ? 1 : 0)); o.updateMatrix(); gPar.setMatrixAt(i, o.matrix); }
+      o.position.copy(p); o.rotation.set(t * 4 + i, t * 3, 0); o.scale.setScalar(lerp(1.25, 1, k) * (1 - smooth(range(t, 10.75 + dl * .5, 11.05)))); o.updateMatrix(); gPar.setMatrixAt(i, o.matrix); }
     gPar.instanceMatrix.needsUpdate = true; }
   const steps = [13.328, 13.886, 14.443], start = V(-3.4, 0, 14.6), at = V(-2.2, 0, 13.8);
   let k = 0; steps.forEach((s, i) => { if (t > s) k = i + Math.min(1, (t - s) / .42); });
@@ -273,11 +284,12 @@ export function update(t) {
     pose(kd, { sy: 1 - .16 * w, sx: 1 / Math.sqrt(1 - .16 * w), lean: Math.sin(t * 7 + i * 2) * .12, arms: .3 + .9 * run + Math.abs(Math.sin(t * 9 + i)) * .5 }); });
   const c = camAt(t);
   sky.position.copy(c.pos);
-  cam.position.copy(c.pos).add(V(Math.sin(t * .9) * .025, Math.sin(t * 1.3) * .02, 0)); cam.fov = c.fov - kb * .9; cam.updateProjectionMatrix(); cam.lookAt(c.tgt);
-  if (t > 10.45 && t < 11.0) cam.rotateZ(.12 * Math.sin((t - 10.45) / .55 * Math.PI));
+  const hAmp = (t < 11.0 ? smooth(range(t, T_HAND, T_HAND + .6)) : 1) * (t > 16.62 ? 1 - smooth(range(t, 16.9, 17.3)) : 1);   // no handheld at the 2D↔3D hand-offs
+  cam.position.copy(c.pos).add(V(Math.sin(t * .9) * .025 * hAmp, Math.sin(t * 1.3) * .02 * hAmp, 0)); cam.fov = c.fov - kb * .9 * hAmp; cam.updateProjectionMatrix(); cam.lookAt(c.tgt);
+  if (t > 10.3 && t < 11.0) cam.rotateZ(.1 * Math.sin((t - 10.3) / .7 * Math.PI));
   rim(0, gpos, formed); rim(2, pp, pinkOne.visible ? 1 : 0);
-  const subj = t < 10.4 ? c.tgt : (t > 13.16 && t < 15.38 ? pp.clone().add(V(0, .5, 0)) : gpos.clone().add(V(0, .5, 0)));
-  bokeh.uniforms.focus.value = cam.position.distanceTo(subj); bokeh.uniforms.aperture.value = t < 10.4 ? .0006 : .0016;
+  const subj = t < 10.4 ? V(1.6, 1.0, 6.0) : (t > 13.16 && t < 15.38 ? pp.clone().add(V(0, .5, 0)) : gpos.clone().add(V(0, .5, 0)));
+  bokeh.uniforms.focus.value = cam.position.distanceTo(subj); bokeh.uniforms.aperture.value = t < 10.4 ? .0009 : .0016;
   const sv = cam.position.clone().addScaledVector(sunDir, 1000).project(cam); grade.uniforms.sunUV.value.set(sv.x * .5 + .5, sv.y * .5 + .5);
   grade.uniforms.shaft.value = (sv.z < 1 && Math.abs(sv.x) < 1.3 && Math.abs(sv.y) < 1.3) ? 1 : 0;
   bloom.strength = .26 + dusk * .14;

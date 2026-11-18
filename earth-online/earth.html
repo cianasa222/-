@@ -16,8 +16,10 @@
 <script type="module">
 import * as SEA from './sea.js';
 import * as GAME from './game.js';
+import * as WALL from './wall.js';
 import { SPR, spring, BEATS, kick, clamp, lerp, range, smooth, easeIn, easeOut, backOut, GRID, PINK_GRID, drawGrid } from './common.js';
 const wrap = document.getElementById('wrap'); SEA.renderer.domElement.id = 'gl'; wrap.prepend(SEA.renderer.domElement);
+WALL.renderer.domElement.style.cssText = 'position:absolute;left:0;top:0'; SEA.renderer.domElement.after(WALL.renderer.domElement);
 GAME.build(document.getElementById('game'));
 const hud = document.getElementById('hud3'), fade = document.getElementById('fade');
 const el = (tag, css, parent, html) => { const e = document.createElement(tag); if (css) e.style.cssText = css; if (html !== undefined) e.innerHTML = html; (parent || hud).appendChild(e); return e; };
@@ -81,9 +83,9 @@ const thanks = el('div', 'position:absolute;left:0;right:0;top:540px;text-align:
 thanks.innerHTML = `<div style="font:900 52px Noto Sans SC,sans-serif;color:#3a2b2a;letter-spacing:.2em">感谢游玩</div><div style="margin-top:16px;font:600 18px Noto Sans SC,sans-serif;color:#8a7a72;letter-spacing:.3em">地球 ONLINE</div>`;
 
 window.renderAt = (t) => {
-  const show3d = t > 9.0;
+  const show3d = t > 9.2;
   SEA.renderer.domElement.style.visibility = show3d ? 'visible' : 'hidden';
-  if (show3d) { SEA.update(t); SEA.render(); }
+  if (show3d) { SEA.update(t); SEA.render(); if (WALL.update(t)) WALL.render(); } else WALL.renderer.domElement.style.visibility = 'hidden';
   GAME.update(t); updateCaptions(t);
   const kb = kick(t, 9);
   // years tag (11.0 → 13.1)
@@ -94,16 +96,16 @@ window.renderAt = (t) => {
   const ta = easeOut(range(t, 14.95, 15.15)), to = 1 - smooth(range(t, 15.3, 15.5));
   toast.style.opacity = ta * to; toast.style.transform = `translate(-50%, ${-40 * (1 - spring(t - 14.95, SPR.ui))}px) scale(${lerp(.86, 1, spring(t - 14.95, SPR.toy))})`;
   // modal: pops in on the beat, "退出" is pressed on the next-but-one beat
-  const ma = range(t, 16.068, 16.33), mo = 1 - smooth(range(t, 16.95, 17.15));
-  modal.style.opacity = clamp(ma * 4, 0, 1) * mo; modal.style.transform = `translateY(${(1 - spring(t - 16.068, SPR.ui)) * 60}px) scale(${lerp(.82, 1, spring(t - 16.068, SPR.toy)) * lerp(1, .94, smooth(range(t, 16.95, 17.15)))})`;
+  const ma = range(t, 16.068, 16.33), mo = 1 - smooth(range(t, 16.66, 16.84));
+  modal.style.opacity = clamp(ma * 4, 0, 1) * mo; modal.style.transform = `translateY(${(1 - spring(t - 16.068, SPR.ui)) * 60}px) scale(${lerp(.82, 1, spring(t - 16.068, SPR.toy)) * lerp(1, .9, smooth(range(t, 16.66, 16.84)))})`;
   const pr = t - 16.625; quit.style.transform = pr > 0 && pr < .25 ? `scale(${1 - .08 * Math.sin(Math.PI * pr / .25)})` : 'none';
   quit.style.background = pr > 0 ? '#ff8448' : '#ff9a5c';
   ripple.style.opacity = pr > 0 ? Math.max(0, 1 - pr / .4) : 0; ripple.style.transform = `scale(${pr > 0 ? 1 + pr * 30 : 0})`;
   // fade to warm paper, then "感谢游玩"
-  fade.style.background = `rgba(246,238,225,${smooth(range(t, 16.95, 17.3)).toFixed(3)})`;
-  const th = range(t, 17.15, 17.45); thanks.style.opacity = th; thanks.style.transform = `translateY(${12 * (1 - easeOut(th))}px)`;
+  fade.style.background = `rgba(246,238,225,${smooth(range(t, 17.34, 17.58)).toFixed(3)})`;
+  const th = range(t, 17.45, 17.68); thanks.style.opacity = th; thanks.style.transform = `translateY(${12 * (1 - easeOut(th))}px)`;
 };
-await document.fonts.ready; await new Promise(r => setTimeout(r, 50));
+await document.fonts.ready; await new Promise(r => setTimeout(r, 50)); WALL.build();
 SEA.update(12); SEA.render();
 window.__ready = true;
 </script></body></html>

@@ -5,7 +5,7 @@ const PW = 720, PH = 2600;                       // page size (camera coordinate
 const WIN = { x: 120, y: 170, w: 480, h: 450 };   // the window (a real hole in the paper: the 3D sea is behind it)
 const CARD = { x: 100, y: 760, w: 520, h: 380 }, MAP = { x: 60, y: 1250, w: 600, h: 330 }, QUEST = { x: 80, y: 1690, w: 560, h: 280 }, INV = { x: 80, y: 2060, w: 560, h: 400 };
 const INK = '#3a2b2a', SOFT = '#8a7a72', ORANGE = '#ff9a5c', PINK = '#ff8fb0', LAV = '#b9a6ff', MINT = '#8fe3c4', PANEL = '#fffaf2';
-let blobs, cursor, cRing, sparkles = [], root, cam, fx, fxc, ghostCv, ghostEl, portrait, statusPill, hpFill, nameEl, flowerEl, flower2El, bodyEl, tick, stamp, reward, expFill, coinTxt, invSlots = [], invTitle, emptyTxt, slats = [], light, hud, clock, onlineTxt;
+export let paperCanvas; const blobData = []; let blobs, cursor, cRing, sparkles = [], root, cam, fx, fxc, ghostCv, ghostEl, portrait, statusPill, hpFill, nameEl, flowerEl, flower2El, bodyEl, tick, stamp, reward, expFill, coinTxt, invSlots = [], invTitle, emptyTxt, slats = [], light, hud, clock, onlineTxt;
 const el = (tag, css, parent, html) => { const e = document.createElement(tag); if (css) e.style.cssText = css; if (html !== undefined) e.innerHTML = html; (parent || root).appendChild(e); return e; };
 const sprite = (grid, s, parent, css = '') => { const c = el('canvas', `position:absolute;image-rendering:pixelated;width:${grid[0].length * s}px;height:${grid.length * s}px;${css}`, parent); c.width = grid[0].length; c.height = grid.length; drawGrid(c.getContext('2d'), grid); return c; };
 const panel = (r, title, parent) => { const p = el('div', `position:absolute;left:${r.x}px;top:${r.y}px;width:${r.w}px;height:${r.h}px;border-radius:30px;background:rgba(255,252,247,.6);background-image:linear-gradient(170deg,rgba(255,255,255,.8),rgba(255,255,255,.15) 45%,rgba(255,255,255,.35));backdrop-filter:blur(28px) saturate(1.7);box-shadow:0 30px 60px -18px rgba(120,80,50,.22),0 8px 18px rgba(120,90,60,.08),0 0 0 1.5px rgba(255,255,255,.9) inset,0 -3px 0 rgba(120,90,60,.05) inset`, parent); p.className = 'pnl';
@@ -15,7 +15,7 @@ export function build(container) {
   root = container; root.style.cssText = 'position:absolute;inset:0;overflow:hidden';
   cam = el('div', `position:absolute;left:0;top:0;width:${PW}px;height:${PH}px;transform-origin:0 0;will-change:transform`);
   // paper with a hole for the window
-  const paper = el('canvas', `position:absolute;left:-400px;top:-400px;width:${PW + 800}px;height:${PH + 800}px`, cam); paper.width = PW + 800; paper.height = PH + 800;
+  const paper = el('canvas', `position:absolute;left:-400px;top:-400px;width:${PW + 800}px;height:${PH + 800}px`, cam); paper.width = PW + 800; paper.height = PH + 800; paperCanvas = paper;
   { const g = paper.getContext('2d'); g.fillStyle = '#f6eee1'; g.fillRect(0, 0, paper.width, paper.height);
     const r = rng(3); for (let i = 0; i < 26000; i++) { const x = r() * paper.width, y = r() * paper.height, a = r() * .05; g.fillStyle = `rgba(${r() < .5 ? '120,90,60' : '255,255,255'},${a})`; g.fillRect(x, y, 1 + r() * 2, 1); }
     g.strokeStyle = 'rgba(160,130,100,.07)'; g.lineWidth = 1; for (let x = 0; x < paper.width; x += 40) { g.beginPath(); g.moveTo(x, 0); g.lineTo(x, paper.height); g.stroke(); } for (let y = 0; y < paper.height; y += 40) { g.beginPath(); g.moveTo(0, y); g.lineTo(paper.width, y); g.stroke(); }
@@ -23,7 +23,7 @@ export function build(container) {
   // ---- soft colour bokeh drifting behind the panels (its own parallax layer)
   blobs = el('div', `position:absolute;left:0;top:0;width:${PW}px;height:${PH}px`, cam);
   { const r = rng(21), cols = ['255,154,92', '255,143,176', '185,166,255', '143,227,196']; for (let i = 0; i < 22; i++) { const d = 220 + r() * 300, x = -80 + r() * (PW + 60), y = 700 + r() * (PH - 600);
-      const b = el('div', `position:absolute;left:${x}px;top:${y}px;width:${d}px;height:${d}px;border-radius:50%;background:radial-gradient(circle,rgba(${cols[i % 4]},.62),rgba(${cols[i % 4]},0) 68%)`, blobs); b.dataset.p = (r() * 6.28).toFixed(2); } }
+      const b = el('div', `position:absolute;left:${x}px;top:${y}px;width:${d}px;height:${d}px;border-radius:50%;background:radial-gradient(circle,rgba(${cols[i % 4]},.62),rgba(${cols[i % 4]},0) 68%)`, blobs); b.dataset.p = (r() * 6.28).toFixed(2); blobData.push({ x, y, d, col: cols[i % 4], p: +b.dataset.p }); } }
   // ---- window: frame, sill, shutters (slats) with light leaking through
   light = el('div', `position:absolute;left:${WIN.x}px;top:${WIN.y}px;width:${WIN.w}px;height:${WIN.h}px;background:linear-gradient(180deg,#ffe9c9,#ffd7b0);`, cam);
   for (let i = 0; i < 7; i++) slats.push(el('div', `position:absolute;left:${WIN.x}px;top:${WIN.y + i * WIN.h / 7}px;width:${WIN.w}px;height:${WIN.h / 7 - 6}px;background:linear-gradient(180deg,#fffaf3,#f1e3d0);border-radius:6px;box-shadow:0 3px 0 rgba(150,110,80,.18);transform-origin:50% 0;backface-visibility:hidden`, cam));
@@ -88,34 +88,36 @@ export function build(container) {
   onlineTxt = el('div', `margin-left:auto;text-align:right;font:600 13px Noto Sans SC,sans-serif;color:${SOFT};line-height:1.5`, hud, '在线玩家<br><b style="font-size:16px;color:#3a2b2a">8,123,456,789</b>');
 }
 
+// blob layout at time t, in page coordinates (for the 3D wall texture)
+export function blobsAt(t) { const oy = camAt(t)[1], kb = kick(t, 9), py = (oy - 1400) * .22;
+  return blobData.map(b => ({ cx: b.x + b.d / 2 + Math.sin(t * .5 + b.p) * 24, cy: b.y + b.d / 2 + py + Math.cos(t * .4 + b.p) * 18, d: b.d * (1 + .08 * Math.sin(t * .7 + b.p) + kb * .05), col: b.col })); }
 // camera keys: [t, ox, oy, scale, rotX, rotZ, whip]
 const CK = [
   [0.0, 360, 960, 1.04, 0, -1], [2.1, 360, 940, 1.14, 0, 1],
   [2.26, 360, 940, 1.14, 0, 1, 1], [2.75, 360, 1430, 1.16, 4, -1.5], [4.4, 360, 1420, 1.27, 3, 1],
   [4.58, 360, 1420, 1.27, 3, 1, 1], [5.05, 360, 1830, 1.2, 0, 0], [6.4, 360, 1830, 1.33, 2, -1],
   [6.58, 360, 1830, 1.33, 2, -1, 1], [7.05, 360, 2260, 1.14, 0, 1], [8.9, 360, 2240, 1.26, 0, -1],
-  [9.06, 360, 2240, 1.26, 0, -1, 1], [9.36, 360, 395, 1.12, 0, 0], [10.4, 360, 395, 9.5, 16, 0],
+  [9.06, 360, 2240, 1.26, 0, -1, 1], [9.30, 360, 395, 1.12, 0, 0, 1],
 ];
 function camAt(t) {
   let i = 0; while (i < CK.length - 2 && t >= CK[i + 1][0]) i++;
   const a = CK[i], b = CK[i + 1], u = range(t, a[0], b[0]);
-  const k = b[6] ? 1 - Math.pow(1 - u, 4) : (i === CK.length - 2 ? Math.pow(u, 2.2) : easeInOut(u));   // whips are fast-out; the final zoom accelerates
+  const k = b[6] ? 1 - Math.pow(1 - u, 4) : easeInOut(u);   // whips are fast-out
   return a.slice(1, 6).map((v, j) => lerp(v, b[j + 1], k));
 }
 // ghost path in page coordinates: [t, x, y, scale]
-const GK = [[.3, 240, 930, .5], [1.4, 430, 790, 1], [2.26, 440, 800, 1], [2.9, 330, 1320, 1], [4.58, 340, 1330, 1], [5.2, 560, 1730, .95], [6.58, 560, 1740, .95], [7.15, 560, 2080, .9], [9.06, 560, 2090, .9], [9.36, 300, 470, .9], [9.62, 360, 395, .25]];
+const GK = [[.3, 240, 930, .5], [1.4, 430, 790, 1], [2.26, 440, 800, 1], [2.9, 330, 1320, 1], [4.58, 340, 1330, 1], [5.2, 560, 1730, .95], [6.58, 560, 1740, .95], [7.15, 560, 2080, .9], [9.06, 560, 2090, .9], [9.30, 300, 500, .9]];
 function ghostAt(t) { let i = 0; while (i < GK.length - 2 && t >= GK[i + 1][0]) i++; const a = GK[i], b = GK[i + 1], k = easeInOut(range(t, a[0], b[0])); return [lerp(a[1], b[1], k), lerp(a[2], b[2], k), lerp(a[3], b[3], k)]; }
 
 export function update(t) {
-  const on = t < 10.45; root.style.display = on ? 'block' : 'none'; if (!on) return;
+  const on = t < 9.30; root.style.display = on ? 'block' : 'none'; if (!on) return;   // 9.30: the 3D wall takes over
   const kb = kick(t, 9);
   // camera
   let [ox, oy, s, rx, rz] = camAt(t); s *= 1 + kb * .012;
   cam.style.transformOrigin = `${ox}px ${oy}px`;
   cam.style.transform = `translate(${360 - ox}px,${640 - oy}px) perspective(1600px) rotateX(${rx}deg) rotateZ(${rz}deg) scale(${s})`;
-  root.style.opacity = 1 - smooth(range(t, 10.05, 10.42));
   // whip motion blur: blur follows camera speed
-  { const a = camAt(t - 1 / 120), b = camAt(t + 1 / 120); const sp = Math.hypot(b[0] - a[0], b[1] - a[1]) * 60; const bl = t < 9.36 ? clamp((sp - 300) / 900, 0, 1) * 4.5 : 0;
+  { const a = camAt(t - 1 / 120), b = camAt(t + 1 / 120); const sp = Math.hypot(b[0] - a[0], b[1] - a[1]) * 60; const bl = t < 9.30 ? clamp((sp - 300) / 900, 0, 1) * 4.5 : 0;
     cam.style.filter = bl > .05 ? `blur(${bl.toFixed(2)}px)` : 'none'; }
   blobs.style.transform = `translateY(${(oy - 1400) * .22}px)`;
   [...blobs.children].forEach((b, i) => { const p = +b.dataset.p; b.style.transform = `translate(${Math.sin(t * .5 + p) * 24}px,${Math.cos(t * .4 + p) * 18}px) scale(${1 + .08 * Math.sin(t * .7 + p) + kb * .05})`; });
@@ -137,7 +139,7 @@ export function update(t) {
     const d = t - best[0], a = i / 10 * 6.28 + best[0], rr = 30 + 70 * easeOut(range(d, 0, .5)) + (i % 3) * 14;
     sp.style.opacity = 1 - smooth(range(d, .35, .7)); sp.style.transform = `translate(${best[1] + Math.cos(a) * rr}px,${best[2] + Math.sin(a) * rr}px) rotate(${d * 300}deg) scale(${backOut(range(d, 0, .2), 3) * (1 - d)})`; });
 
-  hud.style.transform = `translateY(${-110 * easeIn(range(t, 9.3, 9.7))}px)`;
+  hud.style.transform = `translateY(${-110 * easeIn(range(t, 9.06, 9.26))}px)`;
   onlineTxt.lastChild.textContent = (8123456789 - Math.floor(range(t, 0, 1.4) * 1)).toLocaleString('en-US');
   // character card: colour drains to grey, status flips to offline, HP empties, a flower drops onto the card
   const grey = t > .67;
@@ -174,12 +176,12 @@ export function update(t) {
   });
   invTitle.textContent = `${left} / 6`;
   coinTxt.textContent = '×' + Math.round(99999 * (1 - easeIn(range(t, 6.6, 6.734)))).toLocaleString('en-US');
-  emptyTxt.style.opacity = smooth(range(t, 9.0, 9.2)) * (1 - smooth(range(t, 9.1, 9.3)));
+  emptyTxt.style.opacity = smooth(range(t, 8.98, 9.1));
   // window: slats flip open one after another on the line "窗外…", light spills
-  slats.forEach((sl, i) => { const k = easeOut(range(t, 9.06 + i * .035, 9.32 + i * .035)); sl.style.transform = `perspective(600px) rotateX(${-88 * k}deg)`; sl.style.opacity = 1 - k * .9; });
-  light.style.opacity = 1 - smooth(range(t, 9.1, 9.4));
+  slats.forEach((sl, i) => { const k = 0; sl.style.transform = `perspective(600px) rotateX(${-88 * k}deg)`; sl.style.opacity = 1 - k * .9; });
+  light.style.opacity = 1;
   // ghost
   const [gx, gy, gs] = ghostAt(t); const bob = Math.sin(t * 2.4) * 8;
-  ghostEl.style.opacity = smooth(range(t, .3, 1.0)) * (1 - smooth(range(t, 9.5, 9.62)));
+  ghostEl.style.opacity = smooth(range(t, .3, 1.0));
   ghostEl.style.transform = `translate(${gx - 60}px,${gy - 40 + bob}px) scale(${gs * (1 + kb * .04)}) rotate(${Math.sin(t * 1.7) * 4}deg)`;
 }

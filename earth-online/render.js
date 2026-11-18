@@ -24,7 +24,7 @@ const srv = http.createServer((q, r) => { const f = path.join(root, decodeURICom
     for (let i = 0; t0 + i / fps < t1 - 1e-6; i++) for (let k = 0; k < SUB; k++) times.push(Math.max(0, t0 + i / fps + ((k + .5) / SUB - .5) * SHUTTER / fps)); }
   const start = Date.now(), from = +(process.env.FROM || 0);
   for (let i = from; i < times.length; i++) {
-    const name = mode === 'stills' ? `still_${times[i].toFixed(2)}.png` : `f_${String(i).padStart(6, '0')}.png`;
+    const name = mode === 'stills' ? `still_${times[i].toFixed(3)}.png` : `f_${String(i).padStart(6, '0')}.png`;
     const fp = path.join(out, name);
     if (mode !== 'stills' && fs.existsSync(fp)) continue;                  // resumable
     await p.evaluate(t => window.renderAt(t), times[i]);
