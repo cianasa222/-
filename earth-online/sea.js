@@ -15,7 +15,7 @@ import { makeMascot, setOpacity, pose, samplePoints, BD } from './mascot3d.js';
 const W = 720, H = 1280, R = rng(5);
 const V = (x, y, z) => new THREE.Vector3(x, y, z);
 export const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
-renderer.setSize(W, H); renderer.setPixelRatio(1);
+const DPR = window.devicePixelRatio || 1; renderer.setPixelRatio(DPR); renderer.setSize(W, H);
 renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = .5;
 renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 const scene = new THREE.Scene();
@@ -70,7 +70,7 @@ function normalTex() {
     d.data[i] = (n.x * .5 + .5) * 255; d.data[i + 1] = (n.y * .5 + .5) * 255; d.data[i + 2] = (n.z * .5 + .5) * 255; d.data[i + 3] = 255; }
   g.putImageData(d, 0, 0); const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; return t;
 }
-const water = new Water(new THREE.PlaneGeometry(900, 900), { textureWidth: 512, textureHeight: 512, waterNormals: normalTex(), sunDirection: sunDir.clone(), sunColor: 0xfff0d8, waterColor: 0x47bccb, distortionScale: 2.2, fog: true });
+const water = new Water(new THREE.PlaneGeometry(900, 900), { textureWidth: 1024, textureHeight: 1024, waterNormals: normalTex(), sunDirection: sunDir.clone(), sunColor: 0xfff0d8, waterColor: 0x47bccb, distortionScale: 2.2, fog: true });
 water.rotation.x = -Math.PI / 2; water.position.y = 0; scene.add(water);
 // foam that runs up the sand and slides back
 const foamTex = (() => { const c = document.createElement('canvas'); c.width = 512; c.height = 64; const g = c.getContext('2d'), r = rng(4);
@@ -154,7 +154,7 @@ const motes = []; { const g = new THREE.SphereGeometry(.02, 6, 4), m = new THREE
 
 // ---------------- camera + post (depth of field, bloom, sun shafts, grade)
 export const cam = new THREE.PerspectiveCamera(42, W / H, .05, 6000);
-const composer = new EffectComposer(renderer);
+const composer = new EffectComposer(renderer); composer.setPixelRatio(DPR); composer.setSize(W, H);
 composer.addPass(new RenderPass(scene, cam));
 const bokeh = new BokehPass(scene, cam, { focus: 5, aperture: .0016, maxblur: .006 }); composer.addPass(bokeh);
 const bloom = new UnrealBloomPass(new THREE.Vector2(W, H), .28, .5, .95); composer.addPass(bloom);
@@ -169,7 +169,7 @@ const grade = new ShaderPass({ uniforms: { tDiffuse: { value: null }, time: { va
       c += acc * shaft * mix(vec3(1.,.92,.78), vec3(1.,.7,.5), warm) * .12;
       vec2 q = vUv - .5; c *= mix(.78, 1., smoothstep(.9, .28, length(q * vec2(1., .72))));
       c = mix(c, c * vec3(1.04, 1., .94), .45 + warm * .3);
-      float l = dot(c, vec3(.299,.587,.114)); c = mix(vec3(l), c, 1.14); c = (c - .5) * 1.06 + .5; c = max(c, 0.); c += (h(vUv * vec2(720., 1280.)) - .5) * .022; gl_FragColor = vec4(c, 1.); }` });
+      float l = dot(c, vec3(.299,.587,.114)); c = mix(vec3(l), c, 1.14); c = (c - .5) * 1.06 + .5; c = max(c, 0.); c += (h(floor(gl_FragCoord.xy)) - .5) * .022; gl_FragColor = vec4(c, 1.); }` });
 composer.addPass(grade);
 
 // ---------------- shots (hard cuts sit on the line changes)
@@ -178,18 +178,32 @@ const camKeys = [
   [9.35, V(0, 2.3, 25.2), V(0, 2.0, -40), 36],
   [10.45, V(.3, 1.55, 15.0), V(1.2, .9, 0), 48],
   [11.0, V(1.4, 1.15, 9.2), V(1.6, 1.0, 2.0), 46],
-  [11.01, V(2.1, 1.85, 8.9), V(1.45, 1.0, -6), 46],
-  [13.1, V(2.6, 1.5, 7.6), V(1.3, 1.15, -8), 44],
-  [13.16, V(-2.6, 2.3, 20.8), V(-2.4, .6, 13.7), 40],
-  [15.3, V(-1.5, 1.85, 19.6), V(-2.0, .65, 13.6), 36],
-  [15.38, V(4.2, 1.6, 7.5), V(1.6, 1.4, 1.8), 42],
-  [17.75, V(3.6, 7.2, 11.5), V(1.4, 5.8, -30), 48],
+  // cut: beside the little one on the pier, a slow orbit as the sun goes down
+  [11.01, V(2.3, 1.9, 9.0), V(1.5, 1.0, -6), 46],
+  [12.1, V(4.3, 1.55, 8.4), V(-1.2, .85, -6.5), 44],
+  [13.1, V(4.4, 1.3, 6.9), V(-2.0, .9, -6.0), 42],
+  // cut: the beach, the pink one arrives — a low arc that pushes in
+  [13.16, V(-3.6, 2.4, 20.6), V(-2.6, .6, 13.8), 40],
+  [14.3, V(-3.1, 1.55, 19.7), V(-2.3, .62, 13.7), 37],
+  [15.3, V(-1.4, 1.35, 19.1), V(-2.0, .62, 13.6), 34],
+  // cut: the farewell — a crane up following the rise
+  [15.38, V(4.4, 1.5, 7.6), V(1.6, 1.4, 1.8), 42],
+  [16.5, V(4.6, 3.6, 9.4), V(1.5, 3.2, -2), 45],
+  [17.75, V(3.4, 7.4, 11.8), V(1.4, 5.9, -30), 48],
 ];
+const shots = []; { let cur = [camKeys[0]]; for (let i = 1; i < camKeys.length; i++) { if (camKeys[i][0] - camKeys[i - 1][0] < .1) { shots.push(cur); cur = []; } cur.push(camKeys[i]); } shots.push(cur); }
+shots.forEach(sh => { if (sh.length > 2) { sh.pc = new THREE.CatmullRomCurve3(sh.map(k => k[1]), false, 'centripetal'); sh.tc = new THREE.CatmullRomCurve3(sh.map(k => k[2]), false, 'centripetal'); } });
 function camAt(t) {
-  let i = 0; while (i < camKeys.length - 2 && t >= camKeys[i + 1][0]) i++;
-  const a = camKeys[i], b = camKeys[i + 1]; const cut = (b[0] - a[0]) < .1;
-  const u = range(t, a[0], b[0]); const k = cut ? (t >= b[0] ? 1 : 0) : (i === 1 ? Math.pow(u, 1.7) : easeInOut(u));
-  return { pos: a[1].clone().lerp(b[1], k), tgt: a[2].clone().lerp(b[2], k), fov: lerp(a[3], b[3], k) };
+  let sh = shots[0]; for (const x of shots) if (t >= x[0][0]) sh = x;
+  if (sh === shots[0]) {   // the dive through the window: matched to the 2D zoom, keep the piecewise timing
+    let i = 0; while (i < sh.length - 2 && t >= sh[i + 1][0]) i++; const a = sh[i], b = sh[i + 1]; const u = range(t, a[0], b[0]);
+    const k = i === 1 ? Math.pow(u, 1.7) : easeInOut(u); return { pos: a[1].clone().lerp(b[1], k), tgt: a[2].clone().lerp(b[2], k), fov: lerp(a[3], b[3], k) }; }
+  const t0 = sh[0][0], t1 = sh[sh.length - 1][0], u = range(t, t0, t1);
+  const e = lerp(u, u * u * (3 - 2 * u), .45), tau = t0 + e * (t1 - t0);   // glide: soft start/settle, never stops mid-shot
+  let i = 0; while (i < sh.length - 2 && tau >= sh[i + 1][0]) i++; const seg = range(tau, sh[i][0], sh[i + 1][0]);
+  const s = (i + seg) / (sh.length - 1), fov = lerp(sh[i][3], sh[i + 1][3], seg);
+  if (!sh.pc) return { pos: sh[0][1].clone().lerp(sh[1][1], s), tgt: sh[0][2].clone().lerp(sh[1][2], s), fov };
+  return { pos: sh.pc.getPoint(s), tgt: sh.tc.getPoint(s), fov };
 }
 
 export function update(t) {
@@ -218,8 +232,10 @@ export function update(t) {
   const lookBack = t > 13.3 && t < 15.6 ? smooth(range(t, 13.7, 14.4)) * (1 - smooth(range(t, 15.0, 15.5))) : 0;
   ghost.position.copy(gpos); ghost.rotation.set(0, Math.PI + lookBack * 2.4, 0);
   const j = kick(t, 7), wob = Math.exp(-(t - lastBeat(t)) * 7) * Math.cos((t - lastBeat(t)) * 30);
-  pose(ghost, { sy: 1 - .1 * wob, sx: 1 / Math.sqrt(1 - .1 * wob), lean: Math.sin(t * Math.PI / (T.beat * 2)) * .07, arms: .15 + rise * 1.2 + j * .2 });
-  setOpacity(ghost, formed * (1 - smooth(range(t, 17.1, 17.6))) * .85);
+  const lb = lastBeat(t), hopOn = t > 11.3 && t < 15.5 && Math.round((lb - .116) / T.beat) % 2 === 0, hp = hopOn ? Math.sin(Math.PI * clamp((t - lb) / .32, 0, 1)) : 0;
+  ghost.rotation.y += Math.sin(t * 1.1) * .22 * formed * (1 - rise);
+  pose(ghost, { sy: 1 - .1 * wob + hp * .06, sx: 1 / Math.sqrt(1 - .1 * wob + hp * .06), lean: Math.sin(t * Math.PI / (T.beat * 2)) * .09, tilt: -hp * .08, hop: hp * .14, arms: .15 + rise * 1.2 + j * .25 + hp * .5 });
+  setOpacity(ghost, formed * (1 - smooth(range(t, 17.1, 17.6))) * .93);
   ghostL.position.copy(gpos).add(V(0, .8, .6)); ghostL.intensity = .5 * formed;
   gPar.visible = t > 9.9 && t < 11.1;
   if (gPar.visible) { ghost.updateMatrixWorld(true); const o = new THREE.Object3D(), w = V(0, 0, 0), from = V(0, 2.3, 24);

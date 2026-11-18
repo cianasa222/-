@@ -1,18 +1,48 @@
-# 退出地球 Online — 竖屏短视频（720×1280 · 60fps · 17.7s）
+# 退出地球 Online — 竖屏短视频（1080×1920 · 60fps · 17.7s）
 
-配乐：用户提供的「当我退出地球online」片段（MP3 原流直接封装，不重新编码）。
+配乐：「当我退出地球online」片段。MP3 原流直接封装进 MP4，**不重新编码，音质零损失**。
 
-## 结构
-- `game.js` — 前半段 2D：暖色纸张上的游戏界面（角色卡 → 地图 → 任务 → 背包），CSS 相机甩镜 + 动态模糊，彩色景深光斑视差，手指点按，物品爆成像素。
-- `sea.js` — 后半段 3D（three.js）：可反射的海面、手调粉彩天空（白天蓝→傍晚薰衣草/粉/橙）、沙滩、栈桥、灯塔、海鸥，景深 + 辉光 + 光束 + 调色。
-- `earth.html` — 把两层叠在一起；逐字卡点字幕（关键词落在鼓点上）、"多年以后"、退出弹窗、"感谢游玩"。
-- `common.js` — 节拍表（librosa）与像素小人；`mascot3d.js` — 软陶小人。
+## 本地出片（Windows / Mac）
 
-## 渲染
-需要 `three@0.160` 和 `@fontsource/noto-serif-sc` 放在 `node_modules/`，以及 Playwright。
+1. 安装 [Node.js](https://nodejs.org)（LTS 版）。
+2. 在本文件夹打开终端：
+   ```
+   npm install
+   npx playwright install chromium
+   ```
+   （第二步可跳过：用 Edge 加速时不需要）
+3. 把歌曲放进本文件夹，命名为 **`song.mp3`**。
+4. 出片：
+   ```
+   npm run draft     # 预览：720p，无运动模糊，最快
+   npm run render    # 正片：2 倍超采样 + 每帧 4 子帧运动模糊 → 1080×1920 60fps
+   npm run ultra     # 极致：8 子帧运动模糊（慢一倍）
+   ```
+   用核显加速（Windows，推荐）：先执行
+   - PowerShell：`$env:RENDER_BROWSER="msedge"`
+   - CMD：`set RENDER_BROWSER=msedge`
 
-```
-VW=720 VH=1280 node render.js earth.html frames range 0 17.71 60
-ffmpeg -framerate 60 -i frames/f_%05d.png -i song.mp3 -map 0:v -map 1:a -c:v libx264 -crf 14 -preset slow -pix_fmt yuv420p -c:a copy -shortest -movflags +faststart out.mp4
-```
-有核显的 Windows 电脑：加 `RENDER_BROWSER=msedge` 用 GPU 渲染。
+   中途关掉可以断点续渲：再跑一次同样的命令，已渲染的帧会自动跳过。
+5. 成片：`退出地球Online_1080x1920_60fps.mp4`
+
+> 中间帧在 `frames_high/` 等文件夹里，出片后可删除（几 GB）。
+
+## 画面结构
+| 时间 | 段落 | 画面 |
+|---|---|---|
+| 0–2.3s | 今天，我下线啦 | 玻璃质感的游戏面板弹入，角色卡变灰、状态「离线」、HP 清空、小花落下 |
+| 2.3–4.6s | 躺在家附近的草地上 | 甩镜到地图，小橙躺在草地上，像素小幽灵飘着 |
+| 4.6–6.6s | 这一生，好好过完了 | 手指点勾、印章「已完成」砸下、奖励浮现 |
+| 6.7–9.1s | 把行李，一件件放下 | 每个鼓点放下一件物品：光环爆开 + 像素四散 |
+| 9.1–11s | 推开窗，是海 | 百叶窗翻开，镜头穿过窗户进入 3D 海边，像素重新组成 3D 小人 |
+| 11–13.2s | 后来，很多年过去了 | 栈桥上环绕运镜，太阳下沉，年份计数 |
+| 13.2–15.4s | 有人，来看我了 | 粉粉沿脚印跳来，把小白花放在石头上 |
+| 15.4–17.7s | 那就，再见啦 | 小人升空，退出弹窗 → 点「退出」→ 感谢游玩 |
+
+## 技术
+- `game.js` — 2D：纸张 + 毛玻璃面板（backdrop-filter）+ 彩色景深光斑视差、甩镜动态模糊、弹簧动效。
+- `sea.js` — 3D（three.js 0.160）：反射海面、手调粉彩天空（白天蓝 → 傍晚薰衣草/粉/橙）、沙滩、栈桥、灯塔、海鸥；每个镜头用 Catmull-Rom 样条运镜；景深 + 辉光 + 光束 + 调色。
+- `earth.html` — 叠层；逐字遮罩上升字幕（关键词落在鼓点上）、弹窗。
+- `common.js` — 节拍表 + 闭式弹簧 `spring()`（全片统一四档：snap / ui / calm / toy）。
+- `render.js` — 逐帧确定性渲染；`DPR` 超采样，`SUB`/`SHUTTER` 子帧运动模糊。
+- `make.js` — 渲染 + ffmpeg（子帧混合、lanczos 缩放、轻微颗粒、x264 CRF14）。

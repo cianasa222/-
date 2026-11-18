@@ -55,3 +55,14 @@ export const ICONS = {
   book: [[m, m, m, m, m, m, m, _], [m, w, w, w, w, w, m, md], [m, w, md, md, md, w, m, md], [m, w, w, w, w, w, m, md], [m, w, md, md, w, w, m, md], [m, w, w, w, w, w, m, md], [m, m, m, m, m, m, m, md], [_, md, md, md, md, md, md, md]],
 };
 export function drawGrid(ctx, grid, x = 0, y = 0, s = 1, alpha = 1) { ctx.save(); ctx.globalAlpha = alpha; grid.forEach((row, j) => row.forEach((c, i) => { if (c) { ctx.fillStyle = c; ctx.fillRect(x + i * s, y + j * s, s, s); } })); ctx.restore(); }
+
+// ---- closed-form damped spring (0 → 1). One "motion personality" for the whole film:
+// SPR.snap = buttons/ticks, SPR.ui = cards & camera, SPR.calm = big type & 3D, SPR.toy = mascots & stickers
+export const SPR = { snap: [3.6, .8], ui: [2.4, .75], calm: [1.6, .95], toy: [2.8, .45] };
+export function spring(t, [freq, damp] = SPR.ui) {
+  if (t <= 0) return 0; const w = 2 * Math.PI * freq;
+  if (damp >= 1) return 1 - Math.exp(-w * t) * (1 + w * t);
+  const wd = w * Math.sqrt(1 - damp * damp); return 1 - Math.exp(-damp * w * t) * (Math.cos(wd * t) + damp * w / wd * Math.sin(wd * t));
+}
+// spring that starts at time t0 (returns 0 before)
+export const springAt = (t, t0, p) => spring(t - t0, p);
