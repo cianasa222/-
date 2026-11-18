@@ -1,4 +1,10 @@
 // 2D part of the MV: inside the song — the player window, the pixel orange one chasing pink footprints.
+// Motion Prompt #003 · MIT License (c) 2026 Shohei Ohtaki · https://showheyohtaki.github.io/motion-prompt/#003
+// Motion Prompt #016 · MIT License (c) 2026 Shohei Ohtaki · https://showheyohtaki.github.io/motion-prompt/#016
+// Motion Prompt #023 · MIT License (c) 2026 Shohei Ohtaki · https://showheyohtaki.github.io/motion-prompt/#023
+// Motion Prompt #129 · MIT License (c) 2026 Shohei Ohtaki · https://showheyohtaki.github.io/motion-prompt/#129
+// Motion Prompt #130 · MIT License (c) 2026 Shohei Ohtaki · https://showheyohtaki.github.io/motion-prompt/#130
+// Motion Prompt #125 · MIT License (c) 2026 Shohei Ohtaki · https://showheyohtaki.github.io/motion-prompt/#125
 import { KICKS, BEAT, LINES, lastKick, kickEnv, clamp, lerp, smooth, easeOut, easeIn, easeInOut, range, pop, rng, tagStyle } from './timeline.js';
 
 const O = '#e8703f', L = '#ff9a66', D = '#b8522c', E = '#2a1610', K = '#ff9a5c', C = '#fff3e6', B = '#ff8f8f', _ = null;
@@ -17,7 +23,7 @@ const JUMP = STAND.map((r, j) => j === 5 ? [O, K, K, O, O, E, O, O, O, E, O, O, 
 const SAD = STAND.map((r, j) => j === 4 ? [_, K, K, O, O, O, O, O, O, O, O, O, K, K, _] : j === 5 ? [_, K, K, O, E, E, O, O, O, E, E, O, K, K, _] : r);
 const SPR_W = 15, SPR_H = 10, PX = 5;
 
-let root, cam, win, fx, fxc, spr, sprCtx, lyrBox, prevEl, nextEl, togetherTxt, avB, heartEl, specCols = [], timeEl, barFill, barKnob, playlist, rows = [], plTitle, chars2d = [], prints = [];
+let bgL = [], ttl, rings = [], glitchBox, root, cam, win, fx, fxc, spr, sprCtx, lyrBox, prevEl, nextEl, togetherTxt, avB, heartEl, specCols = [], timeEl, barFill, barKnob, playlist, rows = [], plTitle, chars2d = [], prints = [];
 const grids = { STAND, JUMP, SAD }; let curGrid = null;
 const R = rng(31);
 
@@ -34,18 +40,24 @@ const SPR_HOME = { x: COVER.x + 76, y: COVER.y + 46 };       // assembled on top
 export function build(container) {
   root = container;
   root.style.cssText = 'position:absolute;inset:0;overflow:hidden;opacity:0;background:radial-gradient(ellipse 90% 45% at 50% 100%, rgba(255,150,190,.28) 0%, transparent 70%),linear-gradient(180deg,#1b1840 0%,#2c2658 45%,#4a3f80 78%,#6a5aa0 100%)';
-  const stars = el('canvas', 'position:absolute;inset:0'); stars.width = 1280; stars.height = 720;
-  { const c = stars.getContext('2d'); for (let i = 0; i < 180; i++) { const b = R(); c.fillStyle = `rgba(255,250,240,${.35 + b * .65})`; const z = b > .93 ? 3 : 2; c.fillRect(R() * 1280 | 0, R() * 480 | 0, z, z); } }
-  el('div', 'position:absolute;right:120px;top:70px;width:70px;height:70px;border-radius:50%;background:#fff4dc;box-shadow:0 0 30px #fff0d0,0 0 90px rgba(255,240,210,.45)');
-  const mtn = el('canvas', 'position:absolute;left:0;bottom:0;width:1280px;height:200px'); mtn.width = 1280; mtn.height = 200;
-  { const c = mtn.getContext('2d'); c.fillStyle = '#3e3574'; for (let x = 0; x < 1280; x += 16) { const h = 60 + Math.round((Math.sin(x * .006) + Math.cos(x * .013 + 1) * .7 + 1.4) * 22 / 8) * 8; c.fillRect(x, 200 - h, 16, h); } }
+  const stars = el('canvas', 'position:absolute;left:-200px;top:0;width:1680px;height:720px'); stars.width = 1680; stars.height = 720;
+  { const c = stars.getContext('2d'); for (let i = 0; i < 180; i++) { const b = R(); c.fillStyle = `rgba(255,250,240,${.35 + b * .65})`; const z = b > .93 ? 3 : 2; c.fillRect(R() * 1680 | 0, R() * 480 | 0, z, z); } }
+  const moon = el('div', 'position:absolute;right:120px;top:70px;width:70px;height:70px;border-radius:50%;background:#fff4dc;box-shadow:0 0 30px #fff0d0,0 0 90px rgba(255,240,210,.45)');
+  // #016 parallax: every layer is drawn 200 px past both sides; far layers darker, near ones brighter, nearest a big dark silhouette
+  const layer = (h, col, fn) => { const c = el('canvas', `position:absolute;left:-200px;bottom:0;width:1680px;height:${h}px`); c.width = 1680; c.height = h; const g = c.getContext('2d'); g.fillStyle = col; fn(g, h); return c; };
+  const far = layer(200, '#3e3574', (g, h) => { for (let x = 0; x < 1680; x += 16) { const hh = 60 + Math.round((Math.sin(x * .006) + Math.cos(x * .013 + 1) * .7 + 1.4) * 22 / 8) * 8; g.fillRect(x, h - hh, 16, hh); } });
+  const mid = layer(170, '#4a3d86', (g, h) => { for (let x = 0; x < 1680; x += 12) { const hh = 38 + Math.round((Math.sin(x * .011 + 2) + Math.cos(x * .021) * .6 + 1.3) * 18 / 6) * 6; g.fillRect(x, h - hh, 12, hh); } });
+  const front = layer(130, '#5a4a98', (g, h) => { g.beginPath(); g.moveTo(0, h); for (let x = 0; x <= 1680; x += 8) g.lineTo(x, h - 34 - 22 * Math.sin(x * .004 + 1) - 10 * Math.sin(x * .013)); g.lineTo(1680, h); g.fill();
+    g.fillStyle = '#4a3d86'; for (let i = 0; i < 26; i++) { const x = (i * 67 + 13) % 1680, y = h - 40 - 22 * Math.sin(x * .004 + 1); g.fillRect(x, y - 30, 8, 30); g.fillRect(x - 10, y - 46, 28, 20); } });
+  const near = layer(90, '#160f32', (g, h) => { g.beginPath(); g.moveTo(0, h); for (let x = 0; x <= 1680; x += 10) g.lineTo(x, h - 26 - 18 * Math.max(0, Math.sin(x * .007 + .5)) - (x % 40 < 10 ? 6 : 0)); g.lineTo(1680, h); g.fill(); });
+  bgL = [[stars, .05], [moon, .1], [far, .28], [mid, .6], [front, 1.25], [near, 2.1]];
   cam = el('div', 'position:absolute;inset:0;transform-origin:50% 50%;will-change:transform');
   el('div', "position:absolute;left:0;right:0;top:0;height:26px;background:rgba(30,26,70,.45);color:#d9d4ff;font:12px 'WenQuanYi Zen Hei',sans-serif;display:flex;gap:18px;align-items:center;padding:0 16px;letter-spacing:.05em", cam, '<b>●</b><b>播放器</b><span>文件</span><span>编辑</span><span>播放</span><span>窗口</span><span style="margin-left:auto">02:47</span>');
   win = el('div', `position:absolute;left:${WIN.x}px;top:${WIN.y}px;width:${WIN.w}px;height:${WIN.h}px;border-radius:26px;background:linear-gradient(160deg,rgba(78,66,140,.66),rgba(40,34,90,.76));box-shadow:0 40px 90px rgba(10,6,40,.55),0 0 0 1.5px rgba(220,205,255,.28) inset,0 0 60px rgba(255,197,138,.14);overflow:hidden`, cam);
   el('div', "height:36px;display:flex;align-items:center;gap:8px;padding:0 16px;color:#c9c2f5;font:12px 'WenQuanYi Zen Hei',sans-serif", win, '<span style="width:11px;height:11px;border-radius:50%;background:#ff8f9f"></span><span style="width:11px;height:11px;border-radius:50%;background:#ffd28a"></span><span style="width:11px;height:11px;border-radius:50%;background:#9be8c4"></span><span style="margin-left:12px">正在播放 · 我们的歌单</span>');
   const cover = el('div', `position:absolute;left:${COVER.x - WIN.x}px;top:${COVER.y - WIN.y}px;width:${COVER.w}px;height:${COVER.h}px;border-radius:26px;background:radial-gradient(circle at 50% 40%, rgba(255,214,170,.35), rgba(40,34,90,.6) 70%);box-shadow:0 0 0 1px rgba(255,220,180,.25) inset`, win);
   el('div', 'position:absolute;left:54px;top:46px;width:120px;height:120px;border-radius:24px;background:linear-gradient(150deg,rgba(255,232,200,.55),rgba(255,180,120,.35));box-shadow:0 0 30px #ffc58a,0 0 80px rgba(255,180,120,.55),0 0 0 2px rgba(255,236,210,.7) inset', cover);
-  el('div', `position:absolute;left:36px;top:306px;width:240px;color:#fff;font-family:'Noto Serif SC',serif`, win, `<div style="font-size:30px;font-weight:900;letter-spacing:.1em;text-shadow:0 0 18px rgba(255,197,138,.6)">幻听</div><div style="margin-top:4px;color:#c4bdf0;font:13px 'WenQuanYi Zen Hei',sans-serif">DJ 版 · 单曲循环</div>`);
+  el('div', `position:absolute;left:36px;top:306px;width:240px;color:#fff;font-family:'Noto Serif SC',serif`, win, `<div id="ttl" style="font-size:30px;font-weight:900;letter-spacing:.1em;text-shadow:0 0 18px rgba(255,197,138,.6);height:40px;position:relative"><span style="position:absolute;left:0;display:inline-block;transform-origin:50% 80%">幻</span><span style="position:absolute;left:36px;display:inline-block;transform-origin:50% 80%">听</span></div><div style="margin-top:4px;color:#c4bdf0;font:13px 'WenQuanYi Zen Hei',sans-serif">DJ 版 · 单曲循环</div>`);
   const bar = el('div', 'position:absolute;left:36px;top:384px;width:228px;height:6px;border-radius:3px;background:rgba(255,255,255,.16)', win);
   barFill = el('i', 'position:absolute;left:0;top:0;height:100%;border-radius:3px;background:linear-gradient(90deg,#ff9a5c,#ffc58a);box-shadow:0 0 10px #ffb07a', bar);
   barKnob = el('u', 'position:absolute;top:-6px;width:18px;height:18px;margin-left:-9px;border-radius:6px;background:#fff3e6;box-shadow:0 0 14px #ffc58a', bar);
@@ -53,7 +65,9 @@ export function build(container) {
   el('div', 'position:absolute;left:86px;top:424px;display:flex;gap:30px;color:#f1ecff;font:20px sans-serif', win, '<span>⏮</span><span>❚❚</span><span>⏭</span>');
   const tog = el('div', "position:absolute;right:24px;top:54px;padding:8px 14px 8px 8px;border-radius:999px;background:rgba(255,255,255,.1);box-shadow:0 0 0 1px rgba(255,255,255,.16) inset;display:flex;align-items:center;gap:8px;color:#efe9ff;font:12px 'WenQuanYi Zen Hei',sans-serif", win);
   const avA = el('canvas', 'width:28px;height:28px;border-radius:9px;image-rendering:pixelated', tog); avA.width = avA.height = 9; drawGrid(avA.getContext('2d'), face(O, B));
-  heartEl = el('span', 'color:#ff86ad;font-size:15px;text-shadow:0 0 10px #ff86ad;display:inline-block', tog, '♥');
+  const hw = el('span', 'position:relative;display:inline-block;width:16px;height:18px', tog);
+  heartEl = el('span', 'position:absolute;left:0;top:0;color:#ff86ad;font-size:15px;text-shadow:0 0 10px #ff86ad;display:inline-block', hw, '♥');
+  rings = [0, 1].map(() => el('span', 'position:absolute;left:0;top:0;color:transparent;-webkit-text-stroke:1.5px #ff9cc0;font-size:15px;display:inline-block;opacity:0', hw, '♥'));
   avB = el('canvas', 'width:28px;height:28px;border-radius:9px;image-rendering:pixelated;display:inline-block', tog); avB.width = avB.height = 9; drawGrid(avB.getContext('2d'), face('#ff9cba', '#ff6f9a'));
   togetherTxt = el('span', 'display:inline-block', tog, '一起听 · 2 人在听');
   prevEl = el('div', `position:absolute;left:${LINE_X - WIN.x}px;top:${226 - WIN.y}px;color:rgba(225,215,255,.38);font:500 21px 'Noto Serif SC',serif;letter-spacing:.12em;white-space:nowrap`, win);
@@ -73,6 +87,7 @@ export function build(container) {
   });
   // lyric chars live in #cam space so the camera moves them with everything else
   lyrBox = el('div', 'position:absolute;inset:0;pointer-events:none', cam);
+  glitchBox = el('div', 'position:absolute;inset:0;pointer-events:none', cam);
   // footprints layer + sprite + particles
   for (let k = 0; k < 40; k++) prints.push(el('div', 'position:absolute;width:12px;height:12px;border-radius:3px;background:#ffa3c6;box-shadow:0 0 10px #ff86ad,0 0 22px rgba(255,134,173,.7);opacity:0', cam));
   spr = el('canvas', `position:absolute;left:0;top:0;width:${SPR_W * PX}px;height:${SPR_H * PX}px;image-rendering:pixelated;transform-origin:50% 100%;filter:drop-shadow(0 0 10px rgba(255,154,92,.6));opacity:0`, cam);
@@ -113,13 +128,21 @@ function renderLine(line, t, opts = {}) {
   line.chars.forEach(([ch, tc, tag], i) => {
     const s = chars2d[i], p = pop(t - tc), x0 = (opts.x ?? LINE_X) + i * (opts.adv || ADV), y0 = (opts.y ?? LINE_Y) + Math.sin(i * 1.1) * 4;
     let dx = 0, dy = p.y, sc = p.s * (1 + env * .06 * (t > tc ? 1 : 0)), rot = (1 - p.r) * (i % 2 ? 18 : -18), op = p.o;
-    if (opts.flow) { const d = Math.max(0, t - tc); dx += d * 22; dy += Math.sin(d * 4 + i) * 6; }
+    let sy = 1;
+    if (opts.flow) { const d = Math.max(0, t - tc); dx += d * 22; }
+    if (opts.wave && t > tc) {                     // #130: offset −28·sin(φ − 0.62i), φ = 2π·3·t/4.7, scaled to the font; rising letters stretch and warm up
+      const amp = 28 * (opts.size || 38) / 70, sv = Math.sin(2 * Math.PI * 3 * t / 4.7 - .62 * i); dy += -amp * sv * Math.min(1, (t - tc) / .25);
+      const k = clamp(sv, 0, 1); sy = 1 + .06 * k; s.style.color = mixHex(tagStyle(tag).color, '#ffd77e', k);
+    }
     const ex = t - line.end - i * .025;                                       // exit: fly up and away
     if (ex > 0) { const k = easeIn(range(ex, 0, .35)); dy -= 90 * k; dx += 40 * k * (i % 2 ? 1 : -1); rot += 50 * k * (i % 2 ? 1 : -1); op *= 1 - k; }
     s.style.left = (x0 + dx) + 'px'; s.style.top = (y0 + dy) + 'px'; s.style.opacity = op.toFixed(3);
-    s.style.transform = `scale(${Math.max(0, sc).toFixed(3)}) rotate(${rot.toFixed(2)}deg)`;
+    s.style.transform = `rotate(${rot.toFixed(2)}deg) scale(${Math.max(0, sc).toFixed(3)},${Math.max(0, sc * sy).toFixed(3)})`;
   });
 }
+function mixHex(a, b, k) { const p = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16)); const x = p(a), y = p(b); return `rgb(${x.map((v, i) => Math.round(v + (y[i] - v) * k)).join(',')})`; }
+const GLYPHS = 'ABCDEFGHJKLMNPQRSTUVWXYZ0123456789#$%&@?';
+const scrambleGlyph = (t, slot) => GLYPHS[Math.floor(Math.abs(Math.sin((Math.floor(t / .062) + 1) * 12.9898 + slot * 78.233) * 43758.5453)) % GLYPHS.length];
 function hopBetween(a, b, k, h) { return { x: lerp(a.x, b.x, easeInOut(k)), y: lerp(a.y, b.y, easeInOut(k)) - Math.sin(Math.PI * k) * h }; }
 
 // ------------------------------------------------------------------ sprite animation frames
@@ -217,12 +240,25 @@ export function update(t) {
   cam.style.transformOrigin = `${ox}px ${oy}px`;
   cam.style.transform = `translate(${640 - ox + shx}px,${352 - oy + shy}px) perspective(1400px) rotateX(${rx}deg) rotateY(${ry * (1 - outro)}deg) rotateZ(${rz}deg) scale(${sc})`;
   root.style.filter = (t >= 16.44 && t < 16.93) ? 'brightness(.78) saturate(.8)' : 'none';
+  // #016 parallax: each layer offset by the camera pan × its factor (stars .05 … nearest 2.1)
+  const pan = clamp((ox - 650) * .45, -160, 160), tilt = clamp((oy - 330) * .25, -60, 60);
+  bgL.forEach(([c, f]) => { c.style.transform = `translate(${(-pan * f).toFixed(1)}px,${(-tilt * f * .4).toFixed(1)}px) scale(${(1 + (outro * f * .04)).toFixed(3)})`; });
+  // #129 title scramble: slots lock left→right at 0.45 + 0.18i s after we land in the song; locked glyph yellow for 0.22 s
+  if (!ttl) ttl = document.getElementById('ttl');
+  [...ttl.children].forEach((sp, i) => { const lockT = 15.42 + .45 + .18 * i, dd = t - lockT;
+    if (dd < 0) { sp.textContent = scrambleGlyph(t, i + 7); sp.style.color = 'rgba(159,255,224,.75)'; sp.style.transform = 'none'; }
+    else { sp.textContent = '幻听'[i]; sp.style.color = dd < .22 ? '#ffe680' : '#fff'; sp.style.transform = `scale(${(1 + .2 * Math.exp(-14 * dd)).toFixed(3)})`; } });
   // ---------------- player widgets
   const prog = range(t, 0, 30.6); barFill.style.width = (prog * 100) + '%'; barKnob.style.left = (prog * 100) + '%';
   timeEl.firstChild.textContent = '0:' + String(Math.floor(t)).padStart(2, '0');
   specCols.forEach((bs, i) => { const k = lastKick(tf); const h = Math.round(1 + (Math.abs(Math.sin(i * .9 + k * 3.1)) * 3.5 + Math.abs(Math.sin(i * .37 + k * 1.7)) * 1.5) * (.35 + .65 * env) + env * 1.2); bs.forEach((b, j) => b.style.opacity = j < h ? (.35 + .65 * (j + 1) / h).toFixed(2) : 0); });
   avB.style.filter = `grayscale(${smooth(range(t, 20.56, 20.85))})`; avB.style.transform = `translateX(${easeIn(range(t, 20.85, 21.25)) * 40}px)`; avB.style.opacity = 1 - smooth(range(t, 20.95, 21.25));
-  heartEl.style.opacity = 1 - smooth(range(t, 20.56, 20.8)); heartEl.style.transform = `scale(${1 + .3 * kickEnv(t, 8) * (t < 20.56 ? 1 : 0)})`;
+  // #125 pulse: a double "lub-dub" per two beats — scale 1 + 0.26·G(0.2 s) + 0.15·G(0.44 s), timings scaled to the 0.929 s period; two outlines spread 1.2→2.4
+  { const P = BEAT * 2, k = P / 1.175, ph = ((t - .07) % P + P) % P, G = (c, w) => Math.exp(-Math.pow((ph - c * k) / (w * k), 2));
+    const alive = 1 - smooth(range(t, 20.56, 20.8));
+    heartEl.style.opacity = alive; heartEl.style.transform = `scale(${(1 + .26 * G(.2, .065) + .15 * G(.44, .07)).toFixed(3)})`;
+    rings.forEach((r, i) => { const d = (ph - (i ? .4 : .16) * k) / (.8 * k); const on = d >= 0 && d <= 1; const e = 1 - Math.pow(1 - clamp(d, 0, 1), 3);
+      r.style.opacity = on ? ((.75 * (1 - d)) * (i ? .6 : 1) * alive).toFixed(3) : 0; r.style.transform = `scale(${(1.2 + 1.2 * e).toFixed(3)})`; r.style.webkitTextStroke = `${(8.5 - 7 * e) / 5}px #ff9cc0`; }); }
   const newTxt = t >= 21.25 ? '一起听 · 1 人在听' : '一起听 · 2 人在听';
   if (togetherTxt.textContent !== newTxt) togetherTxt.textContent = newTxt;
   togetherTxt.style.transform = t >= 21.25 ? `scale(${1 + .4 * Math.exp(-(t - 21.25) * 8)})` : 'none';
@@ -231,8 +267,17 @@ export function update(t) {
   if (t < 20.45) { prevEl.textContent = '你有多爱我'; nextEl.textContent = '爱已不在这里我却还没走脱'; renderLine(L5, tf, { id: 5 }); }
   else if (t < 23.8) { prevEl.textContent = '如今一个人听歌总是会觉得难过'; nextEl.textContent = '列表里的歌'; renderLine(L6, t, { id: 6 }); }
   else if (t < 26.1) { prevEl.textContent = ''; nextEl.textContent = ''; lyrBox.innerHTML = ''; lyrBox.dataset.line = ''; }
-  else { prevEl.textContent = ''; nextEl.textContent = ''; renderLine(L8, t, { id: 8, x: 520, y: 470, adv: 74, size: 52, flow: true }); }
+  else { prevEl.textContent = ''; nextEl.textContent = ''; renderLine(L8, t, { id: 8, x: 520, y: 470, adv: 74, size: 52, flow: true, wave: true }); }
   prevEl.style.opacity = t < 23.6 ? 1 : 0; nextEl.style.opacity = t < 23.6 ? 1 : 0;
+  // #023 glitch: colour split (coral left/down, cyan right/up, 7–16 px), 2–4 shifted slices (18–64 px), three small bars; stepped, no brightness flash
+  glitchBox.innerHTML = '';
+  if (t >= 20.56 && t < 20.56 + 5 * .14) {
+    const step = Math.floor((t - 20.56) / .14), gr = rng(900 + step), src = lyrBox.innerHTML;
+    const copy = (col, dx, dy, clip, extra = '') => { const c = document.createElement('div'); c.style.cssText = `position:absolute;inset:0;transform:translate(${dx}px,${dy}px);${clip ? 'clip-path:' + clip + ';' : ''}${extra}`; c.innerHTML = src; if (col) [...c.children].forEach(s => { s.style.color = col; s.style.textShadow = 'none'; }); glitchBox.appendChild(c); };
+    const sh = 7 + gr() * 9; copy('#ff7f9f', -sh, 2, null, 'mix-blend-mode:screen;opacity:.85'); copy('#22d3ee', sh, -2, null, 'mix-blend-mode:screen;opacity:.85');
+    const n = 2 + Math.floor(gr() * 3); for (let i = 0; i < n; i++) { const y = LINE_Y - 14 + gr() * 60, hgt = 10 + gr() * 25; copy(null, (gr() < .5 ? -1 : 1) * (18 + gr() * 46), 0, `inset(${y.toFixed(0)}px 0 ${(720 - y - hgt).toFixed(0)}px 0)`); }
+    ['#ff7f9f', '#22d3ee', '#ffd77e'].forEach(c => { const b = document.createElement('div'); b.style.cssText = `position:absolute;left:${(LINE_X + gr() * 380).toFixed(0)}px;top:${(LINE_Y - 20 + gr() * 80).toFixed(0)}px;width:${(30 + gr() * 90).toFixed(0)}px;height:${(5 + gr() * 7).toFixed(0)}px;background:${c}`; glitchBox.appendChild(b); });
+  }
   // ---------------- playlist
   const plIn = easeOut(range(t, 23.7, 24.05)), plOut = range(t, 28.3, 28.6);
   playlist.style.opacity = (plIn * (1 - plOut)).toFixed(3); playlist.style.transform = `translateX(${(1 - plIn) * 60}px) scale(${.96 + .04 * plIn})`;
@@ -266,6 +311,21 @@ export function update(t) {
     for (let g = 1; g <= 3; g++) { const q = spriteAt(Math.max(16.0, tf - g * .028)); const dist = Math.hypot(q.x - s.x, q.y - s.y); if (dist < 7) continue;
       fxc.globalAlpha = [.3, .17, .08][g - 1]; fxc.imageSmoothingEnabled = false; fxc.drawImage(spr, OX + q.x, OY + q.y, SPR_W * PX, SPR_H * PX); }
     fxc.globalAlpha = 1;
+  }
+  // #003 burst on each landing: ring 44→90 (width 16→0, 0.6 s, quintic out), 10 lines (yellow/mint) and 10 dots (coral/blue) flying out; scaled ×0.45 to the sprite
+  if (show) {
+    const q5 = k => 1 - Math.pow(1 - clamp(k, 0, 1), 5), BS_ = .45;
+    EVENTS.forEach(([t0, dst, , , dur, kind]) => {
+      const tl = t0 + dur, d = tf - tl; if (d < 0 || d > .75 || kind === 'slip') return;
+      const p = resolve(dst, tl), cx = OX + p.x + SPR_W * PX / 2, cy = OY + p.y + SPR_H * PX;
+      fxc.save(); fxc.lineCap = 'round';
+      const rk = q5(d / .6); if (d < .6) { fxc.strokeStyle = '#ffd77e'; fxc.lineWidth = Math.max(.01, 16 * (1 - rk) * BS_); fxc.beginPath(); fxc.ellipse(cx, cy, (44 + 46 * rk) * BS_, (44 + 46 * rk) * BS_ * .5, 0, 0, 7); fxc.stroke(); }
+      for (let i = 0; i < 10; i++) { const a = i / 10 * Math.PI * 2, ro = (64 + 66 * q5(d / .5)) * BS_, len = 36 * BS_ * (1 - range(d, .22, .7)); if (len <= .2) continue;
+        fxc.strokeStyle = i % 2 ? '#a8f5d2' : '#ffd77e'; fxc.lineWidth = 9 * BS_; fxc.beginPath(); fxc.moveTo(cx + Math.cos(a) * ro, cy + Math.sin(a) * ro * .82 * .55); fxc.lineTo(cx + Math.cos(a) * (ro - len), cy + Math.sin(a) * (ro - len) * .82 * .55); fxc.stroke(); }
+      for (let i = 0; i < 10; i++) { const a = (i + .5) / 10 * Math.PI * 2, r = (58 + 92 * q5(d / .6)) * BS_, al = 1 - range(d, .3, .72); if (al <= 0) continue;
+        fxc.globalAlpha = al; fxc.fillStyle = i % 2 ? '#9fdcff' : '#ff9fbf'; fxc.beginPath(); fxc.arc(cx + Math.cos(a) * r * 1.45, cy + Math.sin(a) * r * .78 * .55, lerp(8, 4.8, range(d, 0, .6)) * BS_, 0, 7); fxc.fill(); }
+      fxc.restore();
+    });
   }
   if (t >= 15.42 && t < 16.05) {
     const pr = rng(5);

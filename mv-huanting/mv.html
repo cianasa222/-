@@ -14,8 +14,11 @@
   #fade{position:absolute;inset:0;background:#000;pointer-events:none;opacity:0}
 </style>
 <script type="importmap">{"imports":{"three":"./node_modules/three/build/three.module.js","three/addons/":"./node_modules/three/examples/jsm/"}}</script>
-</head><body><div id="wrap"><div id="lyr3d"></div><div id="desk"></div><canvas id="flips" width="1280" height="720"></canvas><div id="flash"></div><div id="fade"></div></div>
+</head><body><div id="wrap"><canvas id="ov3d" width="1280" height="720" style="position:absolute;inset:0;pointer-events:none"></canvas><div id="lyr3d"></div><div id="desk"></div><canvas id="flips" width="1280" height="720"></canvas><div id="flash"></div><div id="fade"></div></div>
 <script type="module">
+// Motion Prompt #035 · MIT License (c) 2026 Shohei Ohtaki · https://showheyohtaki.github.io/motion-prompt/#035
+// Motion Prompt #109 · MIT License (c) 2026 Shohei Ohtaki · https://showheyohtaki.github.io/motion-prompt/#109
+// Motion Prompt #129 · MIT License (c) 2026 Shohei Ohtaki · https://showheyohtaki.github.io/motion-prompt/#129
 import * as W3 from './world.js';
 import * as D2 from './desk.js';
 import { LINES, kickEnv, pop, clamp, range, smooth, easeIn, rng, tagStyle } from './timeline.js';
@@ -63,6 +66,46 @@ function blockFlip(t) {
   const url = `url(${maskC.toDataURL()})`;
   desk.style.webkitMaskImage = desk.style.maskImage = url; desk.style.webkitMaskSize = desk.style.maskSize = '1280px 720px';
 }
+// ---------- 3D overlays: FPV speed lines (#035) and the moon's lens flare (#109)
+const ov = document.getElementById('ov3d').getContext('2d'), S = 1280 / 539;
+const ioc = (k) => k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;      // cubic ease-in-out
+function hexagon(c, x, y, r) { c.beginPath(); for (let i = 0; i < 6; i++) { const a = Math.PI / 6 + i * Math.PI / 3; c[i ? 'lineTo' : 'moveTo'](x + Math.cos(a) * r, y + Math.sin(a) * r); } c.closePath(); }
+function overlays3d(t) {
+  ov.clearRect(0, 0, 1280, 720);
+  // #035 speed lines: 10 radial strokes, longer toward the sides, flowing outward and recycling
+  const sl = 1 - smooth(range(t, .6, .95));
+  if (t < .95 && sl > 0) {
+    ov.save(); ov.lineCap = 'round';
+    for (let i = 0; i < 10; i++) {
+      const a = i / 10 * Math.PI * 2 + .3, ph = (t * 1.7 + i * .37) % 1, len = (32 + 44 * Math.abs(Math.cos(a))) * S, r = (110 + ph * 190) * S * .9;
+      ov.strokeStyle = `rgba(235,230,255,${(.28 * (1 - ph) * sl).toFixed(3)})`; ov.lineWidth = 2.4;
+      ov.beginPath(); ov.moveTo(640 + Math.cos(a) * r, 360 + Math.sin(a) * r * .62); ov.lineTo(640 + Math.cos(a) * (r + len), 360 + Math.sin(a) * (r + len) * .62); ov.stroke();
+    }
+    ov.restore();
+  }
+  // #109 lens flare: rays round the moon + a chain of dots, hexagons and a ring along the line through the frame centre
+  const e = t < 9.7 || t > 11.25 ? 0 : t < 10.2 ? ioc(range(t, 9.7, 10.2)) : t < 10.9 ? 1 : 1 - ioc(range(t, 10.9, 11.25));
+  if (e > 0) {
+    const mo = W3.moonScreen();
+    if (mo.on) {
+      ov.save(); ov.globalCompositeOperation = 'lighter';
+      const A1 = '255,199,90', A2 = '255,227,163';
+      for (let i = 0; i < 8; i++) { const a = i * Math.PI / 4, r0 = 17 * S, r1 = (i % 2 ? 26 : 44) * S;
+        ov.strokeStyle = `rgba(${A1},${(.75 * e).toFixed(3)})`; ov.lineWidth = 1.6 * S * .8; ov.beginPath(); ov.moveTo(mo.x + Math.cos(a) * r0, mo.y + Math.sin(a) * r0); ov.lineTo(mo.x + Math.cos(a) * r1, mo.y + Math.sin(a) * r1); ov.stroke(); }
+      const chain = [[.45, 'c', 7, A2, .55], [.8, 'h', 13, A1, .4], [1.15, 'c', 5, A2, .7], [1.45, 'h', 22, A1, .4], [1.75, 'c', 9, A2, .5], [2.0, 'r', 30, A1, .55]];
+      for (const [k, kind, r, col, al] of chain) {
+        const x = mo.x + (640 - mo.x) * k, y = mo.y + (360 - mo.y) * k, rr = r * S;
+        if (kind === 'r') { ov.strokeStyle = `rgba(${col},${(al * e).toFixed(3)})`; ov.lineWidth = 3 * S; ov.beginPath(); ov.arc(x, y, rr, 0, 7); ov.stroke(); }
+        else { ov.fillStyle = `rgba(${col},${(al * e).toFixed(3)})`; if (kind === 'h') { hexagon(ov, x, y, rr); ov.fill(); } else { ov.beginPath(); ov.arc(x, y, rr, 0, 7); ov.fill(); } }
+      }
+      ov.restore();
+    }
+  }
+}
+// #129 text scramble for 幻听: random glyphs change every 0.062 s (mint, 75%), then lock left→right on the sung syllable,
+// a locked glyph shows yellow for 0.22 s and settles with scale 1 + 0.2·e^(−14t)
+const GLYPHS = 'ABCDEFGHJKLMNPQRSTUVWXYZ0123456789#$%&@?';
+const scrambleGlyph = (t, slot) => GLYPHS[Math.floor(Math.abs(Math.sin((Math.floor(t / .062) + 1) * 12.9898 + slot * 78.233) * 43758.5453)) % GLYPHS.length];
 window.renderAt = (t) => {
   const show3d = t < 15.9 || t > 28.4;
   W3.update(t);
@@ -78,10 +121,17 @@ window.renderAt = (t) => {
     const ex = t - line.end - i * .012;
     if (ex > 0) { const k = easeIn(range(ex, 0, .26)); dy -= 80 * k; dx += 50 * k * (i % 2 ? 1 : -1); rot += 60 * k * (i % 2 ? 1 : -1); op *= 1 - k; sc *= 1 + .3 * k; }
     if (li === 3 && t > 12.7) { const k = easeIn(range(t, 12.7, 13.15)); op *= 1 - k; dy += 30 * k; }   // "你有多爱我" crumbles with the hug
+    if (li === 1 && i < 2) {                                                     // 幻听: scramble, then lock on the beat
+      const st = tagStyle(tag);
+      if (t < 4.92) op = 0;
+      else if (t < tc) { s.textContent = scrambleGlyph(t, i); s.style.color = '#9fffe0'; op = .75 * (ex > 0 ? op : 1); sc = 1; rot = 0; dy = 0; }
+      else { const d = t - tc; s.textContent = ch; s.style.color = d < .22 ? '#ffe680' : st.color; sc = (1 + .2 * Math.exp(-14 * d)) * (ex > 0 ? sc : 1); if (!(ex > 0)) { rot = 0; dy = 0; op = 1; } }
+    }
     s.style.left = (l.x + dx) + 'px'; s.style.top = (l.y + dy) + 'px'; s.style.opacity = Math.max(0, op).toFixed(3);
     s.style.transform = `scale(${Math.max(0, sc).toFixed(3)}) rotate(${rot.toFixed(2)}deg)`;
   }));
   lyr3d.style.opacity = t < 15.4 ? 1 : 0;
+  overlays3d(t); document.getElementById('ov3d').style.opacity = show3d ? 1 : 0;
   // 2D
   D2.update(t);
   blockFlip(t);
