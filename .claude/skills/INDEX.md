@@ -20,3 +20,10 @@ blender-rendering, blender-lighting-lookdev
 
 ## Video (Blender)
 blender-video-editing (sequencer edits, motion tracking)
+
+## Motion · camera · transitions (动效、镜头、转场)
+- motion-prompt: 240 numbered moves with exact timings/easing + Canvas code (MIT). Full Chinese index by category: `.claude/skills/motion-prompt/CATALOG.zh-Hans.md`
+  - 动态图形：#001–#024, #121–#144（入场与文字、运动细节、转场与强调、动作技巧、文字与图形）
+  - 镜头运动与转场：#025–#048, #169–#192（运镜、拍摄风格与时间、角度与构图、转场与剪辑）
+  - 光线与画面风格：#097–#120（光线与时段、镜头效果、色调与质感）
+  - 网页/界面动效：#049–#096, #145–#168；画风：#193–#216；图解图表：#217–#240
