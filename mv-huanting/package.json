@@ -1,0 +1,10 @@
+{
+  "name": "mv-huanting",
+  "private": true,
+  "description": "Code-rendered MV (3D + 2D) for a 30 s DJ clip of 幻听",
+  "dependencies": {
+    "three": "0.160.0",
+    "@fontsource/noto-serif-sc": "^5.0.0",
+    "playwright": "1.63.0"
+  }
+}

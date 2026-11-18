@@ -1,0 +1,111 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link rel="stylesheet" href="node_modules/@fontsource/noto-sans-sc/400.css">
+<link rel="stylesheet" href="node_modules/@fontsource/noto-sans-sc/500.css">
+<link rel="stylesheet" href="node_modules/@fontsource/noto-sans-sc/700.css">
+<link rel="stylesheet" href="node_modules/@fontsource/noto-sans-sc/900.css">
+<style>
+  html,body{margin:0;background:#f6eee1;overflow:hidden}
+  #wrap{position:relative;width:720px;height:1280px;overflow:hidden;background:#f6eee1}
+  #gl{position:absolute;left:0;top:0}
+  #game,#hud3,#fade{position:absolute;inset:0;pointer-events:none}
+  .pill{position:absolute;padding:12px 20px;border-radius:999px;background:rgba(255,251,246,.7);backdrop-filter:blur(20px) saturate(1.6);box-shadow:0 16px 36px -8px rgba(120,90,60,.25),0 0 0 1px rgba(255,255,255,.9) inset;font:600 18px Noto Sans SC,sans-serif;color:#3a2b2a;letter-spacing:.08em;display:flex;align-items:center;gap:12px}
+</style>
+<script type="importmap">{"imports":{"three":"./node_modules/three/build/three.module.js","three/addons/":"./node_modules/three/examples/jsm/"}}</script>
+</head><body><div id="wrap"><div id="game"></div><div id="hud3"></div><div id="fade"></div></div>
+<script type="module">
+import * as SEA from './sea.js';
+import * as GAME from './game.js';
+import * as WALL from './wall.js';
+import { SPR, spring, BEATS, kick, clamp, lerp, range, smooth, easeIn, easeOut, backOut, GRID, PINK_GRID, drawGrid } from './common.js';
+const wrap = document.getElementById('wrap'); SEA.renderer.domElement.id = 'gl'; wrap.prepend(SEA.renderer.domElement);
+WALL.renderer.domElement.style.cssText = 'position:absolute;left:0;top:0'; SEA.renderer.domElement.after(WALL.renderer.domElement);
+GAME.build(document.getElementById('game'));
+const hud = document.getElementById('hud3'), fade = document.getElementById('fade');
+const el = (tag, css, parent, html) => { const e = document.createElement(tag); if (css) e.style.cssText = css; if (html !== undefined) e.innerHTML = html; (parent || hud).appendChild(e); return e; };
+const sprite = (grid, s, parent, css = '') => { const c = el('canvas', `image-rendering:pixelated;width:${grid[0].length * s}px;height:${grid.length * s}px;${css}`, parent); c.width = grid[0].length; c.height = grid.length; drawGrid(c.getContext('2d'), grid); return c; };
+// "多年以后" — a game-style tag with a year counter racing during the time-lapse
+const years = el('div', '', hud); years.className = 'pill'; years.style.cssText += 'left:36px;top:60px';
+years.innerHTML = '<span style="width:12px;height:12px;border-radius:50%;background:#b9a6ff;display:inline-block"></span><span>多年以后</span><b id="yr" style="font:900 22px Noto Sans SC,sans-serif;color:#8a74e0">+1 年</b>';
+const yr = years.querySelector('#yr');
+// toast: the pink one left a flower
+const toast = el('div', '', hud); toast.className = 'pill'; toast.style.cssText += 'left:50%;top:70px;white-space:nowrap';
+sprite(PINK_GRID, 3, toast, 'border-radius:8px;background:#ffe9f0;padding:4px');
+el('span', '', toast, '<b style="color:#ff6f9a">粉粉</b> 在这里留下了一朵小白花');
+// the exit dialog
+const modal = el('div', 'position:absolute;left:90px;top:470px;width:540px;padding:40px 36px 34px;border-radius:34px;background:rgba(255,251,246,.72);backdrop-filter:blur(30px) saturate(1.7);-webkit-backdrop-filter:blur(30px) saturate(1.7);box-shadow:0 40px 80px -20px rgba(80,50,40,.35),0 0 0 1.5px rgba(255,255,255,.85) inset;text-align:center', hud);
+sprite(GRID, 7, modal, 'display:block;margin:0 auto 18px');
+el('div', "font:900 34px Noto Sans SC,sans-serif;color:#3a2b2a;letter-spacing:.04em", modal, '确定退出 地球 <span style="color:#ff9a5c">Online</span> 吗？');
+el('div', "margin-top:12px;font:500 17px Noto Sans SC,sans-serif;color:#8a7a72;letter-spacing:.06em", modal, '你的存档，会被好好保存。');
+const row = el('div', 'display:flex;gap:18px;margin-top:30px;justify-content:center', modal);
+const stay = el('div', "padding:16px 0;width:200px;border-radius:999px;background:#f1e7dc;font:600 20px Noto Sans SC,sans-serif;color:#8a7a72", row, '再玩一会');
+const quit = el('div', "position:relative;padding:16px 0;width:200px;border-radius:999px;background:#ff9a5c;font:600 20px Noto Sans SC,sans-serif;color:#fff;box-shadow:0 10px 24px rgba(255,140,80,.35);overflow:hidden", row, '退出');
+const ripple = el('div', 'position:absolute;left:50%;top:50%;width:20px;height:20px;margin:-10px;border-radius:50%;background:rgba(255,255,255,.55)', quit);
+// kinetic captions: one game-voice line per lyric line, every character pops in on the groove, the keyword lands on a beat
+// real lyrics; per-character onsets from word-level ASR timings (seconds)
+const CAP = [
+  ['我参加了我的葬礼', '葬礼', '#9a86f0', [0.0, .46, .78, 1.0, 1.14, 1.29, 1.44, 1.86]],
+  ['我凝视着我的身体', '身体', '#ff9a5c', [2.26, 2.72, 2.94, 3.16, 3.32, 3.48, 3.64, 4.04]],
+  ['他静静地躺在那里', '静静', '#5cc9a0', [4.58, 4.94, 5.18, 5.38, 5.52, 5.76, 6.02, 6.32]],
+  ['像说一切都毫无意义', '毫无意义', '#9a86f0', [6.58, 6.82, 7.08, 7.46, 7.6, 7.74, 8.0, 8.36, 8.58]],
+  ['窗外有孩童在嬉戏', '孩童', '#3fa9c9', [9.06, 9.3, 9.62, 9.8, 10.0, 10.24, 10.46, 10.64]],
+  ['他多年以后也会在这里', '多年以后', '#9a86f0', [11.0, 11.26, 11.52, 11.66, 11.82, 11.98, 12.1, 12.26, 12.58, 12.8]],
+  ['会不会有人能记得', '记得', '#ff7fa5', [13.16, 13.68, 13.86, 14.04, 14.3, 14.56, 14.86, 15.1]],
+  ['终点前风景多么靓丽', '靓丽', '#ff9a5c', [15.38, 15.62, 15.82, 15.96, 16.18, 16.48, 16.76, 17.02, 17.32]],
+].map(([txt, key, col, ts], i, arr) => [ts[0], i < 7 ? arr[i + 1][3][0] - .1 : 99, txt, key, col, ts]);
+const capTop = el('div', 'position:absolute;inset:0;pointer-events:none', wrap);   // above the fade so the last line stays
+const capBand = el('div', 'position:absolute;left:0;right:0;bottom:0;height:360px;background:linear-gradient(180deg,rgba(246,238,225,0),rgba(246,238,225,.88) 60%)', hud);
+const capBox = el('div', 'position:absolute;left:56px;right:40px;top:1030px;height:130px', capTop);
+const capLines = CAP.map(([t0, t1, txt, key, col, ts], li) => {
+  const line = el('div', 'position:absolute;left:0;top:0;opacity:0;white-space:nowrap', capBox); const ki = txt.indexOf(key);
+  const tag = el('div', `font:500 14px Noto Sans SC,sans-serif;letter-spacing:.32em;color:#a3928a;margin-bottom:10px;overflow:hidden;height:20px`, line);
+  const tagIn = el('div', 'will-change:transform', tag, `<span style="color:${col}">0${li + 1}</span> &nbsp;/ 08 &nbsp;·&nbsp; 地球 ONLINE`);
+  const row = el('div', 'display:flex;align-items:flex-end', line);
+  const chars = [...txt].map((ch, i) => { const isKey = i >= ki && i < ki + key.length;
+    const w = el('div', `overflow:hidden;padding:0 1px 8px;margin-bottom:-8px;${ch === '，' ? 'width:34px' : ''}`, row);
+    const sp = el('div', `font:900 60px/1.12 Noto Sans SC,sans-serif;letter-spacing:-.01em;color:${isKey ? col : '#2e2422'};will-change:transform`, w, ch === '，' ? '<span style="color:#c9b8ae">，</span>' : ch);
+    return { sp, isKey, i }; });
+  const under = el('div', `height:6px;border-radius:3px;background:${col};margin-top:12px;transform-origin:0 50%;width:${(ki + key.length) * 62}px;clip-path:inset(0 0 0 ${ki * 62}px)`, line);
+  return { t0, t1, chars, line, ki, n: chars.length, tagIn, under, ts }; });
+const nextBeat = (t) => BEATS.find(b => b > t + .02) || t;
+function updateCaptions(t) {
+  capBand.style.opacity = t < 10.3 ? 1 : .6;
+  capLines.forEach(L => { const on = t >= L.t0 - .02 && t < L.t1 + .1; L.line.style.opacity = on ? 1 : 0; if (!on) return;
+    const keyBeat = L.ts[L.ki] - .05, exitK = (i) => easeIn(range(t, L.t1 - .26 + i * .018, L.t1 - .06 + i * .018));
+    L.tagIn.style.transform = `translateY(${(1 - spring(t - L.t0 + .06, SPR.ui)) * 110 - exitK(0) * 110}%)`;
+    L.chars.forEach(c => { const ta = L.ts[c.i] - .05;   // lead slightly so the character is up as the syllable lands
+      const k = spring(t - ta, c.isKey ? SPR.toy : SPR.ui), out = exitK(c.i), pulse = c.isKey ? kick(t, 9) * .06 : 0;
+      c.sp.style.transform = `translateY(${(1 - k) * 105 - out * 105}%) scale(${1 + pulse})`; });
+    const u = spring(t - keyBeat - .08, SPR.ui) * (1 - exitK(L.n)); L.under.style.transform = `scaleX(${u})`; L.under.style.opacity = u > .01 ? 1 : 0; });
+}
+// thanks for playing
+const thanks = el('div', 'position:absolute;left:0;right:0;top:540px;text-align:center', fade);
+thanks.innerHTML = `<div style="font:900 52px Noto Sans SC,sans-serif;color:#3a2b2a;letter-spacing:.2em">感谢游玩</div><div style="margin-top:16px;font:600 18px Noto Sans SC,sans-serif;color:#8a7a72;letter-spacing:.3em">地球 ONLINE</div>`;
+
+window.renderAt = (t) => {
+  const show3d = t > 9.2;
+  SEA.renderer.domElement.style.visibility = show3d ? 'visible' : 'hidden';
+  if (show3d) { SEA.update(t); SEA.render(); if (WALL.update(t)) WALL.render(); } else WALL.renderer.domElement.style.visibility = 'hidden';
+  GAME.update(t); updateCaptions(t);
+  const kb = kick(t, 9);
+  // years tag (11.0 → 13.1)
+  const ya = range(t, 11.0, 11.25), yo = 1 - smooth(range(t, 12.95, 13.15));
+  years.style.opacity = ya > 0 ? yo : 0; years.style.transform = `translateY(${(1 - spring(t - 11.0, SPR.ui)) * -24}px) scale(${lerp(.8, 1, spring(t - 11.0, SPR.toy)) * (1 + kb * .03)})`;
+  yr.textContent = '+' + Math.max(1, Math.round(1 + 36 * easeIn(range(t, 11.2, 12.9)))) + ' 年';
+  // toast (14.95 → 15.45)
+  const ta = easeOut(range(t, 14.95, 15.15)), to = 1 - smooth(range(t, 15.3, 15.5));
+  toast.style.opacity = ta * to; toast.style.transform = `translate(-50%, ${-40 * (1 - spring(t - 14.95, SPR.ui))}px) scale(${lerp(.86, 1, spring(t - 14.95, SPR.toy))})`;
+  // modal: pops in on the beat, "退出" is pressed on the next-but-one beat
+  const ma = range(t, 16.068, 16.33), mo = 1 - smooth(range(t, 16.66, 16.84));
+  modal.style.opacity = clamp(ma * 4, 0, 1) * mo; modal.style.transform = `translateY(${(1 - spring(t - 16.068, SPR.ui)) * 60}px) scale(${lerp(.82, 1, spring(t - 16.068, SPR.toy)) * lerp(1, .9, smooth(range(t, 16.66, 16.84)))})`;
+  const pr = t - 16.625; quit.style.transform = pr > 0 && pr < .25 ? `scale(${1 - .08 * Math.sin(Math.PI * pr / .25)})` : 'none';
+  quit.style.background = pr > 0 ? '#ff8448' : '#ff9a5c';
+  ripple.style.opacity = pr > 0 ? Math.max(0, 1 - pr / .4) : 0; ripple.style.transform = `scale(${pr > 0 ? 1 + pr * 30 : 0})`;
+  // fade to warm paper, then "感谢游玩"
+  fade.style.background = `rgba(246,238,225,${smooth(range(t, 17.34, 17.58)).toFixed(3)})`;
+  const th = range(t, 17.45, 17.68); thanks.style.opacity = th; thanks.style.transform = `translateY(${12 * (1 - easeOut(th))}px)`;
+};
+await document.fonts.ready; await new Promise(r => setTimeout(r, 50)); WALL.build();
+SEA.update(12); SEA.render();
+window.__ready = true;
+</script></body></html>
