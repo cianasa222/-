@@ -7,7 +7,7 @@ import { BokehPass } from 'three/addons/postprocessing/BokehPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
-import { KICKS, BEAT, lastKick, kickEnv, jelly, clamp, lerp, smooth, easeOut, easeIn, easeInOut, range, rng } from './timeline.js';
+import { KICKS, DOWNBEATS, BEAT, lastKick, kickEnv, jelly, clamp, lerp, smooth, easeOut, easeIn, easeInOut, range, rng } from './timeline.js';
 
 const W = 1280, H = 720;
 const rnd = rng(11);
@@ -62,7 +62,7 @@ export const riverX = z => Math.sin(z * .09) * 3.2 - 2.6 + Math.sin(z * .23) * .
   blade.setAttribute('position', new THREE.Float32BufferAttribute([-.012, 0, 0, .012, 0, 0, -.008, .085, 0, .008, .085, 0, 0, .16, 0], 3));
   blade.setAttribute('uv', new THREE.Float32BufferAttribute([0, 0, 1, 0, 0, .55, 1, .55, .5, 1], 2));
   blade.setIndex([0, 1, 2, 1, 3, 2, 2, 3, 4]); blade.computeVertexNormals();
-  const N = 120000, mat = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: .8, side: THREE.DoubleSide });
+  const N = 140000, mat = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: .8, side: THREE.DoubleSide });
   mat.onBeforeCompile = sh => {
     sh.uniforms.uTime = grassTime;
     sh.vertexShader = 'uniform float uTime;\nvarying vec2 vUv2;\n' + sh.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\n vec4 wp = instanceMatrix * vec4(0.,0.,0.,1.); transformed.x += sin(wp.x*1.7 + wp.z*1.3 + uTime*1.6) * .035 * uv.y * uv.y; vUv2 = uv;');
@@ -70,7 +70,7 @@ export const riverX = z => Math.sin(z * .09) * 3.2 - 2.6 + Math.sin(z * .23) * .
   };
   const im = new THREE.InstancedMesh(blade, mat, N), o = new THREE.Object3D(), c = new THREE.Color(); let n = 0;
   while (n < N) {
-    const x = (rnd() - .5) * 20 + 1.5, z = 6 - rnd() * 19; const d = Math.abs(x - riverX(z)); if (d < 2.45) continue;
+    const x = (rnd() - .5) * 20 + 1.5, z = 8 - rnd() * 21; const d = Math.abs(x - riverX(z)); if (d < 2.45) continue;
     o.position.set(x, d >= 2.6 ? Math.min(0, -.3 + (d - 2.6) * .4) + Math.sin(x * .3 + z * .2) * .05 : -.3, z);
     o.rotation.set((rnd() - .5) * .5, rnd() * 6.28, (rnd() - .5) * .5); const s = .7 + rnd() * .9; o.scale.set(s, s * (.8 + rnd() * .6), s); o.updateMatrix();
     im.setMatrixAt(n, o.matrix); c.setHSL(.35 + (rnd() - .5) * .08, .38 + rnd() * .2, .3 + rnd() * .14); im.setColorAt(n, c); n++;
@@ -179,17 +179,47 @@ function memoryBlock(z0, xoff, s, col, kind) {
   addFlow(g, r, z0, xoff, s, s * .44); return g;
 }
 const C = (h) => new THREE.Color(h);
-memoryBlock(.2, -.8, .8, C('#d2b0ff'), 'run');          // seen during the dive
-memoryBlock(-.25, .05, .85, C('#ff9fbf'), 'hug');
-memoryBlock(-2.0, 1.25, .75, C('#9fdcff'), 'hands');
-const shareBlock = memoryBlock(2.55, 1.85, .95, C('#ffc58a'), 'share');   // the pink one steps out of this
+memoryBlock(4.0, .9, .8, C('#d2b0ff'), 'run');
+memoryBlock(-1.6, 1.1, .85, C('#ff9fbf'), 'hug');
+memoryBlock(-4.0, -.9, .75, C('#9fdcff'), 'hands');
+const shareBlock = memoryBlock(6.0, -1.4, .95, C('#ffc58a'), 'share');
 memoryBlock(-4.5, -.6, .7, C('#ffe08a'), 'hug');
-const waveBlock = memoryBlock(9.0, 1.65, .85, C('#ff9fbf'), 'wave');      // the last one, at the end
+const waveBlock = memoryBlock(5.25, 1.6, .85, C('#ff9fbf'), 'wave');      // the last one, at the end
 for (let i = 0; i < 44; i++) glowBlock(-7 - i * 1.1 - rnd() * .6, (rnd() - .5) * 2.8, .3 + rnd() * .3, C(SONG_COLS[(rnd() * 6) | 0]));
 for (let i = 0; i < 10; i++) glowBlock(4 + i * 1.3 + rnd(), (rnd() - .5) * 2.6, .3 + rnd() * .3, C(SONG_COLS[(rnd() * 6) | 0]));
 
+// ---------------- stepping stones + the raft (the song that carries them) ----------------
+const V = (x, y, z) => new THREE.Vector3(x, y, z);
+const STONE_POS = [V(.0, .2, 1.1), V(-1.0, .2, .4), V(-.5, .2, -.4), V(-1.45, .2, -.95)];
+const STONE_COL = ['#9fdcff', '#ffb36b', '#c9a6ff', '#9dffcf'];
+const STONE_TOP = .2 + .31;
+const stones = STONE_POS.map((p, i) => {
+  const m = new THREE.Mesh(blockGeo, new THREE.MeshStandardMaterial({ color: '#111', emissive: STONE_COL[i], emissiveIntensity: .9, roughness: .3 }));
+  m.scale.setScalar(.62); m.position.copy(p); m.rotation.y = i * .7; scene.add(m);
+  const r = new THREE.Mesh(blockGeo, new THREE.MeshBasicMaterial({ color: new THREE.Color(STONE_COL[i]).multiplyScalar(.5), transparent: true, opacity: .5 }));
+  r.scale.set(.62, -.62, .62); r.position.set(p.x, -p.y - .06, p.z); r.rotation.y = i * .7; scene.add(r);
+  return { m, r, p };
+});
+const RAFT_Z0 = -1.2, RAFT_T0 = 4.74, RAFT_V = .45;
+const raftZ = t => RAFT_Z0 - RAFT_V * (t - RAFT_T0);
+const raftXoff = t => lerp(-.6, 1.2, smooth(range(t, 5.5, 8.9)));   // drifts toward the right bank
+const raftPos = t => { const z = raftZ(t); return V(riverX(z) + raftXoff(t), .14, z); };
+const raftRot = t => { const z = raftZ(t); return Math.atan2(riverX(z - .1) - riverX(z), -.1); };
+const raft = new THREE.Group(); scene.add(raft);
+raft.add(new THREE.Mesh(new RoundedBoxGeometry(1.15, .3, 2.1, 5, .1), new THREE.MeshStandardMaterial({ color: '#ffc58a', emissive: '#ffb27a', emissiveIntensity: .5, transparent: true, opacity: .66, roughness: .1 })));
+raft.add(new THREE.Mesh(new RoundedBoxGeometry(1.2, .34, 2.15, 5, .12), new THREE.MeshBasicMaterial({ color: new THREE.Color('#ffd2a8').multiplyScalar(1.3), transparent: true, opacity: .16, side: THREE.BackSide, blending: THREE.AdditiveBlending, depthWrite: false })));
+const raftL = new THREE.PointLight('#ffc58a', 1.5, 3.5, 2); raftL.position.y = .6; raft.add(raftL);
+const raftRefl = new THREE.Mesh(new RoundedBoxGeometry(1.15, .3, 2.1, 5, .1), new THREE.MeshBasicMaterial({ color: new THREE.Color('#ffb27a').multiplyScalar(.5), transparent: true, opacity: .45 })); scene.add(raftRefl);
+const RAFT_TOP = .14 + .15;
+const seat = (t, side) => { const r = raftPos(t), a = raftRot(t); return V(r.x + Math.sin(a) * side * .45, RAFT_TOP, r.z + Math.cos(a) * side * .45); };
+// where things happen on the bank
+const CEN = V(.2, 0, -3.6), U = V(.8, 0, -.6).normalize(), N = V(.6, 0, .8).normalize();
+const bank = z => V(riverX(z) + 2.9, 0, z);
+// landing puffs: expanding rings on whatever was landed on
+const puffs = Array.from({ length: 8 }, () => { const r = new THREE.Mesh(new THREE.RingGeometry(.28, .32, 48), new THREE.MeshBasicMaterial({ color: new THREE.Color('#fff0dc').multiplyScalar(1.6), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide })); r.rotation.x = -Math.PI / 2; scene.add(r); return r; });
+
 // ---------------- the door: the song "幻听" as a big standing block ----------------
-const DOOR = new THREE.Vector3(-1.05, .9, -4.15), DOOR_S = 1.75;
+const DOOR = new THREE.Vector3(-.5, .9, -7.6), DOOR_S = 1.75;
 const doorTex = (() => {
   const c = document.createElement('canvas'); c.width = c.height = 256; const x = c.getContext('2d');
   const g = x.createRadialGradient(128, 118, 10, 128, 128, 170); g.addColorStop(0, '#fff3e2'); g.addColorStop(.55, '#ffc58a'); g.addColorStop(1, '#ff9a6a'); x.fillStyle = g; x.fillRect(0, 0, 256, 256);
@@ -205,19 +235,19 @@ const doorHalo = new THREE.Mesh(new RoundedBoxGeometry(1.06, 1.06, 1.06, 5, .12)
 const doorL = new THREE.PointLight('#ffc58a', 3, 7, 2); doorL.position.copy(DOOR).add(new THREE.Vector3(1.4, .9, 1.9)); scene.add(doorL);
 const DOOR_FACE_Z = DOOR.z + DOOR_S / 2;
 
-// ---------------- pink footprints ----------------
+// ---------------- pink footprints: from where she vanished to the song's door ----------------
 const FP = [];
+const FP_PATH = new THREE.CatmullRomCurve3([CEN.clone(), V(.4, 0, -4.35), V(.2, 0, -5.05), V(-.15, 0, -5.65), V(-.42, 0, -6.1)]);
 {
-  const path = new THREE.CatmullRomCurve3([PP.clone().setY(0), new THREE.Vector3(1.05, 0, -.35), new THREE.Vector3(.15, 0, -1.25), new THREE.Vector3(-.55, 0, -2.0), new THREE.Vector3(-.95, 0, -2.9)]);
   const g = new RoundedBoxGeometry(.13, .03, .17, 3, .012);
   for (let k = 0; k < 10; k++) {
-    const u = (k + .5) / 10, p = path.getPointAt(u), tg = path.getTangentAt(u), side = new THREE.Vector3(-tg.z, 0, tg.x).normalize();
+    const u = (k + .5) / 10, p = FP_PATH.getPointAt(u), tg = FP_PATH.getTangentAt(u), side = new THREE.Vector3(-tg.z, 0, tg.x).normalize();
     const grp = new THREE.Group(); grp.position.copy(p); grp.rotation.y = Math.atan2(tg.x, tg.z); scene.add(grp);
     const mats = [];
     for (const s of [-1, 1]) { const m = new THREE.MeshStandardMaterial({ color: '#2a0f1a', emissive: '#ff8fb8', emissiveIntensity: 0 }); mats.push(m); const f = new THREE.Mesh(g, m); f.position.set(s * .09, .02, s * .05); grp.add(f); }
     const ring = new THREE.Mesh(new THREE.RingGeometry(.2, .24, 40), new THREE.MeshBasicMaterial({ color: new THREE.Color('#ff9cc0').multiplyScalar(2), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide }));
     ring.rotation.x = -Math.PI / 2; ring.position.y = .03; grp.add(ring);
-    FP.push({ grp, mats, ring, t: 12.92 + k * .075, pos: p.clone(), side });
+    FP.push({ grp, mats, ring, t: 12.95 + k * .07, pos: p.clone(), side });
   }
 }
 const fpL = [0, 1].map(() => { const l = new THREE.PointLight('#ff8fb8', 0, 3, 2); scene.add(l); return l; });
@@ -271,133 +301,228 @@ const grade = new ShaderPass({ uniforms: { tDiffuse: { value: null }, time: { va
 composer.addPass(grade);
 
 // camera keyframes [t, pos, target, fov]
-const V = (x, y, z) => new THREE.Vector3(x, y, z);
-const KEYS = [
-  [0.00, V(-7.5, 7.5, 15), V(-3.2, .2, -9), 50],
-  [0.55, V(-5.2, 3.0, 9.0), V(-2.8, .3, -3), 46],
-  [1.30, V(-1.0, 1.7, 6.6), V(-2.6, .4, -1.2), 42],
-  [2.30, V(.2, 1.35, 5.4), V(-1.9, .4, -1.6), 40],
-  [3.30, V(2.0, 1.35, 5.9), V(.3, .45, .3), 40],
-  [4.40, V(3.3, 1.4, 5.3), V(.85, .5, 1.0), 38],
-  [5.60, V(4.3, 1.7, 5.9), V(1.3, .55, .85), 40],
-  [6.90, V(3.7, 1.35, 4.9), V(1.3, .6, .85), 37],
-  [8.10, V(3.1, 1.15, 4.0), V(1.3, .62, .8), 35],
-  [9.20, V(5.0, 2.5, 2.9), V(1.3, .7, .7), 40],
-  [10.30, V(2.0, .75, 5.8), V(1.45, 1.4, -1.6), 44],
-  [11.40, V(1.7, 1.2, 4.6), V(1.3, .6, .8), 38],
-  [12.60, V(1.55, 1.05, 3.8), V(1.3, .55, .8), 35],
-  [13.30, V(3.9, 2.5, 4.1), V(.6, .3, -.8), 42],
-  [14.20, V(2.4, 1.45, -.2), V(-.3, .4, -1.7), 40],
-  [14.85, V(2.1, 1.15, -1.9), V(-.85, .5, -2.75), 36],
-  [15.15, V(1.85, .9, -2.5), V(-.95, .5, -2.9), 30],
-  [15.55, V(-.45, .85, -1.9), V(-1.05, .85, -3.6), 26],
-  // ---- ending (from 28.5)
-  [28.50, V(-.4, 1.1, -1.2), V(-1.05, .9, -4.1), 34],
-  [29.20, V(1.4, 1.9, 4.2), V(-.2, .55, -1.2), 42],
-  [30.00, V(4.2, 3.7, 6.9), V(.2, .6, -1.5), 44],
-  [30.70, V(4.8, 7.0, 8.6), V(-.5, 1.6, -5), 46],
+// ---------------- choreography helpers ----------------
+// a hop sequence: keys = [[time, position, arcHeight]]; returns where we are, the hop phase and the time since the last landing
+function hopSeq(keys, t) {
+  if (t <= keys[0][0]) return { p: keys[0][1].clone(), k: 1, air: 0, since: 9, i: -1 };
+  for (let i = 0; i < keys.length - 1; i++) {
+    const [ta, pa] = keys[i], [tb, pb, h = .35] = keys[i + 1];
+    if (t < tb) {
+      const k = (t - ta) / (tb - ta);
+      const crouch = .1, a = clamp((k - crouch) / (1 - crouch), 0, 1);          // a little crouch before take-off
+      const p = pa.clone().lerp(pb, easeInOut(a) * .65 + a * .35); const air = Math.sin(Math.PI * a); p.y += air * h;
+      return { p, k, a, air, since: t - ta, i, from: pa, to: pb, dur: tb - ta };
+    }
+  }
+  const last = keys[keys.length - 1]; return { p: last[1].clone(), k: 1, air: 0, since: t - last[0], i: keys.length - 1 };
+}
+// squash & stretch for a hop: crouch, stretch on the way up, squash + jelly wobble after landing
+function hopJelly(h, amp = 1) {
+  let sy = 1;
+  if (h.k < 1 && h.a !== undefined) {
+    if (h.k < .1) sy = 1 - .26 * amp * Math.sin(Math.PI * .5 * h.k / .1);          // landing squash / crouch before the next take-off
+    else sy = 1 + .22 * amp * Math.sin(Math.PI * h.a) * (1 - .6 * h.a);          // stretch in the air
+  }
+  if (h.k >= 1) { const d = h.since; sy = 1 - .22 * amp * Math.exp(-d * 8) * Math.cos(d * 32); }   // jelly settle
+  return { sy, sx: 1 / Math.sqrt(Math.max(.5, sy)) };
+}
+const yawTo = (a, b) => Math.atan2(b.x - a.x, b.z - a.z);
+const angLerp = (a, b, k) => { let d = ((b - a + Math.PI) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI) - Math.PI; return a + d * k; };
+
+// ---------------- the orange one's whole journey (beats from timeline) ----------------
+const S = STONE_POS.map(p => V(p.x, STONE_TOP, p.z));
+const DANCE_R = .58, DANCE_T0 = 9.43, BAR = BEAT * 4;
+const danceAng = t => -.6 + 2 * Math.PI * (t - DANCE_T0) / BAR;
+const dancePos = (t, side) => { const a = danceAng(t); return V(CEN.x + Math.cos(a) * DANCE_R * side, 0, CEN.z - Math.sin(a) * DANCE_R * side); };
+const CONTACT = V(-.5, .32, DOOR_FACE_Z + .44);
+const LAND = CEN.clone().addScaledVector(U, .75);
+const O_KEYS = () => [
+  [0.07, V(2.15, -.95, 5.6)],
+  [0.53, bank(5.0), 1.25],
+  [1.00, bank(4.55), .25],
+  [1.46, bank(3.8), .38],
+  [1.93, bank(3.05), .38],
+  [2.39, bank(2.3), .38],
+  [2.88, S[0], .7],
+  [3.32, S[1], .5],
+  [3.81, S[2], .5],
+  [4.27, S[3], .5],
+  [4.74, seat(4.74, 1), .9],
+];
+const CHASE = () => [[13.19, LAND], [13.63, FP_PATH.getPointAt(.3)], [14.12, FP_PATH.getPointAt(.58)], [14.58, FP_PATH.getPointAt(.84)], [15.05, CONTACT, .75]];
+const landings = [];                                   // [time, position] for the ring puffs
+function stateOrange(t) {
+  const o = { p: V(0, 0, 0), yaw: 0, sy: 1, sx: 1, lean: 0, tilt: 0, roll: 0, arms: .15, armsIn: 0, vis: true };
+  const env = kickEnv(t, 8);
+  if (t < 4.74) {
+    const ks = O_KEYS(), h = hopSeq(ks, t); o.p = h.p; const j = hopJelly(h); o.sy = j.sy; o.sx = j.sx;
+    o.vis = t >= .07; o.arms = .2 + 1.0 * (h.air || 0);
+    const nx = ks[Math.min(ks.length - 1, Math.max(1, h.i + 1))][1], pv = ks[Math.max(0, h.i)][1];
+    o.yaw = Math.abs(nx.x - pv.x) + Math.abs(nx.z - pv.z) > .05 ? yawTo(pv, nx) : 2.6;
+    if (t < .53) { o.yaw = 2.6 + easeInOut(range(t, .07, .53)) * Math.PI * 2; o.arms = 1.4; }   // pops out of the grass with a full spin
+    return o;
+  }
+  if (t < 8.94) {                                       // riding the raft
+    o.p = seat(t, 1); o.yaw = raftRot(t) - Math.PI / 2 - .35;
+    const j = jelly(t, .9); o.sy = j.sy; o.sx = j.sx; o.arms = .15 + env * .5;
+    if (t > 5.06 && t < 5.7) { const k = range(t, 5.06, 5.55); o.p.y += Math.sin(Math.PI * k) * .35; o.sy = 1 + .18 * Math.sin(Math.PI * k); o.arms = 1.3 * Math.sin(Math.PI * k); }   // startled hop: who's there?
+    if (t >= 5.5) o.yaw = raftRot(t) - Math.PI / 2 - lerp(.35, .6, smooth(range(t, 5.5, 6.0)));
+    if (t > 6.86 && t < 8.6) { o.lean = .16 * smooth(range(t, 6.86, 7.2)); o.sy *= 1 - .08 * smooth(range(t, 7.3, 7.6)); o.armsIn = .5; }   // shy: squeezes a little
+    return o;
+  }
+  if (t < 11.31) {                                      // jump ashore, then spin holding hands
+    if (t < DANCE_T0) { const h = hopSeq([[8.94, seat(8.94, 1)], [DANCE_T0, dancePos(DANCE_T0, -1), .8]], t); o.p = h.p; const j = hopJelly(h); o.sy = j.sy; o.sx = j.sx; o.arms = 1.2 * (h.air || 0); o.yaw = yawTo(seat(8.94, 1), dancePos(DANCE_T0, -1)); return o; }
+    o.p = dancePos(t, -1); const kk = lastKick(t), d = t - kk; o.p.y += Math.max(0, Math.sin(Math.PI * clamp(d / (BEAT * .9), 0, 1))) * .2;
+    const j = jelly(t, 1); o.sy = j.sy; o.sx = j.sx;
+    o.yaw = angLerp(yawTo(o.p, dancePos(t, 1)), 0, .35); o.arms = .7; o.armsIn = -.35; o.lean = Math.sin(danceAng(t)) * .1;
+    return o;
+  }
+  if (t < 12.7) {                                       // apart… then run at each other and leap on 爱
+    const A = dancePos(11.31, -1), far = CEN.clone().addScaledVector(U, -1.65), near = CEN.clone().addScaledVector(U, -1.0);
+    const h = hopSeq([[11.31, A], [11.77, far, .45], [12.24, near, .2]], Math.min(t, 12.24));
+    if (t < 12.24) { o.p = h.p; const j = hopJelly(h); o.sy = j.sy; o.sx = j.sx; o.yaw = angLerp(yawTo(o.p, CEN), Math.atan2(N.x, N.z), .3); o.arms = .3 + .8 * (h.air || 0); if (t > 11.9) { o.sy = 1 - .22 * smooth(range(t, 11.9, 12.24)); o.sx = 1 / Math.sqrt(o.sy); } return o; }
+    const k = range(t, 12.24, 12.7), e = 1 - Math.pow(1 - k, 2.4);   // slows down near the top: slow motion
+    o.p = near.clone().lerp(CEN.clone().addScaledVector(U, -.2), e); o.p.y = .62 * Math.sin(Math.PI / 2 * e);
+    o.yaw = angLerp(yawTo(near, CEN), Math.atan2(N.x, N.z), .3); o.sy = 1.15; o.sx = .93; o.arms = 1.5; o.tilt = -.25 * e;
+    return o;
+  }
+  if (t < 13.19) {                                      // hugs nothing: falls through, tumbles, flops
+    const a = CEN.clone().addScaledVector(U, -.2); a.y = .62;
+    if (t < 12.98) { const k = range(t, 12.7, 12.98); o.p = a.clone().lerp(LAND, k); o.p.y = .62 * (1 - k * k) + .25 * Math.sin(Math.PI * k); o.tilt = -.25 - k * Math.PI * 1.6; o.arms = lerp(1.5, .2, k); o.armsIn = .7; }
+    else { const d = t - 12.98; o.p = LAND.clone(); o.tilt = -Math.PI * 1.85 - .15 * Math.exp(-d * 8) * Math.cos(d * 26); o.sy = 1 - .3 * Math.exp(-d * 7) * Math.cos(d * 28); o.sx = 1 / Math.sqrt(o.sy); o.arms = .1; }
+    o.yaw = yawTo(CEN, LAND) + Math.PI;
+    return o;
+  }
+  if (t < 15.27) {                                      // gets up and chases the footprints, leaps at the door
+    const h = hopSeq(CHASE(), t); o.p = h.p; const j = hopJelly(h, 1.1); o.sy = j.sy; o.sx = j.sx; o.arms = .3 + 1.1 * (h.air || 0);
+    const ks = CHASE(); o.yaw = yawTo(ks[Math.max(0, h.i)][1], ks[Math.min(ks.length - 1, h.i + 1)][1]);
+    if (t < 13.45) { o.tilt = -Math.PI * 2 + lerp(.15, 0, smooth(range(t, 13.19, 13.45))); o.sy = 1 - .15 * Math.sin(Math.PI * range(t, 13.19, 13.45)); }
+    if (t >= 15.05) { o.p = CONTACT.clone(); o.yaw = Math.PI + .12; const d = t - 15.05; o.sy = 1 - .2 * Math.exp(-d * 8) * Math.cos(d * 30); o.sx = 1 / Math.sqrt(o.sy) * 1.06; o.arms = 1.2; }
+    return o;
+  }
+  if (t >= 28.4) {                                      // ending: alone on the bank where she vanished
+    o.p = CEN.clone(); o.yaw = lerp(-.95, -.25, smooth(range(t, 29.1, 30.0)));
+    const d = t - 29.12, w = d > 0 ? Math.exp(-d * 5) * Math.cos(d * 22) : 0; o.sy = 1 - .14 * w; o.sx = 1 / Math.sqrt(o.sy); o.arms = .1; o.lean = -.07 * smooth(range(t, 29.4, 30.2));
+    return o;
+  }
+  o.vis = false; return o;
+}
+function statePink(t) {
+  const o = { p: V(0, 0, 0), yaw: 0, sy: 1, sx: 1, lean: 0, tilt: 0, roll: 0, arms: .15, armsIn: 0, op: 0 };
+  const env = kickEnv(t, 8);
+  if (t < 5.4 || t >= 12.7) return o;
+  o.op = smooth(range(t, 5.4, 5.95));
+  if (t < 8.94) {
+    o.p = seat(t, -1); o.yaw = raftRot(t) - Math.PI / 2 - .1; const j = jelly(t, .8); o.sy = j.sy; o.sx = j.sx; o.arms = .15 + env * .4;
+    if (t > 6.86 && t < 8.6) { const k = smooth(range(t, 6.86, 7.25)); o.p.lerp(seat(t, 1), .16 * k); o.lean = -.22 * k; o.yaw += .25 * k; }   // leans in to whisper, face still to camera
+    return o;
+  }
+  if (t < 11.31) {
+    if (t < DANCE_T0) { const h = hopSeq([[8.94, seat(8.94, -1)], [DANCE_T0, dancePos(DANCE_T0, 1), .8]], t); o.p = h.p; const j = hopJelly(h, .9); o.sy = j.sy; o.sx = j.sx; o.arms = 1.2 * (h.air || 0); o.yaw = yawTo(seat(8.94, -1), dancePos(DANCE_T0, 1)); return o; }
+    o.p = dancePos(t, 1); const kk = lastKick(t), d = t - kk; o.p.y += Math.max(0, Math.sin(Math.PI * clamp(d / (BEAT * .9), 0, 1))) * .2;
+    const j = jelly(t, .9); o.sy = j.sy; o.sx = j.sx;
+    o.yaw = angLerp(yawTo(o.p, dancePos(t, -1)), 0, .35); o.arms = .7; o.armsIn = -.35; o.lean = -Math.sin(danceAng(t)) * .1;
+    return o;
+  }
+  const A = dancePos(11.31, 1), far = CEN.clone().addScaledVector(U, 1.65), near = CEN.clone().addScaledVector(U, 1.0);
+  if (t < 12.24) { const h = hopSeq([[11.31, A], [11.77, far, .45], [12.24, near, .2]], t); o.p = h.p; const j = hopJelly(h, .9); o.sy = j.sy; o.sx = j.sx; o.yaw = angLerp(yawTo(o.p, CEN), Math.atan2(N.x, N.z), .3); o.arms = .3 + .8 * (h.air || 0); if (t > 11.9) { o.sy = 1 - .22 * smooth(range(t, 11.9, 12.24)); o.sx = 1 / Math.sqrt(o.sy); } return o; }
+  const k = range(t, 12.24, 12.7), e = 1 - Math.pow(1 - k, 2.4);
+  o.p = near.clone().lerp(CEN.clone().addScaledVector(U, .2), e); o.p.y = .55 * Math.sin(Math.PI / 2 * e); o.yaw = angLerp(yawTo(near, CEN), Math.atan2(N.x, N.z), .3); o.sy = 1.15; o.sx = .93; o.arms = 1.5; o.tilt = -.25 * e;
+  return o;
+}
+function apply(m, s) {
+  m.position.copy(s.p); m.rotation.set(0, s.yaw, 0);
+  const u = m.userData; u.body.scale.set(s.sx, s.sy, s.sx); u.body.rotation.set(s.tilt, 0, s.lean);
+  u.arms[-1].rotation.set(0, -s.armsIn, -s.arms); u.arms[1].rotation.set(0, s.armsIn, s.arms);
+  u.legs.forEach(l => l.position.y = .08 + (s.sy > 1.05 ? (s.sy - 1) * .3 : 0));
+}
+
+// ---------------- camera rigs: each shot follows its subject; shots blend into one another ----------------
+let OP = V(0, 0, 0), PPOS = V(0, 0, 0);
+const RIGS = [
+  [0.0, t => { const k = easeInOut(range(t, 0, 1.0)); const end = OP.clone().setY(OP.y * .4).add(V(1.2, 1.0, -2.6)); return { pos: V(9, 12, 15).lerp(end, k), tgt: V(1.5, 0, 4).lerp(OP.clone().setY(OP.y * .6 + .45).add(V(-.1, 0, .3)), k), fov: lerp(50, 40, k) }; }],
+  [0.9, t => ({ pos: OP.clone().setY(OP.y * .4).add(V(1.3, 1.1, -2.8)), tgt: OP.clone().setY(OP.y * .85 + .5).add(V(-.1, 0, .3)), fov: 40 })],
+  [2.35, t => { const k = range(t, 2.4, 4.7); return { pos: OP.clone().setY(OP.y * .5).add(V(lerp(1.4, .7, k), lerp(1.25, 1.85, k), lerp(-2.3, -2.9, k))), tgt: OP.clone().add(V(-.15, .35, 0)), fov: 40 }; }],
+  [4.75, t => { const r = raftPos(t), ang = lerp(.55, .05, range(t, 4.8, 8.9)), d = lerp(3.7, 3.0, smooth(range(t, 6.3, 7.3))); return { pos: r.clone().add(V(Math.cos(ang) * d, lerp(1.3, 1.05, smooth(range(t, 6.3, 7.3))), Math.sin(ang) * d)), tgt: r.clone().add(V(0, .6, 0)), fov: 38 }; }],
+  [8.9, t => { const k = smooth(range(t, 9.4, 10.5)), ang = lerp(.25, 1.62, smooth(range(t, 8.9, 10.6))), d = lerp(3.9, 3.3, k); return { pos: CEN.clone().add(V(Math.cos(ang) * d, lerp(1.9, .45, k), Math.sin(ang) * d)), tgt: CEN.clone().add(V(0, lerp(.45 + Math.max(0, OP.y) * .6, 1.35, k), lerp(0, -.6, k))), fov: lerp(40, 46, k) }; }],
+  [11.15, t => { const k = range(t, 11.3, 12.7), d = lerp(4.9, 3.9, easeInOut(k)); const tg = CEN.clone().add(V(0, .5 + Math.max(0, OP.y) * .7, 0)); if (t > 12.7) tg.lerp(OP.clone().add(V(0, .4, 0)), smooth(range(t, 12.7, 13.1))); return { pos: CEN.clone().addScaledVector(N, d).add(V(0, lerp(.85, .75, k), 0)), tgt: tg, fov: lerp(40, 36, k) }; }],
+  [13.2, t => ({ pos: OP.clone().setY(OP.y * .4).add(V(2.7, 1.3, -1.5)), tgt: OP.clone().setY(OP.y * .5 + .35).add(V(-.35, 0, -.6)), fov: 40 })],
+  [14.8, t => { const k = smooth(range(t, 15.12, 15.6)); return { pos: CONTACT.clone().add(V(2.6, .7, .9)).lerp(CONTACT.clone().add(V(.25, .55, .75)), k), tgt: CONTACT.clone().add(V(0, .2, 0)).lerp(V(CONTACT.x, .9, DOOR_FACE_Z), k), fov: lerp(32, 26, k) }; }],
+  [28.35, t => { const k1 = easeInOut(range(t, 28.45, 29.3)), k2 = smooth(range(t, 29.3, 30.7));
+    const p0 = V(CONTACT.x + .2, 1.0, DOOR_FACE_Z + 1.3), p1 = CEN.clone().add(V(2.6, 1.5, 3.2)), p2 = CEN.clone().add(V(5.0, 6.4, 7.2));
+    return { pos: p0.lerp(p1, k1).lerp(p2, k2), tgt: V(CONTACT.x, .9, DOOR_FACE_Z).lerp(CEN.clone().add(V(-.8, .45, -.6)), k1).lerp(CEN.clone().add(V(-1, 1.5, -4)), k2), fov: 40 }; }],
 ];
 function camAt(t) {
-  const ks = t < 20 ? KEYS.slice(0, 18) : KEYS.slice(18);
-  let i = 0; while (i < ks.length - 2 && t > ks[i + 1][0]) i++;
-  const k = clamp((t - ks[i][0]) / (ks[i + 1][0] - ks[i][0]), 0, 1), e = easeInOut(k) * .55 + k * .45;
-  const P = (j) => ks[clamp(j, 0, ks.length - 1)];
-  const cr = (a, b, c, d, u) => { const u2 = u * u, u3 = u2 * u; return a.clone().multiplyScalar(-.5 * u3 + u2 - .5 * u).add(b.clone().multiplyScalar(1.5 * u3 - 2.5 * u2 + 1)).add(c.clone().multiplyScalar(-1.5 * u3 + 2 * u2 + .5 * u)).add(d.clone().multiplyScalar(.5 * u3 - .5 * u2)); };
-  const pos = cr(P(i - 1)[1], P(i)[1], P(i + 1)[1], P(i + 2)[1], e), tgt = cr(P(i - 1)[2], P(i)[2], P(i + 1)[2], P(i + 2)[2], e);
-  return { pos, tgt, fov: lerp(P(i)[3], P(i + 1)[3], e) };
+  let i = 0; while (i < RIGS.length - 1 && t >= RIGS[i + 1][0]) i++;
+  const cur = RIGS[i][1](t);
+  if (i > 0 && t < RIGS[i][0] + .45 && RIGS[i][0] < 28) {        // blend from the previous shot
+    const prev = RIGS[i - 1][1](t), w = smooth((t - RIGS[i][0]) / .45);
+    return { pos: prev.pos.lerp(cur.pos, w), tgt: prev.tgt.lerp(cur.tgt, w), fov: lerp(prev.fov, cur.fov, w) };
+  }
+  return cur;
 }
 
 // ---------------- per-frame update ----------------
-const hopPath = [[13.19, V(.75, 0, 1.0)], [13.63, V(.55, 0, .1)], [14.12, V(.05, 0, -.75)], [14.58, V(-.55, 0, -1.65)], [15.05, V(-1.0, .32, DOOR_FACE_Z + .44)]];
 export function update(t) {
   grassTime.value = t; grade.uniforms.time.value = t;
   const env = kickEnv(t, 8);
-  // -------- flowing blocks
+  // flowing blocks
   for (const f of flowing) {
     const z = f.z0 - FLOW * t, x = riverX(z) + f.xoff, bob = Math.sin(t * 1.3 + f.z0) * .03 + env * .03;
     f.obj.position.set(x, f.y + bob, z); f.refl.position.set(x, -f.y - .06 - bob, z); f.refl.rotation.copy(f.obj.rotation);
     if (f.obj.isMesh) f.obj.material.emissiveIntensity = (t > 28 ? .8 : 1.0) + env * .7;
     else f.obj.userData.glass.material.emissiveIntensity = .28 + env * .35;
   }
-  // -------- orange
-  const j = jelly(t, 1);
-  orange.visible = !(t > 15.27 && t < 28.5);
-  let oPos = P0.clone(), oRot = .32, o = { sy: j.sy, sx: j.sx, lean: 0, tilt: 0, arms: .1 + env * .25, armsIn: 0, hop: env * .02 };
-  if (t >= 5.06 && t < 11.26) oRot = lerp(.32, .55, smooth(range(t, 5.4, 6.2)));
-  if (t >= 6.86 && t < 8.6) { o.lean = -.08 * smooth(range(t, 6.86, 7.2)); }                       // leans into the whisper
-  if (t >= 8.84 && t < 11.0) { const ph = (t - 8.84) / (BEAT * 2); o.lean = Math.sin(ph * Math.PI) * .14; oRot = .55; }   // sway together
-  if (t >= 11.0 && t < 13.19) {                                                          // turn, open arms, hug — nothing
-    oRot = lerp(.55, .95, smooth(range(t, 11.0, 11.7))); oPos.x += .18 * smooth(range(t, 11.8, 12.6));
-    o.arms = lerp(.2, 1.3, smooth(range(t, 11.3, 12.2))); o.lean = -.1 * smooth(range(t, 11.8, 12.6));
-    if (t > 12.7) { const d = t - 12.7, w = Math.exp(-d * 6) * Math.cos(d * 24); o.sy = 1 - .25 * w; o.sx = 1 / Math.sqrt(o.sy); o.arms = lerp(1.3, -.1, smooth(range(t, 12.7, 12.9))); o.armsIn = .5 * smooth(range(t, 12.7, 12.85)); }
-  }
-  if (t >= 13.19 && t < 15.27) {                                                          // chase the footprints, hop on every kick, leap at the door
-    let i = 0; while (i < hopPath.length - 2 && t > hopPath[i + 1][0]) i++;
-    const [ta, pa] = hopPath[i], [tb, pb] = hopPath[i + 1], k = range(t, ta, tb);
-    oPos = pa.clone().lerp(pb, easeInOut(k) * .7 + k * .3); const H = i === 3 ? .75 : .32; oPos.y += Math.sin(Math.PI * k) * H;
-    oRot = Math.atan2(pb.x - pa.x, pb.z - pa.z);
-    o.sy = 1 + .18 * Math.sin(Math.PI * k) - .22 * Math.exp(-k * 9); o.sx = 1 / Math.sqrt(o.sy); o.arms = .3 + .9 * Math.sin(Math.PI * k);
-    if (t > 15.05) { oPos = hopPath[4][1].clone(); oRot = Math.PI + .12; const d = t - 15.05; o.sy = 1 - .2 * Math.exp(-d * 8) * Math.cos(d * 30); o.sx = 1 / Math.sqrt(o.sy) * 1.06; o.arms = 1.2; }
-  }
-  if (t >= 28.5) {                                                                         // ending: alone on the bank, turns to the empty spot, one last soft bounce
-    oPos = P0.clone(); oRot = lerp(.3, .95, smooth(range(t, 29.0, 29.9)));
-    const d = t - 29.12, w = d > 0 ? Math.exp(-d * 5) * Math.cos(d * 22) : 0; o.sy = 1 - .14 * w; o.sx = 1 / Math.sqrt(o.sy); o.arms = .1;
-    o.lean = -.06 * smooth(range(t, 29.4, 30.2));
-  }
-  orange.position.copy(oPos); orange.rotation.y = oRot; pose(orange, o);
-  keyL.position.copy(oPos).add(V(1.7, 1.6, 2.2));
-
-  // -------- pink: forms from particles (5.06), whispers, sways, hugs, bursts (12.7)
-  const pinkOn = t >= 5.45 && t < 12.7;
-  const pOp = smooth(range(t, 5.45, 5.95));
-  setOpacity(pink, pinkOn ? pOp : 0);
-  const pj = jelly(t, .8);
-  let pRot = -.2, pp = { sy: pj.sy, sx: pj.sx, lean: .1, tilt: 0, arms: .1 + env * .2, armsIn: 0, hop: env * .02 };
-  const pPos = PP.clone();
-  if (t >= 6.86 && t < 8.6) { pp.lean = .1 + .14 * smooth(range(t, 6.86, 7.3)); pPos.x -= .12 * smooth(range(t, 6.86, 7.3)); pRot = -.18; }   // whisper: lean in, face still toward camera
-  if (t >= 8.84 && t < 11.0) { const ph = (t - 8.84) / (BEAT * 2); pp.lean = Math.sin(ph * Math.PI) * .14; pRot = -.12; }
-  if (t >= 11.0) { pRot = lerp(-.12, -.95, smooth(range(t, 11.0, 11.7))); pPos.x -= .2 * smooth(range(t, 11.8, 12.6)); pp.arms = lerp(.2, 1.3, smooth(range(t, 11.3, 12.2))); pp.lean = .1 * smooth(range(t, 11.8, 12.6)); }
-  pink.position.copy(pPos); pink.rotation.y = pRot; pose(pink, pp);
-  pinkL.position.copy(pPos).add(V(.5, 1.3, -.7)); pinkL.intensity = pinkOn ? 1.3 * pOp : 0;
-
-  // whisper ripples from the orange's right ear cup
+  // raft
+  const rp = raftPos(t); raft.position.set(rp.x, rp.y + Math.sin(t * 1.7) * .02 + env * .02, rp.z); raft.rotation.y = raftRot(t); raftRefl.position.set(rp.x, -rp.y - .06, rp.z); raftRefl.rotation.y = raft.rotation.y;
+  raftL.intensity = 1.2 + env * .8;
+  // stones flash when landed on
+  const SL = [2.88, 3.32, 3.81, 4.27];
+  stones.forEach((s, i) => { const d = t - SL[i]; s.m.material.emissiveIntensity = .9 + (d > 0 ? 2.2 * Math.exp(-d * 5) : 0) + env * .3; s.m.position.y = s.p.y - (d > 0 ? .07 * Math.exp(-d * 9) * Math.cos(d * 30) : 0); });
+  // characters
+  const so = stateOrange(t), sp = statePink(t);
+  orange.visible = so.vis && !(t > 15.27 && t < 28.4); apply(orange, so); OP = so.p.clone();
+  setOpacity(pink, sp.op); apply(pink, sp); PPOS = sp.p.clone();
+  keyL.position.copy(so.p).add(V(1.7, 1.6, 2.2));
+  pinkL.position.copy(sp.p).add(V(.5, 1.3, -.7)); pinkL.intensity = 1.3 * sp.op;
+  // landing puffs
+  const LANDS = [[.53, bank(5.0)], [1.46, bank(3.8)], [1.93, bank(3.05)], [2.39, bank(2.3)], [2.88, S[0]], [3.32, S[1]], [3.81, S[2]], [4.27, S[3]], [4.74, seat(4.74, 1)], [9.43, dancePos(9.43, -1)], [11.77, CEN.clone().addScaledVector(U, -1.65)], [12.98, LAND], [13.63, FP_PATH.getPointAt(.3)], [14.12, FP_PATH.getPointAt(.58)], [14.58, FP_PATH.getPointAt(.84)]];
+  let pi = 0; puffs.forEach(p => p.material.opacity = 0);
+  for (const [lt, lp] of LANDS) { const d = t - lt; if (d >= 0 && d < .45 && pi < puffs.length) { const p = puffs[pi++]; p.position.set(lp.x, lp.y + .03, lp.z); p.scale.setScalar(.6 + d * 4.5); p.material.opacity = (1 - d / .45) * .75; } }
+  // whisper ripples from the orange's ear cup (the side next to her)
   orange.updateMatrixWorld(true);
-  const cupW = orange.userData.cups[1].getWorldPosition(new THREE.Vector3());
+  const cupW = orange.userData.cups[-1].getWorldPosition(new THREE.Vector3());
   ripples.forEach((r, i) => {
     const on = t >= 6.86 && t < 8.7; const ph = ((t - 6.86) / (BEAT * 2) + i / 3) % 1;
-    r.position.copy(cupW); r.rotation.set(0, oRot + Math.PI / 2, 0); r.scale.setScalar(.5 + ph * 1.6); r.material.opacity = on ? (1 - ph) * .7 * smooth(range(t, 6.86, 7.1)) : 0;
+    r.position.copy(cupW); r.rotation.set(0, so.yaw + Math.PI / 2, 0); r.scale.setScalar(.5 + ph * 1.6); r.material.opacity = on ? (1 - ph) * .7 * smooth(range(t, 6.86, 7.1)) : 0;
   });
-  // fireflies drift up, more during 夜色多温柔
+  // fireflies around wherever the two are, more under 夜色多温柔
   const fly = .35 + .65 * smooth(range(t, 8.84, 9.4)) * (1 - smooth(range(t, 11.5, 12.5)));
-  flies.forEach(f => { const u = f.userData; f.position.set(u.p.x + Math.sin(t * .6 + u.ph) * .3, u.p.y + ((t * .12 + u.ph) % 1.5) , u.p.z + Math.cos(t * .5 + u.ph) * .3); f.scale.setScalar(u.s * (.6 + .4 * Math.sin(t * 3 + u.ph * 3)) * fly); });
-
-  // -------- footprints: light up one pair after another, ring flash, pulse on kicks
-  FP.forEach((f, k) => {
-    const d = t - f.t, on = d >= 0 && t < 28.5 ? 1 : (t >= 28.5 ? .45 : 0);
-    const flash = d >= 0 ? Math.exp(-d * 5) : 0;
+  const fc = t < 8.8 ? rp : CEN;
+  flies.forEach(f => { const u = f.userData; f.position.set(fc.x - 1.5 + u.p.x + Math.sin(t * .6 + u.ph) * .3, u.p.y + ((t * .12 + u.ph) % 1.5), fc.z - 1.2 + u.p.z * .8 + Math.cos(t * .5 + u.ph) * .3); f.scale.setScalar(u.s * (.6 + .4 * Math.sin(t * 3 + u.ph * 3)) * fly); });
+  // footprints
+  FP.forEach((f) => {
+    const d = t - f.t, on = d >= 0 && t < 28.4 ? 1 : (t >= 28.4 ? .45 : 0), flash = d >= 0 ? Math.exp(-d * 5) : 0;
     f.mats.forEach(m => m.emissiveIntensity = on ? 1.6 + 3.5 * flash + env * .8 : 0);
     f.ring.material.opacity = d >= 0 && d < .6 ? (1 - d / .6) * .9 : 0; f.ring.scale.setScalar(.4 + Math.min(d, .6) * 3.2);
-    // the orange one stepping on it: brief brighter flash
   });
   const lastFp = FP.filter(f => t >= f.t).pop();
   fpL[0].intensity = lastFp && t < 15.3 ? 2.5 : 0; if (lastFp) fpL[0].position.copy(lastFp.pos).add(V(0, .3, 0));
   fpL[1].intensity = t > 13.0 && t < 15.3 ? 1.6 : 0; fpL[1].position.copy(FP[2].pos).add(V(0, .3, 0));
-
-  // -------- door
+  // door
   const doorBoost = smooth(range(t, 14.6, 15.4));
   const late = t > 28 ? .6 : 1; doorMat.emissiveIntensity = (.85 + env * .3 + doorBoost * .7) * late; doorHalo.material.opacity = (.1 + env * .06 + doorBoost * .12) * late;
   doorL.intensity = 2.5 + doorBoost * 1.2;
-
-  // -------- pink particles: gather into her (5.06 → 5.9); burst at the hug (12.7) and rain down into the footprints
+  // pink particles: gather out of the raft's glow (5.06 →), burst at the hug (12.7) and rain into the footprints
   pPar.visible = (t >= 5.06 && t < 6.0) || (t >= 12.7 && t < 13.75);
   if (pPar.visible) {
-    pink.updateMatrixWorld(true);
-    const src = shareBlock.position;
+    const ps = t < 6 ? statePink(Math.max(t, 5.96)) : statePink(12.69);
+    const save = { v: pink.visible }; apply(pink, ps); pink.updateMatrixWorld(true);
     for (let i = 0; i < pPts.length; i++) {
       const home = _w.copy(pPts[i].p).applyMatrix4(pink.matrixWorld); let s = 1;
       if (t < 6.0) {
         const delay = (i % 17) / 17 * .25, k = easeOut(range(t, 5.06 + delay, 5.62 + delay));
-        _v.copy(src).addScaledVector(pRand[i], .9); _v.y += .1;
+        _v.copy(rp).add(V(pRand[i].x * 1.0, .2 + Math.abs(pRand[i].y) * .2, pRand[i].z * 1.8));
         _v.lerp(home, k); _v.y += Math.sin(Math.PI * k) * .35 * (pRand[i].y + .6);
         s = k < 1 ? .9 : 1 - smooth(range(t, 5.62 + delay, 5.95));
       } else {
@@ -410,13 +535,12 @@ export function update(t) {
       }
       _o.position.copy(_v); _o.rotation.set(t * 3 + i, t * 2 + i * .3, 0); _o.scale.setScalar(s * .88); _o.updateMatrix(); pPar.setMatrixAt(i, _o.matrix);
     }
-    pPar.instanceMatrix.needsUpdate = true;
+    pPar.instanceMatrix.needsUpdate = true; apply(pink, sp); pink.visible = save.v;
   }
-  // -------- orange dissolve: voxel wave spreading from the contact point (15.05), then shatter into the door (15.27 → 15.55)
+  // orange dissolve at the door
   oPar.visible = t >= 15.05 && t < 15.6;
   if (oPar.visible) {
-    const tt = Math.min(t, 15.27); const save = orange.visible; orange.visible = true;
-    orange.position.copy(hopPath[4][1]); orange.rotation.y = Math.PI + .12; orange.updateMatrixWorld(true);
+    const save = orange.visible; orange.visible = true; orange.position.copy(CONTACT); orange.rotation.set(0, Math.PI + .12, 0); orange.updateMatrixWorld(true);
     const M = orange.matrixWorld.clone(); orange.visible = save && t < 15.27;
     const contact = V(0, .45, BD / 2).applyMatrix4(M), centre = V(0, .5, 0).applyMatrix4(M);
     const R = easeOut(range(t, 15.05, 15.25)) * 1.5;
@@ -424,29 +548,24 @@ export function update(t) {
       const home = _w.copy(oPts[i].p).applyMatrix4(M); const dist = home.distanceTo(contact);
       let s = dist < R ? 1 : 0; const age = (R - dist) / 1.5; if (s) s = 1 + .5 * Math.exp(-age * 30);
       _v.copy(home);
-      if (t > 15.27) {
-        const d = t - 15.27 + (i % 7) * .006;
-        const out = _o.position.copy(home).sub(centre).normalize();
-        _v.addScaledVector(out, d * .9).addScaledVector(oRand[i], d * .8);
-        _v.add(V(-.02, .1, -1).multiplyScalar(d * d * 9));           // sucked into the song
-        s *= 1 - smooth(range(t, 15.42, 15.58));
-      }
+      if (t > 15.27) { const d = t - 15.27 + (i % 7) * .006; const out = _o.position.copy(home).sub(centre).normalize(); _v.addScaledVector(out, d * .9).addScaledVector(oRand[i], d * .8); _v.add(V(-.02, .1, -1).multiplyScalar(d * d * 9)); s *= 1 - smooth(range(t, 15.42, 15.58)); }
       _o.position.copy(_v); _o.rotation.set(t > 15.27 ? (t - 15.27) * 9 * oRand[i].x : 0, t > 15.27 ? (t - 15.27) * 9 * oRand[i].y : 0, 0); _o.scale.setScalar(s); _o.updateMatrix(); oPar.setMatrixAt(i, _o.matrix);
     }
     oPar.instanceMatrix.needsUpdate = true;
   }
-  // -------- camera
-  const c = camAt(t);
-  let fov = c.fov;
-  const dk = lastKick(t); const isDown = [3, 7, 11, 15, 19, 23, 27, 31].map(i => KICKS[i]).includes(dk);
-  if (dk > 0 && t < 15) fov -= (isDown ? 2.4 : .8) * Math.exp(-(t - dk) * 9);
-  const shake = (t > 12.7 && t < 13.0 ? .025 * Math.exp(-(t - 12.7) * 10) : 0) + (t > 15.05 && t < 15.4 ? .02 * Math.exp(-(t - 15.05) * 8) : 0);
+  // camera: follow rig + beat punches + a breath of handheld
+  const c = camAt(t); let fov = c.fov;
+  const dk = lastKick(t); const isDown = DOWNBEATS.includes(dk);
+  if (dk > 0 && t < 15) fov -= (isDown ? 2.6 : .9) * Math.exp(-(t - dk) * 9);
+  const shake = (t > 12.98 && t < 13.3 ? .03 * Math.exp(-(t - 12.98) * 10) : 0) + (t > 15.05 && t < 15.4 ? .02 * Math.exp(-(t - 15.05) * 8) : 0) + (t > .5 && t < .8 ? .03 * Math.exp(-(t - .53) * 10) : 0);
   cam.position.copy(c.pos).add(V(Math.sin(t * 1.1) * .03 + Math.sin(t * 37) * shake, Math.sin(t * 1.4) * .02 + Math.cos(t * 41) * shake, 0));
   cam.fov = fov; cam.updateProjectionMatrix(); cam.lookAt(c.tgt);
-  // focus: on whoever matters
-  let fp = orange.position.clone().add(V(0, .5, 0));
-  if (t < 4.0) fp = c.tgt.clone();
-  if (t >= 5.6 && t < 12.7) fp = orange.position.clone().lerp(pink.position, .5).add(V(0, .5, 0));
+  const faceW = (t > .53 && t < 4.74) ? .5 : (t > 13.3 && t < 14.95) ? .45 : (t > 11.3 && t < 12.7) ? .15 : 0;
+  if (faceW) orange.rotation.y = angLerp(so.yaw, yawTo(so.p, cam.position), faceW);
+  // focus
+  let fp = so.p.clone().add(V(0, .5, 0));
+  if (t < .8) fp = c.tgt.clone();
+  if (sp.op > .5) fp = so.p.clone().lerp(sp.p, .5).add(V(0, .5, 0));
   bokeh.uniforms.focus.value = cam.position.distanceTo(fp);
   bokeh.uniforms.aperture.value = t > 15.0 && t < 15.6 ? .004 : .0025;
   grade.uniforms.flash.value = Math.max(t > 12.7 && t < 13.2 ? Math.exp(-(t - 12.7) * 8) : 0, t > 15.05 && t < 15.6 ? Math.exp(-(t - 15.05) * 6) : 0, env * .25);

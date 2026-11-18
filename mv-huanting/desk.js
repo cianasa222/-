@@ -122,19 +122,97 @@ function renderLine(line, t, opts = {}) {
 }
 function hopBetween(a, b, k, h) { return { x: lerp(a.x, b.x, easeInOut(k)), y: lerp(a.y, b.y, easeInOut(k)) - Math.sin(Math.PI * k) * h }; }
 
+// ------------------------------------------------------------------ sprite animation frames
+const RUN_A = STAND.map((r, j) => j === 9 ? [_, _, _, O, _, _, _, _, _, _, _, O, _, _, _] : r);
+const RUN_B = STAND.map((r, j) => j === 9 ? [_, _, _, _, _, O, _, _, _, O, _, _, _, _, _] : r);
+const FALL = JUMP.map((r, j) => j === 9 ? [_, _, _, _, O, _, O, _, O, _, O, _, _, _, _] : r);
+const SIT = STAND.map((r, j) => j === 9 ? [_, _, O, O, _, _, _, _, _, _, _, O, O, _, _] : r);
+// ------------------------------------------------------------------ hop choreography (beat-locked)
+const L5c = LINES[4].chars, L6c = LINES[5].chars;
+const sungIdx = (chars, t) => { let i = -1; chars.forEach(([, tc], k) => { if (t >= tc - .02) i = k; }); return i; };
+const CH = (i) => sprOnChar(i);
+const knob = (t) => ({ x: WIN.x + 36 + 228 * range(t, 0, 30.6) - SPR_W * PX / 2, y: WIN.y + 384 - SPR_H * PX + 8 });
+const ROW_TT = [23.94, 24.43, 24.89, 25.36, 25.82];
+const ROW_POS = (i) => ({ x: WIN.x + (LINE_X - WIN.x - 14) + 500 - 110 - i * 14, y: WIN.y + 58 + 18 + 46 + 6 + i * 52 + 23 - SPR_H * PX });
+const EDGE = { x: WIN.x + WIN.w - SPR_W * PX - 6, y: LINE_Y - SPR_H * PX + 6 };
+// [takeoff time, destination, arc height px, flips (+1/-1 = full spin), duration]
+const EVENTS = [
+  [16.12, CH(1), 140, 1, .34],
+  [16.93, CH(3), 46, 0, .32], [17.39, CH(4), 34, 0, .3], [17.86, CH(6), 58, -1, .34], [18.32, CH(8), 48, 0, .32],
+  [18.81, CH(10), 58, 1, .34], [19.27, CH(12), 50, 0, .32],
+  [19.74, { x: CH(13).x + 26, y: CH(13).y + 46 }, 18, 0, .5, 'slip'],
+  [20.67, CH(1), 170, -1, .44],
+  [21.13, CH(2), 34, 0, .3], [21.62, CH(5), 56, 1, .34], [22.08, CH(6), 30, 0, .3], [22.55, CH(8), 44, 0, .3],
+  [22.94, EDGE, 8, 0, .1, 'dash'],
+  [23.18, CH(10), 96, -1, .36],
+  [23.94, ROW_POS(0), 90, 1, .34], [24.43, ROW_POS(1), 40, 0, .3], [24.89, ROW_POS(2), 40, -1, .32], [25.36, ROW_POS(3), 40, 0, .3], [25.82, ROW_POS(4), 46, 1, .32],
+  [26.31, 'knob', 120, -1, .42],
+];
+const resolve = (p, t) => p === 'knob' ? knob(t) : p;
+function spriteAt(t) {
+  // returns {x, y, rot, sx, sy, grid}
+  let pos = { ...SPR_HOME }, prevPos = { ...SPR_HOME }, e = -1;
+  for (let i = 0; i < EVENTS.length; i++) if (t >= EVENTS[i][0]) e = i;
+  const out = { x: pos.x, y: pos.y, rot: 0, sx: 1, sy: 1, grid: STAND };
+  if (e >= 0) prevPos = e === 0 ? { ...SPR_HOME } : resolve(EVENTS[e - 1][1], EVENTS[e][0]);
+  if (e < 0) { const d = t - 16.0; const w = Math.exp(-d * 9) * Math.cos(d * 30); out.sy = 1 - .25 * w; out.sx = 1 / Math.sqrt(out.sy); }
+  else {
+    const [t0, dst, h, flip, dur, kind] = EVENTS[e], b = resolve(dst, Math.min(t, t0 + dur)), k = (t - t0) / dur;
+    if (k < 1) {
+      out.x = lerp(prevPos.x, b.x, kind === 'dash' ? easeIn(k) : k); out.y = lerp(prevPos.y, b.y, k) - 4 * h * k * (1 - k);
+      out.grid = kind === 'dash' ? (Math.floor(k * 6) % 2 ? RUN_A : RUN_B) : (k < .5 ? JUMP : FALL);
+      out.sy = kind === 'dash' ? .9 : 1 + .16 * Math.sin(Math.PI * k) * (k < .5 ? 1 : .4); out.sx = kind === 'dash' ? 1.2 : 1 / Math.sqrt(out.sy);
+      out.rot = flip * 360 * easeInOut(k) + Math.sign(b.x - prevPos.x) * 10 * Math.sin(Math.PI * k);
+      if (kind === 'slip') { out.rot = -28 * k; out.grid = FALL; }
+    } else {
+      const land = resolve(dst, t); out.x = land.x; out.y = land.y; const d = t - (t0 + dur);
+      const w = Math.exp(-d * 10) * Math.cos(d * 32); out.sy = 1 - .28 * w; out.sx = 1 / Math.sqrt(Math.max(.5, out.sy));
+      if (kind === 'slip') { out.grid = SAD; out.rot = -28 + 20 * smooth(range(d, 0, .3)); }
+      if (kind === 'dash') { out.sx = .45 + .55 * (1 - Math.exp(-d * 12)); out.sy = 1 / out.sx; out.grid = SAD; }   // bonk: flattened against the frame
+      if (dst === 'knob') { out.grid = SIT; const j = kickEnv(t, 10); out.sy = (1 - .12 * j) * out.sy; }
+      // crouch before the next take-off
+      const nx = EVENTS[e + 1]; if (nx && nx[0] - t < .07 && nx[0] - t > 0) { out.sy *= .8; out.sx *= 1.12; }
+      // idle bounce on kicks while waiting
+      if (!nx || nx[0] - t > .07) { const j = kickEnv(t, 12); out.sy *= 1 - .08 * j; }
+    }
+  }
+  return out;
+}
+
+// ------------------------------------------------------------------ camera keys: big beat-locked moves
+// [time, originX, originY, scale, rotX, rotY, rotZ]
+const CK = [
+  [16.5, 650, 330, 1.32, 5, -7, -1.2],
+  [16.93, 820, 430, 1.62, 8, -14, -4],                    // slam in at bottom-right after the drop-out…
+  [19.9, 540, 270, 1.36, 3, 5, 2.5],                       // …and sweep diagonally up to top-left
+  [20.5, 380, 300, 1.55, 4, 12, -3],                       // whip to the left for the new line
+  [22.85, 860, 300, 1.45, 4, -9, 1.5],                     // track right with him
+  [23.0, 960, 300, 1.95, 2, -14, 3],                       // push into the bonk
+  [23.6, 700, 320, 1.42, 5, -4, -1],
+  [24.0, 760, 250, 1.55, 10, -6, 2],                       // tilt down the playlist
+  [25.9, 760, 420, 1.55, 3, -2, -1.5],
+  [26.3, 420, 470, 1.6, 4, 8, -2],                         // he rides the progress bar
+  [27.9, 760, 380, 1.25, 4, -6, 1.5],                      // pan right with the stream of pixels
+];
+function camKeys(t) {
+  let i = 0; while (i < CK.length - 2 && t >= CK[i + 1][0]) i++;
+  const a = CK[i], b = CK[i + 1], k = easeInOut(range(t, a[0], b[0]));
+  const fast = (b[0] - a[0]) < .7;                         // short segments are whips
+  const kk = fast ? 1 - Math.pow(1 - range(t, a[0], b[0]), 4) : k;
+  return a.slice(1).map((v, j) => lerp(v, b[j + 1], kk));
+}
+
 export function update(t) {
-  const env = kickEnv(t, 9), env2 = kickEnv(t, 5);
-  // visibility of the whole 2D layer
+  const env = kickEnv(t, 9);
   root.style.opacity = (t < 15.4 || t > 29.0) ? 0 : 1;          // the block-flip mask (mv.html) does the reveal
   if (t < 15.4 || t > 29.0) return;
+  const tf = (t >= 16.44 && t < 16.93) ? 16.44 : t;               // the beat drops out: everything holds
   // ---------------- camera
-  let sc, ox, oy, ry = -7 + 3 * Math.sin((t - 15.5) * .45), rz = -1.2 + .9 * Math.sin((t - 15.5) * .6), rx = 5;
   const intro = easeOut(range(t, 15.42, 16.5));
-  const fz = (t >= 16.44 && t < 16.93) ? 16.44 : t;                       // the beat drops out: hold the frame
-  sc = lerp(5.4, 1.32, intro) * (1 + .028 * kickEnv(fz, 9)) + (t >= 16.93 ? .16 * Math.exp(-(t - 16.93) * 5) : 0);
-  ox = lerp(COVER.x + COVER.w / 2, 650 + 50 * Math.sin((t - 15.5) * .3), intro); oy = lerp(COVER.y + COVER.h / 2, 330, intro);
-  if (t >= 16.44 && t < 16.93) { ry = -7 + 3 * Math.sin((16.44 - 15.5) * .45); rz = -1.2 + .9 * Math.sin((16.44 - 15.5) * .6); }
-  let shx = 0, shy = 0; if (t > 23.0 && t < 23.4) { const d = t - 23.0, a = 14 * Math.exp(-d * 10); shx = Math.sin(d * 90) * a; shy = Math.cos(d * 70) * a * .6; }
+  let [ox, oy, sc, rx, ry, rz] = camKeys(Math.max(16.5, tf));
+  if (t < 16.5) { ox = lerp(COVER.x + COVER.w / 2, 650, intro); oy = lerp(COVER.y + COVER.h / 2, 330, intro); sc = lerp(5.4, 1.32, intro); rx = 5; ry = lerp(0, -7, intro); rz = lerp(6, -1.2, intro); }
+  sc *= 1 + .03 * kickEnv(tf, 9) + (t >= 16.93 ? .14 * Math.exp(-(t - 16.93) * 5) : 0);
+  let shx = 0, shy = 0; if (t > 23.04 && t < 23.45) { const d = t - 23.04, a = 16 * Math.exp(-d * 10); shx = Math.sin(d * 90) * a; shy = Math.cos(d * 70) * a * .6; }
   const outro = smooth(range(t, 27.95, 28.9)); sc *= lerp(1, .45, outro); rz += outro * 5;
   cam.style.transformOrigin = `${ox}px ${oy}px`;
   cam.style.transform = `translate(${640 - ox + shx}px,${352 - oy + shy}px) perspective(1400px) rotateX(${rx}deg) rotateY(${ry * (1 - outro)}deg) rotateZ(${rz}deg) scale(${sc})`;
@@ -142,9 +220,7 @@ export function update(t) {
   // ---------------- player widgets
   const prog = range(t, 0, 30.6); barFill.style.width = (prog * 100) + '%'; barKnob.style.left = (prog * 100) + '%';
   timeEl.firstChild.textContent = '0:' + String(Math.floor(t)).padStart(2, '0');
-  specCols.forEach((bs, i) => { const k = lastKick(t); const h = Math.round(1 + (Math.abs(Math.sin(i * .9 + k * 3.1)) * 3.5 + Math.abs(Math.sin(i * .37 + k * 1.7)) * 1.5) * (.35 + .65 * env) + env * 1.2); bs.forEach((b, j) => b.style.opacity = j < h ? (.35 + .65 * (j + 1) / h).toFixed(2) : 0); });
-  // together: 2 → 1 (爱已不在这里)
-  const leave = range(t, 20.56, 21.25);
+  specCols.forEach((bs, i) => { const k = lastKick(tf); const h = Math.round(1 + (Math.abs(Math.sin(i * .9 + k * 3.1)) * 3.5 + Math.abs(Math.sin(i * .37 + k * 1.7)) * 1.5) * (.35 + .65 * env) + env * 1.2); bs.forEach((b, j) => b.style.opacity = j < h ? (.35 + .65 * (j + 1) / h).toFixed(2) : 0); });
   avB.style.filter = `grayscale(${smooth(range(t, 20.56, 20.85))})`; avB.style.transform = `translateX(${easeIn(range(t, 20.85, 21.25)) * 40}px)`; avB.style.opacity = 1 - smooth(range(t, 20.95, 21.25));
   heartEl.style.opacity = 1 - smooth(range(t, 20.56, 20.8)); heartEl.style.transform = `scale(${1 + .3 * kickEnv(t, 8) * (t < 20.56 ? 1 : 0)})`;
   const newTxt = t >= 21.25 ? '一起听 · 1 人在听' : '一起听 · 2 人在听';
@@ -152,24 +228,24 @@ export function update(t) {
   togetherTxt.style.transform = t >= 21.25 ? `scale(${1 + .4 * Math.exp(-(t - 21.25) * 8)})` : 'none';
   // ---------------- lyrics
   const L5 = LINES[4], L6 = LINES[5], L7 = LINES[6], L8 = LINES[7];
-  if (t < 20.45) { prevEl.textContent = '你有多爱我'; nextEl.textContent = '爱已不在这里我却还没走脱'; renderLine(L5, t, { id: 5 }); }
+  if (t < 20.45) { prevEl.textContent = '你有多爱我'; nextEl.textContent = '爱已不在这里我却还没走脱'; renderLine(L5, tf, { id: 5 }); }
   else if (t < 23.8) { prevEl.textContent = '如今一个人听歌总是会觉得难过'; nextEl.textContent = '列表里的歌'; renderLine(L6, t, { id: 6 }); }
   else if (t < 26.1) { prevEl.textContent = ''; nextEl.textContent = ''; lyrBox.innerHTML = ''; lyrBox.dataset.line = ''; }
   else { prevEl.textContent = ''; nextEl.textContent = ''; renderLine(L8, t, { id: 8, x: 520, y: 470, adv: 74, size: 52, flow: true }); }
   prevEl.style.opacity = t < 23.6 ? 1 : 0; nextEl.style.opacity = t < 23.6 ? 1 : 0;
-  // ---------------- playlist (列表里的歌), then it flows away (随过往流动)
+  // ---------------- playlist
   const plIn = easeOut(range(t, 23.7, 24.05)), plOut = range(t, 28.3, 28.6);
   playlist.style.opacity = (plIn * (1 - plOut)).toFixed(3); playlist.style.transform = `translateX(${(1 - plIn) * 60}px) scale(${.96 + .04 * plIn})`;
   if (t >= 23.7) {
-    if (plTitle.dataset.b !== '1') { plTitle.innerHTML = ''; L7.chars.forEach(([ch]) => { const s = document.createElement('span'); s.textContent = ch; const st = tagStyle(L7.chars[plTitle.children.length][2]); s.style.cssText = `position:absolute;top:0;transform-origin:50% 90%;color:${st.color};text-shadow:${st.shadow}`; plTitle.appendChild(s); }); plTitle.dataset.b = '1'; }
+    if (plTitle.dataset.b !== '1') { plTitle.innerHTML = ''; L7.chars.forEach(([ch, , tag]) => { const s = document.createElement('span'); s.textContent = ch; const st = tagStyle(tag); s.style.cssText = `position:absolute;top:0;transform-origin:50% 90%;color:${st.color};text-shadow:${st.shadow}`; plTitle.appendChild(s); }); plTitle.dataset.b = '1'; }
     [...plTitle.children].forEach((s, i) => { const p = pop(t - L7.chars[i][1]); s.style.left = (i * 34) + 'px'; s.style.opacity = p.o; s.style.transform = `translateY(${p.y}px) scale(${Math.max(0, p.s)}) rotate(${(1 - p.r) * (i % 2 ? 18 : -18)}deg)`; });
   }
-  const ROW_T = [23.94, 24.43, 24.89, 25.36, 25.82], GONE_T = [26.18, 26.5, 27.02, 27.56, 27.88];
-  rows.forEach((r, i) => { const a = easeOut(range(t, ROW_T[i], ROW_T[i] + .25)), b = range(t, GONE_T[i], GONE_T[i] + .25); r.style.opacity = (a * (1 - b)).toFixed(3); r.style.transform = `translateX(${(1 - a) * 40 + b * 30}px)`; });
+  const GONE_T = [26.18, 26.5, 27.02, 27.56, 27.88];
+  rows.forEach((r, i) => { const a = easeOut(range(t, ROW_TT[i] - .1, ROW_TT[i] + .15)), b = range(t, GONE_T[i], GONE_T[i] + .25); r.style.opacity = (a * (1 - b)).toFixed(3); r.style.transform = `translateX(${(1 - a) * 40 + b * 30}px) scale(${1 + .06 * (t > ROW_TT[i] + .3 && t < ROW_TT[i] + .45 ? 1 : 0)})`; });
   // ---------------- footprints (pink, ahead of him)
   const fpts = [];
-  if (t < 20.45) for (let i = 1; i < 14; i++) fpts.push({ x: LINE_X + i * ADV + 6, y: LINE_Y - 8 - (i % 2) * 6, t0: 15.95 + i * .035, step: L5.chars[i][1] + .1 });
-  else if (t < 23.8) { for (let i = 1; i < 12; i++) fpts.push({ x: LINE_X + i * ADV + 6, y: LINE_Y - 8 - (i % 2) * 6, t0: 20.3 + i * .03, step: L6.chars[i][1] + .1 });
+  if (t < 20.45) for (let i = 1; i < 14; i++) fpts.push({ x: LINE_X + i * ADV + 6, y: LINE_Y - 8 - (i % 2) * 6, t0: 15.95 + i * .035, step: stepTime(i, 5) });
+  else if (t < 23.8) { for (let i = 1; i < 12; i++) fpts.push({ x: LINE_X + i * ADV + 6, y: LINE_Y - 8 - (i % 2) * 6, t0: 20.3 + i * .03, step: stepTime(i, 6) });
     for (let k = 0; k < 4; k++) fpts.push({ x: LINE_X + 12 * ADV + 10 + k * 26, y: LINE_Y - 8 - (k % 2) * 6, t0: 20.66 + k * .03, step: 22.97 }); }
   prints.forEach((p, k) => {
     const f = fpts[k >> 1]; if (!f) { p.style.opacity = 0; return; }
@@ -178,46 +254,23 @@ export function update(t) {
     p.style.opacity = (a * stepped * (.75 + .25 * env)).toFixed(3); p.style.transform = `scale(${1 + .8 * Math.exp(-(t - f.t0) * 8) * (t > f.t0 ? 1 : 0) + (t > f.step ? .5 * Math.exp(-(t - f.step) * 8) : 0)})`;
   });
   // ---------------- sprite
-  let pos = { ...SPR_HOME }, g = STAND, sx = 1, sy = 1, rot = 0, show = t >= 16.0 && t < 28.45;
-  const j = kickEnv(t, 9), jw = Math.exp(-(t - lastKick(t)) * 7) * Math.cos((t - lastKick(t)) * 30);
-  sy = 1 - .14 * jw; sx = 1 / Math.sqrt(sy);
-  const hopLine = (line, startPos) => {     // hop onto the char being sung
-    let idx = -1; line.chars.forEach(([, tc], i) => { if (t >= tc - .02) idx = i; });
-    if (idx < 0) return startPos;
-    const tc = line.chars[idx][1], prev = idx === 0 ? startPos : sprOnChar(idx - 1), k = range(t, tc - .02, tc + .2);
-    if (k < 1) { g = JUMP; return hopBetween(prev, sprOnChar(idx), k, idx === 0 ? 120 : 34); }
-    return sprOnChar(idx);
-  };
-  if (t >= 16.0 && t < 20.45) pos = hopLine({ chars: L5.chars.map((c, i) => i === 0 ? [c[0], 16.12] : c) }, SPR_HOME);
-  if (t >= 20.45 && t < 23.8) {
-    const L6h = { chars: L6.chars.slice(0, 10) };
-    pos = hopLine(L6h, sprOnChar(13));
-    if (t >= 22.9) {                               // dash along the footprints to the edge… bonk… bounced back
-      const edge = { x: WIN.x + WIN.w - SPR_W * PX - 8, y: LINE_Y - SPR_H * PX + 6 };
-      if (t < 23.0) { pos = hopBetween(sprOnChar(9), edge, range(t, 22.9, 23.0), 20); g = JUMP; }
-      else if (t < 23.18) { pos = edge; const d = t - 23.0; sx = .55 + .45 * (1 - Math.exp(-d * 12)); sy = 1 / sx; rot = 0; g = SAD; }
-      else { pos = hopBetween(edge, sprOnChar(10), range(t, 23.18, 23.5), 60); g = t < 23.5 ? JUMP : SAD; rot = -20 * Math.sin(Math.PI * range(t, 23.18, 23.5)); }
-    }
-  }
-  if (t >= 23.8 && t < 26.1) {                    // hops down the playlist rows
-    const ROW_Y = (i) => WIN.y + 58 + 18 + 46 + 6 + i * 52 + 23 - SPR_H * PX;
-    const RX = WIN.x + (LINE_X - WIN.x - 14) + 500 - 110;
-    let i = -1; ROW_T.forEach((rt, k) => { if (t >= rt) i = k; });
-    const from = i <= 0 ? sprOnChar(10) : { x: RX, y: ROW_Y(i - 1) }, to = i < 0 ? sprOnChar(10) : { x: RX, y: ROW_Y(i) };
-    const k = i < 0 ? 1 : range(t, ROW_T[i], ROW_T[i] + .22); pos = k < 1 ? hopBetween(from, to, k, 40) : to; if (k < 1) g = JUMP;
-  }
-  if (t >= 26.1) { const RX = WIN.x + (LINE_X - WIN.x - 14) + 500 - 110, y = WIN.y + 58 + 18 + 46 + 6 + 4 * 52 + 23 - SPR_H * PX; pos = { x: RX, y }; g = SAD; sy = 1 - .08 * jw; }
-  setGrid(g);
-  const sprIn = t >= 16.0 ? Math.exp(-(t - 16.0) * 6) : 0;
-  spr.style.opacity = show ? 1 : 0; spr.style.left = pos.x + 'px'; spr.style.top = pos.y + 'px';
-  spr.style.transform = `rotate(${rot}deg) scale(${(sx * (1 + .3 * sprIn)).toFixed(3)},${(sy * (1 - .3 * sprIn)).toFixed(3)})`;
-  // ---------------- particles: reassemble the sprite (15.5 → 16.0), rows dissolving into pixel streams (26.18 →)
+  const show = t >= 16.0 && t < 28.45;
+  const s = spriteAt(tf);
+  setGrid(s.grid);
+  spr.style.opacity = show ? 1 : 0; spr.style.left = s.x + 'px'; spr.style.top = s.y + 'px';
+  spr.style.transform = `rotate(${s.rot.toFixed(2)}deg) scale(${s.sx.toFixed(3)},${s.sy.toFixed(3)})`;
+  // ---------------- fx canvas: reassembly particles, motion ghosts, row pixel streams
   fxc.clearRect(0, 0, 2560, 1440);
-  const OX = 640, OY = 360;   // fx canvas offset
+  const OX = 640, OY = 360;
+  if (show) {                                   // motion ghosts when moving fast
+    for (let g = 1; g <= 3; g++) { const q = spriteAt(Math.max(16.0, tf - g * .028)); const dist = Math.hypot(q.x - s.x, q.y - s.y); if (dist < 7) continue;
+      fxc.globalAlpha = [.3, .17, .08][g - 1]; fxc.imageSmoothingEnabled = false; fxc.drawImage(spr, OX + q.x, OY + q.y, SPR_W * PX, SPR_H * PX); }
+    fxc.globalAlpha = 1;
+  }
   if (t >= 15.42 && t < 16.05) {
-    const pr = rng(5); let n = 0;
+    const pr = rng(5);
     STAND.forEach((row, jj) => row.forEach((v, ii) => {
-      if (!v) return; n++;
+      if (!v) return;
       const ang = pr() * 6.283, rad = 220 + pr() * 380, delay = pr() * .2, k = easeOut(range(t, 15.45 + delay, 15.85 + delay * .6));
       const tx = SPR_HOME.x + ii * PX, ty = SPR_HOME.y + jj * PX, sx0 = tx + Math.cos(ang) * rad, sy0 = ty + Math.sin(ang) * rad * .7;
       const x = lerp(sx0, tx, k), y = lerp(sy0, ty, k) - Math.sin(Math.PI * k) * 40;
@@ -229,15 +282,20 @@ export function update(t) {
     const pr = rng(9);
     rows.forEach((r, i) => {
       const t0 = GONE_T[i]; if (t < t0) return;
-      const rx = WIN.x + (LINE_X - WIN.x - 14) + 20, ry = WIN.y + 58 + 18 + 46 + 6 + i * 52;
+      const rx0 = WIN.x + (LINE_X - WIN.x - 14) + 20, ry0 = WIN.y + 58 + 18 + 46 + 6 + i * 52;
       const cols = ['#ffc58a', '#ff9fbf', '#9fdcff', '#d2b0ff', '#fff3e6', '#ef7a46'];
       for (let q = 0; q < 70; q++) {
-        const d = t - t0 - pr() * .25; const px = rx + pr() * 450, py = ry + pr() * 46, c = cols[(pr() * 6) | 0], sp = 260 + pr() * 380, wob = pr() * 6;
+        const d = t - t0 - pr() * .25; const px = rx0 + pr() * 450, py = ry0 + pr() * 46, c = cols[(pr() * 6) | 0], sp = 260 + pr() * 380, wob = pr() * 6;
         if (d < 0) continue;
         const x = px + d * sp + d * d * 120, y = py - d * 40 * (pr() + .3) + Math.sin(d * 5 + wob) * 18;
-        const s = 6 * (1 - Math.min(1, d / 2.4)) + 2; fxc.globalAlpha = Math.max(0, 1 - d / 2.6); fxc.shadowColor = c; fxc.shadowBlur = 10; fxc.fillStyle = c; fxc.fillRect(OX + x, OY + y, s, s);
+        const sz = 6 * (1 - Math.min(1, d / 2.4)) + 2; fxc.globalAlpha = Math.max(0, 1 - d / 2.6); fxc.shadowColor = c; fxc.shadowBlur = 10; fxc.fillStyle = c; fxc.fillRect(OX + x, OY + y, sz, sz);
       }
     });
-    fxc.globalAlpha = 1;
+    fxc.globalAlpha = 1; fxc.shadowBlur = 0;
   }
+}
+// when does the sprite land on (or pass) char i of line n — used to fade the footprint he steps on
+function stepTime(i, n) {
+  for (const e of EVENTS) { const d = e[1]; if (d && d.x !== undefined && Math.abs(d.y - LINE_Y + SPR_H * PX - 6) < 2 && d.x >= sprOnChar(i).x - 2 && ((n === 5 && e[0] < 20.4) || (n === 6 && e[0] > 20.4 && e[0] < 23.8))) return e[0] + e[4]; }
+  return n === 6 ? 22.97 : 19.9;
 }

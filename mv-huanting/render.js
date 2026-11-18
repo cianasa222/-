@@ -6,7 +6,11 @@ const types = { '.js': 'text/javascript', '.css': 'text/css', '.woff2': 'font/wo
 const srv = http.createServer((q, r) => { const f = path.join(root, decodeURIComponent(q.url.split('?')[0]));
   fs.readFile(f, (e, d) => { if (e) { r.writeHead(404); r.end(); return; } r.writeHead(200, { 'Content-Type': types[path.extname(f)] || 'application/octet-stream' }); r.end(d); }); })
 .listen(0, async () => {
-  const b = await chromium.launch({ args: ['--use-gl=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
+  // RENDER_BROWSER=msedge (or chrome) -> use the installed browser with the real GPU (Windows/macOS laptops);
+  // default: bundled Chromium with SwiftShader software GL (cloud machines without a GPU)
+  const ch = process.env.RENDER_BROWSER;
+  const b = ch ? await chromium.launch({ channel: ch, args: ['--ignore-gpu-blocklist', '--enable-gpu-rasterization'] })
+               : await chromium.launch({ args: ['--use-gl=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
   const p = await b.newPage({ viewport: { width: 1280, height: 720 } });
   p.on('pageerror', e => console.log('pageerror:', e.message));
   p.on('console', m => { if (m.type() === 'error' || m.type() === 'warning') console.log('console:', m.text().slice(0, 300)); });

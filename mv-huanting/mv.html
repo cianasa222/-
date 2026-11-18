@@ -13,7 +13,7 @@
   #flash{position:absolute;inset:0;pointer-events:none;opacity:0}
   #fade{position:absolute;inset:0;background:#000;pointer-events:none;opacity:0}
 </style>
-<script type="importmap">{"imports":{"three":"./three/build/three.module.js","three/addons/":"./three/examples/jsm/"}}</script>
+<script type="importmap">{"imports":{"three":"./node_modules/three/build/three.module.js","three/addons/":"./node_modules/three/examples/jsm/"}}</script>
 </head><body><div id="wrap"><div id="lyr3d"></div><div id="desk"></div><canvas id="flips" width="1280" height="720"></canvas><div id="flash"></div><div id="fade"></div></div>
 <script type="module">
 import * as W3 from './world.js';
@@ -75,8 +75,8 @@ window.renderAt = (t) => {
     let dy = p.y, dx = 0, sc = p.s * (1 + (t > tc ? env * .07 : 0)), rot = (1 - p.r) * (i % 2 ? 22 : -22), op = p.o;
     if (tag === 'love' && t > tc) { sc *= 1 + .18 * Math.exp(-(t - tc) * 5) + .08 * env; }
     if (li === 2) { dy += Math.sin((t - tc) * 3 + i) * 4; }
-    const ex = t - line.end - i * .025;
-    if (ex > 0) { const k = easeIn(range(ex, 0, .38)); dy -= 80 * k; dx += 50 * k * (i % 2 ? 1 : -1); rot += 60 * k * (i % 2 ? 1 : -1); op *= 1 - k; sc *= 1 + .3 * k; }
+    const ex = t - line.end - i * .012;
+    if (ex > 0) { const k = easeIn(range(ex, 0, .26)); dy -= 80 * k; dx += 50 * k * (i % 2 ? 1 : -1); rot += 60 * k * (i % 2 ? 1 : -1); op *= 1 - k; sc *= 1 + .3 * k; }
     if (li === 3 && t > 12.7) { const k = easeIn(range(t, 12.7, 13.15)); op *= 1 - k; dy += 30 * k; }   // "你有多爱我" crumbles with the hug
     s.style.left = (l.x + dx) + 'px'; s.style.top = (l.y + dy) + 'px'; s.style.opacity = Math.max(0, op).toFixed(3);
     s.style.transform = `scale(${Math.max(0, sc).toFixed(3)}) rotate(${rot.toFixed(2)}deg)`;
