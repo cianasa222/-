@@ -3,7 +3,7 @@ name: pure-code-3d-game
 description: Develop original code-driven games across genres, dimensions, camera modes, engines, input methods and target platforms. Scope the player loop, build a playable slice, validate systems and content, preserve performance and player progress, and ship reproducible builds. Includes optional procedural Web 3D tools for characters, materials, light and shadows.
 ---
 
-# 通用代码游戏开发 · GameKit 4.5
+# 通用代码游戏开发 · GameKit 4.6
 
 保留原技能标识供已有项目定位。通用开发契约支持 2D、2.5D、3D、文字与界面驱动玩法；视角和引擎由项目选定。Node ≥20 只用于开发期契约工具。正式游戏沿用项目语言、引擎、平台构建和测试入口。
 
@@ -67,6 +67,6 @@ node tools/gamekit.mjs verify ./my-game --stage release --evidence evidence/rele
 技能维护见 references/skill-maintenance.md；上游官方资料见 integrations/raea-gamekit/UPSTREAM.md。
 
 
-## v4.5 ComputeKit 动态计算与纠错
+## v4.6 ComputeKit Agent 自主算力调度
 
-计算/测试超出本地环境时按需加载 compute 模块。先用可行的免费沙盒/CPU/CI；GPU 仅在真实能力匹配、费用已知及用户预算授权内自动申请。批量执行→反馈纠错→回归；默认一次性 runtime，完成立即释放；持续会话仅在动态成本比较、原子租约和独立清理 watchdog 均有效时保留。未知费率、无下一批、无清理能力、预算不足默认不申请或释放。无环境继续可用研发并交接，不伪造证据。见 references/compute-kit.md。
+用户指定不部署独立网关、Cloudflare 计算调度或看门狗。按需加载 compute 模块；Agent 直接用自身已授权的 Colab CLI/MCP 或本地工具，在预算内选择最低成本的可用后端。优先一次性任务，集中执行后立即释放并核验；不跨工具调用、模型思考或用户等待保留付费 Runtime。无实际连接则继续可用研发；清理不明则停止该 Agent 新付费申请并报告手动回收，硬断线风险不能保证消除。KV 仅作既有技能分发。详见 references/compute-kit.md。

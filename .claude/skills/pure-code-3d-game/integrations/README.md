@@ -7,4 +7,4 @@ All three workflows accessible via main SKILL.md and single-get bundle even with
 
 GameKit 4.4: curated 36 official raea reference files with LICENSE/NOTICE, pinned commit; see integrations/raea-gamekit/UPSTREAM.md. Official full plugin not installed on host. MODULES.json enables selective retrieval.
 
-GameKit 4.5: official Google Colab Operator skill mirrored with Apache-2.0 license; colab-gamekit adapter and ComputeKit pure decision policy. No live runtime provisioned; deployment of provider adapter, shared lease and independent watchdog remains pending.
+GameKit 4.6: official Google Colab Operator skill mirrored with Apache-2.0 license. Agent direct CLI/MCP, one-shot lifecycle; no Compute Gateway, Cloudflare runtime or independent watchdog. Live authorization not tested.

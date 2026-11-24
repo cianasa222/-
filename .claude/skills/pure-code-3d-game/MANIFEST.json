@@ -1,17 +1,17 @@
 {
   "name": "pure-code-3d-game",
-  "version": "4.5.0",
+  "version": "4.6.0",
   "generated_at_cst": "2026-11-24",
-  "single_get_bundle_key": "skills/pure-code-3d-game/versions/v4.5.0/bundle.json",
-  "module_index_key": "skills/pure-code-3d-game/versions/v4.5.0/MODULES.json",
-  "bundle_sha256": "4c70d806940d9352dea0034145183833583bb955f7d2a51d311ff4f612dc6c05",
-  "source_archive_prefix": "skills/pure-code-3d-game/versions/v4.4.0/",
+  "single_get_bundle_key": "skills/pure-code-3d-game/versions/v4.6.0/bundle.json",
+  "module_index_key": "skills/pure-code-3d-game/versions/v4.6.0/MODULES.json",
+  "bundle_sha256": "1de3a1efa670059eabf0883dd31e682320fe27fb3a06e9334e8a8b9b4ca9d93c",
+  "source_archive_prefix": "skills/pure-code-3d-game/versions/v4.5.0/",
   "file_count": 104,
   "files": {
     "skills/pure-code-3d-game/SKILL.md": {
       "rel": "SKILL.md",
-      "sha256": "12819a86b8e4054fa1034328fb049714bec327de6acdd70829b52a29f7b757f6",
-      "bytes": 8284
+      "sha256": "b6e0ed5cb11e8c6b99a0859fd0d660d713606a75dddf5d3dd77d2c515806569f",
+      "bytes": 8307
     },
     "skills/pure-code-3d-game/examples/general-exploration.json": {
       "rel": "examples/general-exploration.json",
@@ -255,8 +255,8 @@
     },
     "skills/pure-code-3d-game/integrations/README.md": {
       "rel": "integrations/README.md",
-      "sha256": "eee8007c3ed2bbb1e65c604a5be1543eba4314fb6ffd3d9bdde6ea9919f78d6a",
-      "bytes": 1579
+      "sha256": "270cd82c9d45d17fede54ce9e591ec4380745819850f2b9e91d809453e39d57f",
+      "bytes": 1541
     },
     "skills/pure-code-3d-game/references/integration-release-4.3.0.md": {
       "rel": "references/integration-release-4.3.0.md",
@@ -265,8 +265,8 @@
     },
     "skills/pure-code-3d-game/MODULES.json": {
       "rel": "MODULES.json",
-      "sha256": "02e205cf3c3f21e28f4a3cb02315ce1aa20fa9ce8f63c895c98182e620dadf47",
-      "bytes": 7477
+      "sha256": "45ce9257ed44889524cc4df06185be9a82cb7079847bd8c0dc9906eecf049e4e",
+      "bytes": 7478
     },
     "skills/pure-code-3d-game/tools/module-router.mjs": {
       "rel": "tools/module-router.mjs",
@@ -495,18 +495,18 @@
     },
     "skills/pure-code-3d-game/tools/compute-policy.mjs": {
       "rel": "tools/compute-policy.mjs",
-      "sha256": "0d87b75cfab7ba453f05910d64da1c3d2a2e1bf9ce51a87f97b47a36a64733fb",
-      "bytes": 4360
+      "sha256": "e06bd583696b45cae67390c80f7e6b41b74e5d99896a20106b07d26654728089",
+      "bytes": 4235
     },
     "skills/pure-code-3d-game/tests/test_compute_policy.mjs": {
       "rel": "tests/test_compute_policy.mjs",
-      "sha256": "5c50a5107e6f9b589844345a365ae65080e3d81b7247be4dc0d0798c9f0481e0",
-      "bytes": 3664
+      "sha256": "1154694e70f2b025ceedbaaca2b8b08157a0e17b25b6db27efb1a306a9cfd250",
+      "bytes": 3835
     },
     "skills/pure-code-3d-game/references/compute-kit.md": {
       "rel": "references/compute-kit.md",
-      "sha256": "360db1661e2f34d53b87601fcaac6c47c55da61fe1a1d3c6ce7ef9acbe27cbe9",
-      "bytes": 6765
+      "sha256": "381b5ebfc855a9cece5a07296ed9a82dcdfa362f0d61556b766dba569cec184c",
+      "bytes": 4822
     },
     "skills/pure-code-3d-game/integrations/colab-operator/SKILL.md": {
       "rel": "integrations/colab-operator/SKILL.md",
@@ -525,12 +525,12 @@
     },
     "skills/pure-code-3d-game/integrations/colab-gamekit/SKILL.md": {
       "rel": "integrations/colab-gamekit/SKILL.md",
-      "sha256": "3a2ae562d59204eb4a5d9b3b14a55916bf121c95675694119bea8454d75966bf",
-      "bytes": 1968
+      "sha256": "80abce2f1bcabf5eb7c6afca062c82dcf90ace9c653a6f58032ff52c628c5612",
+      "bytes": 1480
     }
   },
   "validation": {
-    "node_tests": "Legacy 61/61 v4.2 historical; full Node suite not rerun for v4.5",
+    "node_tests": "Legacy 61/61 v4.2 historical; full Node suite not rerun for v4.6",
     "general_contracts": "2D turn-based and multi-perspective native 3D declarations checked; CLI release exercised with synthetic evidence",
     "web3d_schema1": "legacy regression suite PASS",
     "production_game_validation": "PROJECT-SPECIFIC, NOT RUN",
@@ -545,7 +545,10 @@
     "final_device_performance": "PENDING",
     "v4_4_0": "18 direct JS assertions passed (rig/IK/weights/module routing); Node suite not run; real GPU and device pending; official curated references mirrored.",
     "v4_5_0": "23 direct JS policy checks passed; no live Colab, actual provider adapter, watchdog/lease service, full Node suite or GPU run performed",
-    "colab_runtime": "NOT_RUN; no credentials or billed runtime used",
-    "compute_watchdog": "NOT_DEPLOYED"
+    "colab_runtime": "NOT_RUN",
+    "compute_watchdog": "USER_EXCLUDED",
+    "v4_6_0": "29 direct JS policy assertions passed; no central gateway/watchdog/Cloudflare compute; no live Colab auth/run; full Node suite not rerun",
+    "compute_gateway": "USER_EXCLUDED",
+    "compute_mode": "agent-direct-one-shot"
   }
 }

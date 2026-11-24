@@ -1,13 +1,13 @@
 {
   "skill": "pure-code-3d-game",
-  "active_version": "4.5.0",
-  "active_manifest_key": "skills/pure-code-3d-game/versions/v4.5.0/MANIFEST.json",
-  "single_get_bundle_key": "skills/pure-code-3d-game/versions/v4.5.0/bundle.json",
-  "bundle_sha256": "4c70d806940d9352dea0034145183833583bb955f7d2a51d311ff4f612dc6c05",
-  "immutable_version_prefix": "skills/pure-code-3d-game/versions/v4.5.0/",
-  "rollback_version_prefix": "skills/pure-code-3d-game/versions/v4.4.0/",
+  "active_version": "4.6.0",
+  "active_manifest_key": "skills/pure-code-3d-game/versions/v4.6.0/MANIFEST.json",
+  "single_get_bundle_key": "skills/pure-code-3d-game/versions/v4.6.0/bundle.json",
+  "bundle_sha256": "1de3a1efa670059eabf0883dd31e682320fe27fb3a06e9334e8a8b9b4ca9d93c",
+  "immutable_version_prefix": "skills/pure-code-3d-game/versions/v4.6.0/",
+  "rollback_version_prefix": "skills/pure-code-3d-game/versions/v4.5.0/",
   "validation": {
-    "node_tests": "Legacy 61/61 v4.2 historical; full Node suite not rerun for v4.5",
+    "node_tests": "Legacy 61/61 v4.2 historical; full Node suite not rerun for v4.6",
     "general_contracts": "2D turn-based and multi-perspective native 3D declarations checked; CLI release exercised with synthetic evidence",
     "web3d_schema1": "legacy regression suite PASS",
     "production_game_validation": "PROJECT-SPECIFIC, NOT RUN",
@@ -22,12 +22,15 @@
     "final_device_performance": "PENDING",
     "v4_4_0": "18 direct JS assertions passed (rig/IK/weights/module routing); Node suite not run; real GPU and device pending; official curated references mirrored.",
     "v4_5_0": "23 direct JS policy checks passed; no live Colab, actual provider adapter, watchdog/lease service, full Node suite or GPU run performed",
-    "colab_runtime": "NOT_RUN; no credentials or billed runtime used",
-    "compute_watchdog": "NOT_DEPLOYED"
+    "colab_runtime": "NOT_RUN",
+    "compute_watchdog": "USER_EXCLUDED",
+    "v4_6_0": "29 direct JS policy assertions passed; no central gateway/watchdog/Cloudflare compute; no live Colab auth/run; full Node suite not rerun",
+    "compute_gateway": "USER_EXCLUDED",
+    "compute_mode": "agent-direct-one-shot"
   },
   "source_repo_modified": false,
   "game_replication_project_paused": true,
   "github_skill_repo": "cianasa222/-",
   "github_skill_path": ".claude/skills/pure-code-3d-game",
-  "module_index_key": "skills/pure-code-3d-game/versions/v4.5.0/MODULES.json"
+  "module_index_key": "skills/pure-code-3d-game/versions/v4.6.0/MODULES.json"
 }

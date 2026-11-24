@@ -1,5 +1,5 @@
 {
-  "version": "4.5.0",
+  "version": "4.6.0",
   "core": [
     "SKILL.md",
     "references/strict-procedural-world.md",
@@ -181,7 +181,7 @@
     },
     "compute": {
       "depends": [],
-      "trigger": "external compute, Colab, GPU/CPU routing, sandbox limits, automatic debugging, batch testing, compute budget and runtime lifecycle",
+      "trigger": "external compute, Colab, Agent direct GPU/CPU, sandbox limits, automatic debugging, batch testing, budget, one-shot runtime cleanup",
       "files": [
         "references/compute-kit.md",
         "tools/compute-policy.mjs",
