@@ -1,0 +1,5 @@
+# Ozz Animation upstream
+Repository: https://github.com/guillaumeblanc/ozz-animation
+Pinned commit: 744eb9d99f606eda849acb0b1204f7a3dc20bca1
+MIT license, exact LICENSE.md mirrored; third-party tools/assets separately audit.
+Verified README, LICENSE.md, CMakeLists.txt, headers blending_job.h, sampling_job.h, local_to_model_job.h, raw_animation.h. Other registry paths located, not all implementations audited. No source library, binary, media or mocap bundled. For approved build, pin revision/toolchain. CMake 3.30 minimum at this revision, version declared 0.17.0. Shipping configuration: -DBUILD_SHARED_LIBS=OFF -Dozz_build_tools=OFF -Dozz_build_fbx=OFF -Dozz_build_gltf=OFF -Dozz_build_data=OFF -Dozz_build_samples=OFF -Dozz_build_howtos=OFF -Dozz_build_tests=OFF. Native cmake or pinned Emscripten plus application-owned bindings; runtime ozz_base, ozz_animation, optional ozz_geometry; offline generation may require offline lib. Separate upstream test build. Configuration inspected, not run. No native/WASM adapter or binary delivered.

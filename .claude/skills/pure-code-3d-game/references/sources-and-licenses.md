@@ -21,3 +21,5 @@ fast-anything MIT (official skill + license mirrored); raea engine FSL-1.1-ALv2,
 Google Colab CLI/Operator skill: https://github.com/googlecolab/google-colab-cli, Apache-2.0, original licensed mirror with pinned commit in integrations/colab-operator/UPSTREAM.md.
 
 GameKit 4.7: see ALGORITHMS.json for pinned source paths and license boundaries; no upstream source copied for new independent reference components. GPL Blender plugins reference only; audit license and notices before any future reuse.
+
+GameKit 4.8: Ozz Animation MIT, pinned upstream and exact license in integrations/ozz-animation/. No runtime/source implementation copied or sample media. Original JS reference is not an Ozz port.

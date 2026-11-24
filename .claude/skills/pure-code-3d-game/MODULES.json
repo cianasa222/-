@@ -1,5 +1,5 @@
 {
-  "version": "4.7.0",
+  "version": "4.8.0",
   "core": [
     "SKILL.md",
     "references/strict-procedural-world.md",
@@ -243,6 +243,22 @@
       "files": [
         "ALGORITHMS.json",
         "references/algorithm-registry.md"
+      ]
+    },
+    "animation": {
+      "depends": [
+        "motion",
+        "performance"
+      ],
+      "trigger": "animation runtime, Ozz, procedural clip, sampling, blend, mask, FK, skeletal animation, WASM",
+      "files": [
+        "references/animation-runtime.md",
+        "tools/animation-runtime.mjs",
+        "tests/test_animation_runtime.mjs",
+        "integrations/ozz-animation/UPSTREAM.md"
+      ],
+      "upstreamOptional": [
+        "integrations/ozz-animation/LICENSE.md"
       ]
     }
   }

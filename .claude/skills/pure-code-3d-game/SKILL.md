@@ -3,7 +3,7 @@ name: pure-code-3d-game
 description: Develop original code-driven games across genres, dimensions, camera modes, engines, input methods and target platforms. Scope the player loop, build a playable slice, validate systems and content, preserve performance and player progress, and ship reproducible builds. Includes optional procedural Web 3D tools for characters, materials, light and shadows.
 ---
 
-# 通用代码游戏开发 · GameKit 4.7
+# 通用代码游戏开发 · GameKit 4.8
 
 保留原技能标识供已有项目定位。通用开发契约支持 2D、2.5D、3D、文字与界面驱动玩法；视角和引擎由项目选定。Node ≥20 只用于开发期契约工具。正式游戏沿用项目语言、引擎、平台构建和测试入口。
 
@@ -74,3 +74,7 @@ node tools/gamekit.mjs verify ./my-game --stage release --evidence evidence/rele
 ## v4.7 算法注册库与跨引擎组件
 
 涉及成熟算法复用，按需加载 registry、motion、physics、vfx、engines 模块；ALGORITHMS.json 固定上游仓库提交和源码路径。优先现有兼容库/原生接口，不盲目迁移引擎。独立参考组件实现语义映射/局部四元数重定向、Verlet+XPBD 点链、固定时间步、种子化粒子及曲线。它们是基础组件，不是完整人物、布料、GPU 特效或 ECS；真实画面与设备必须独立验收。GPL 源只参考一般方法，保留第三方许可；严格纯代码不变。ComputeKit v4.6 Agent 直连策略保持不变。
+
+## v4.8 轻量动画运行时与 Ozz
+
+涉及骨骼动画采样、混合、FK、性能时加载 animation。默认纯 JS/TS 或现有引擎动画 API；按性能证据选择可选 Ozz C++/WASM 本地计算库，无服务器、无强制依赖、无迁移引擎。AnimationRuntime 提供生成式 clip、插值、掩码混合和层级矩阵参考实现；Ozz 固定源码/许可、适配边界及端到端基准见 references/animation-runtime.md。不得导入预制动画，生成缓存须可复算。Ozz 编译/绑定未实现，不冒充提速。GitHub 为正式版本源；KV 限额时标 KV_SYNC_PENDING，不阻塞发布、不查询 KV；恢复后单独校验同步。

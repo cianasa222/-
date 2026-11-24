@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "policy": "Pinned source index, not vendored code. Inspect exact paths before reuse; preserve license notices. Independently implemented baseline components below are not full upstream ports.",
   "sources": [
     {
@@ -141,6 +141,48 @@
         "animation"
       ],
       "note": "First three inspected; remaining paths located. Keep simulation/render separate and avoid blind engine migration."
+    },
+    {
+      "id": "ozz-animation",
+      "repo": "guillaumeblanc/ozz-animation",
+      "commit": "744eb9d99f606eda849acb0b1204f7a3dc20bca1",
+      "license": "MIT",
+      "mode": "reference-and-optional-runtime",
+      "paths": [
+        "LICENSE.md",
+        "README.md",
+        "CMakeLists.txt",
+        "include/ozz/animation/offline/raw_skeleton.h",
+        "include/ozz/animation/offline/raw_animation.h",
+        "include/ozz/animation/offline/skeleton_builder.h",
+        "include/ozz/animation/offline/animation_builder.h",
+        "include/ozz/animation/offline/animation_optimizer.h",
+        "include/ozz/animation/runtime/sampling_job.h",
+        "include/ozz/animation/runtime/blending_job.h",
+        "include/ozz/animation/runtime/local_to_model_job.h",
+        "include/ozz/animation/runtime/ik_aim_job.h",
+        "include/ozz/animation/runtime/ik_two_bone_job.h",
+        "include/ozz/geometry/runtime/skinning_job.h",
+        "src/animation/runtime/sampling_job.cc",
+        "src/animation/runtime/blending_job.cc",
+        "src/animation/runtime/local_to_model_job.cc",
+        "samples/partial_blend/sample_partial_blend.cc",
+        "samples/additive/sample_additive.cc",
+        "samples/foot_ik/sample_foot_ik.cc",
+        "samples/motion_blend/sample_motion_blend.cc"
+      ],
+      "topics": [
+        "SoA",
+        "SIMD",
+        "sampling context",
+        "masked blending",
+        "additive layers",
+        "local-to-model",
+        "IK",
+        "offline generated clips",
+        "compression"
+      ],
+      "note": "README, license, CMake and four public headers inspected; other paths located. JS baseline independent; native/WASM integration and performance pending; no imported media."
     }
   ],
   "components": [
@@ -167,6 +209,12 @@
       "path": "tools/fixed-clock.mjs",
       "status": "tested baseline",
       "limits": "single-thread fixed-step accumulator, not ECS scheduler"
+    },
+    {
+      "id": "motion.animation-runtime",
+      "path": "tools/animation-runtime.mjs",
+      "status": "direct JS assertions passed",
+      "limits": "scalar generated clip, masked blend and FK; no additive, compression, root-motion extraction or Ozz binding"
     }
   ]
 }

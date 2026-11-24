@@ -57,7 +57,7 @@
 
 ## 🎮 纯代码游戏开发
 
-- [GameKit v4.7.0](.claude/skills/pure-code-3d-game)：数学程序化世界、性能、视觉验收与原创 UI/UX；KV 同步发行。
+- [GameKit v4.8.0](.claude/skills/pure-code-3d-game)：数学程序化世界、性能、视觉验收与原创 UI/UX；GitHub 优先发布，KV 当前待同步。
 - [fast-anything](.claude/skills/fast-anything)：官方 MIT 热点优化技能。
 - [raea-gamekit](.claude/skills/raea-gamekit)：可选原生渲染与视觉验收适配。
 - [game-ui-research](.claude/skills/game-ui-research)：游戏 UI 参考与程序化设计。
@@ -69,3 +69,5 @@ GameKit v4.5：新增 ComputeKit 模块、Colab Operator 官方技能镜像、�
 GameKit v4.6：Agent 自行直连已授权 Colab；不部署中央网关、Cloudflare 算力调度或看门狗。批量任务结束即释放，不跨模型回合占用运行时。
 
 GameKit v4.7：算法注册库（7 个固定上游源码版本）、MotionKit 局部旋转重定向、PhysicsKit XPBD 点链、VFXKit 种子粒子与曲线、Bevy 风格固定时间步参考组件。18 个按需模块；ComputeKit 直连策略不变。
+
+GameKit v4.8：Ozz 固定源码和 MIT 许可证、独立 JS 动画采样、掩码混合、骨骼层级矩阵及验收规范。默认轻量 JS/现有引擎；C++/WASM 可选、未编译验证。KV_SYNC_PENDING（最后已确认 v4.7.0），以 GitHub 为准。

@@ -1,13 +1,13 @@
 {
   "skill": "pure-code-3d-game",
-  "active_version": "4.7.0",
-  "active_manifest_key": "skills/pure-code-3d-game/versions/v4.7.0/MANIFEST.json",
-  "single_get_bundle_key": "skills/pure-code-3d-game/versions/v4.7.0/bundle.json",
-  "bundle_sha256": "485954e2a053694c6ad44af62f9d2f3feb0ac9393ad1f22449d3aabfca4cdb1f",
-  "immutable_version_prefix": "skills/pure-code-3d-game/versions/v4.7.0/",
-  "rollback_version_prefix": "skills/pure-code-3d-game/versions/v4.6.0/",
+  "active_version": "4.8.0",
+  "active_manifest_key": "skills/pure-code-3d-game/versions/v4.8.0/MANIFEST.json",
+  "single_get_bundle_key": "skills/pure-code-3d-game/versions/v4.8.0/bundle.json",
+  "bundle_sha256": "ae26c552b813a0a695ee768cd2b98bf730c85587f601a632e5ac750a041bd57a",
+  "immutable_version_prefix": "skills/pure-code-3d-game/versions/v4.8.0/",
+  "rollback_version_prefix": "skills/pure-code-3d-game/versions/v4.7.0/",
   "validation": {
-    "node_tests": "Legacy 61/61 v4.2 historical; full Node suite not rerun for v4.7",
+    "node_tests": "Historical v4.2 61/61; full Node suite not rerun for v4.8",
     "general_contracts": "2D turn-based and multi-perspective native 3D declarations checked; CLI release exercised with synthetic evidence",
     "web3d_schema1": "legacy regression suite PASS",
     "production_game_validation": "PROJECT-SPECIFIC, NOT RUN",
@@ -27,11 +27,18 @@
     "v4_6_0": "29 direct JS policy assertions passed; no central gateway/watchdog/Cloudflare compute; no live Colab auth/run; full Node suite not rerun",
     "compute_gateway": "USER_EXCLUDED",
     "compute_mode": "agent-direct-one-shot",
-    "v4_7_0": "24 direct JS assertions passed for independent motion/physics/fixed clock/VFX baselines; 7 pinned source repos indexed; no upstream runtime installed, full Node suite and GPU/device not run"
+    "v4_7_0": "24 direct JS assertions passed for independent motion/physics/fixed clock/VFX baselines; 7 pinned source repos indexed; no upstream runtime installed, full Node suite and GPU/device not run",
+    "v4_8_0": "24 direct JS assertions passed; Ozz source/API and MIT license verified; native/WASM adapter/build, full Node suite, GPU/device benchmark NOT RUN",
+    "ozz_runtime": "OPTIONAL_NOT_BUILT",
+    "kv_sync": "KV_SYNC_PENDING; last confirmed v4.7.0"
   },
   "source_repo_modified": false,
   "game_replication_project_paused": true,
   "github_skill_repo": "cianasa222/-",
   "github_skill_path": ".claude/skills/pure-code-3d-game",
-  "module_index_key": "skills/pure-code-3d-game/versions/v4.7.0/MODULES.json"
+  "module_index_key": "skills/pure-code-3d-game/versions/v4.8.0/MODULES.json",
+  "release_authority": "github",
+  "kv_sync_status": "KV_SYNC_PENDING",
+  "kv_last_confirmed_version": "4.7.0",
+  "kv_keys_note": "v4.8 KV paths reserved, not published; use GitHub files until verified synchronization."
 }

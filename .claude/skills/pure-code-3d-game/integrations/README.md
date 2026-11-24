@@ -10,3 +10,6 @@ GameKit 4.4: curated 36 official raea reference files with LICENSE/NOTICE, pinne
 GameKit 4.6: official Google Colab Operator skill mirrored with Apache-2.0 license. Agent direct CLI/MCP, one-shot lifecycle; no Compute Gateway, Cloudflare runtime or independent watchdog. Live authorization not tested.
 
 GameKit 4.7 adds pinned algorithm source registry covering Simple Retarget Tool, Effekseer, Blender Jiggle Physics, MIT JigglePhysics, Godot, Three.js, Bevy. Independent CPU reference components; no full engine or upstream runtime installed.
+
+## Ozz Animation (optional)
+See [upstream pin](ozz-animation/UPSTREAM.md) and [AnimationRuntime](../references/animation-runtime.md). Default JS/native engine path; no server or forced WASM dependency.
