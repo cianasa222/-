@@ -17,3 +17,5 @@ If code is copied from other repos into a downstream project, review their licen
 
 ## v4.3 external references
 fast-anything MIT (official skill + license mirrored); raea engine FSL-1.1-ALv2, raea-skills Apache-2.0 (adapter only); Game UI Database reference only, no copied assets. See integrations/README.md.
+
+Google Colab CLI/Operator skill: https://github.com/googlecolab/google-colab-cli, Apache-2.0, original licensed mirror with pinned commit in integrations/colab-operator/UPSTREAM.md.

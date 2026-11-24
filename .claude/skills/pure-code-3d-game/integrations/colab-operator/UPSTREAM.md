@@ -1,0 +1,3 @@
+# Google official Colab Operator skill
+Source: https://github.com/googlecolab/google-colab-cli/tree/33eacf1116968ef4e053b15f23cddd54d5288d02/skills/colab-operator
+Pinned commit: 33eacf1116968ef4e053b15f23cddd54d5288d02; SKILL blob: a9e8e67d937c583357964dd37d05d66b4311369d; LICENSE blob: d645695673349e3947e8e5ae42332d0ac3164cd7; Apache-2.0. Original SKILL mirrored unchanged. GameKit policy (compute-kit.md) governs budget, allowlist, cleanup, privacy and runtime ownership. No executable or OAuth credential bundled.

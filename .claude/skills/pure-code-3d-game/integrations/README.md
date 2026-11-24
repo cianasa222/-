@@ -6,3 +6,5 @@
 All three workflows accessible via main SKILL.md and single-get bundle even without GitHub. For standalone Claude Code install, copy each folder under integrations/ containing SKILL.md to .claude/skills/ or ~/.claude/skills/ alongside pure-code-3d-game. Do not duplicate global and project hooks. Agent must follow GameKit code-only rules ahead of external skill defaults.
 
 GameKit 4.4: curated 36 official raea reference files with LICENSE/NOTICE, pinned commit; see integrations/raea-gamekit/UPSTREAM.md. Official full plugin not installed on host. MODULES.json enables selective retrieval.
+
+GameKit 4.5: official Google Colab Operator skill mirrored with Apache-2.0 license; colab-gamekit adapter and ComputeKit pure decision policy. No live runtime provisioned; deployment of provider adapter, shared lease and independent watchdog remains pending.

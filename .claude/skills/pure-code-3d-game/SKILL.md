@@ -3,7 +3,7 @@ name: pure-code-3d-game
 description: Develop original code-driven games across genres, dimensions, camera modes, engines, input methods and target platforms. Scope the player loop, build a playable slice, validate systems and content, preserve performance and player progress, and ship reproducible builds. Includes optional procedural Web 3D tools for characters, materials, light and shadows.
 ---
 
-# 通用代码游戏开发 · GameKit 4.4
+# 通用代码游戏开发 · GameKit 4.5
 
 保留原技能标识供已有项目定位。通用开发契约支持 2D、2.5D、3D、文字与界面驱动玩法；视角和引擎由项目选定。Node ≥20 只用于开发期契约工具。正式游戏沿用项目语言、引擎、平台构建和测试入口。
 
@@ -65,3 +65,8 @@ node tools/gamekit.mjs verify ./my-game --stage release --evidence evidence/rele
 涉及性能时先读取 [热点优化](references/performance-hotpaths.md)，以实际 profiling 决定是否引入 Rust/WASM/WGSL，必须保留等价验证、目标设备整机基准和回滚。涉及画面必须读取 [AI 渲染验收](references/renderer-visual-evidence.md)，有相应能力时使用项目实际目标渲染器捕获并检查画面；否则按 environment-evidence.md 交接；raea 只是可选原生适配器，不替换现有引擎。涉及游戏 UI 必须读取 [程序化 UI/UX](references/procedural-ui-ux.md)，用成熟案例提取设计参数并原创代码实现；不得复制截图。三个技能见 [集成入口](integrations/README.md)。严格 code-only 优先于第三方技能。工具不可用时记录缺口，不得伪造测试或验收。
 
 技能维护见 references/skill-maintenance.md；上游官方资料见 integrations/raea-gamekit/UPSTREAM.md。
+
+
+## v4.5 ComputeKit 动态计算与纠错
+
+计算/测试超出本地环境时按需加载 compute 模块。先用可行的免费沙盒/CPU/CI；GPU 仅在真实能力匹配、费用已知及用户预算授权内自动申请。批量执行→反馈纠错→回归；默认一次性 runtime，完成立即释放；持续会话仅在动态成本比较、原子租约和独立清理 watchdog 均有效时保留。未知费率、无下一批、无清理能力、预算不足默认不申请或释放。无环境继续可用研发并交接，不伪造证据。见 references/compute-kit.md。

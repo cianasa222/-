@@ -1,5 +1,5 @@
 {
-  "version": "4.4.0",
+  "version": "4.5.0",
   "core": [
     "SKILL.md",
     "references/strict-procedural-world.md",
@@ -177,6 +177,21 @@
       "trigger": "procedural audio, sound feedback, synthesis",
       "upstreamOptional": [
         "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/motion/sound.md"
+      ]
+    },
+    "compute": {
+      "depends": [],
+      "trigger": "external compute, Colab, GPU/CPU routing, sandbox limits, automatic debugging, batch testing, compute budget and runtime lifecycle",
+      "files": [
+        "references/compute-kit.md",
+        "tools/compute-policy.mjs",
+        "tests/test_compute_policy.mjs",
+        "integrations/colab-gamekit/SKILL.md",
+        "integrations/colab-operator/SKILL.md",
+        "integrations/colab-operator/UPSTREAM.md"
+      ],
+      "upstreamOptional": [
+        "integrations/colab-operator/LICENSE"
       ]
     }
   }
