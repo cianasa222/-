@@ -1,0 +1,7 @@
+{
+  "schemaVersion":2,"kitVersion":"4.0.0","workflow":"general","name":"纸径","genre":"2D 回合制路径解谜","assetMode":"code-only",
+  "coreLoop":{"action":"旋转一个有方向的路口","decision":"花一步延长路线，还是提前封闭支路","feedback":"路径连通即点亮，非法旋转保留局面并说明限制","continueOrFinish":"连通两端结算步数，可撤销重试或进入下一题"},
+  "runtime":{"engine":"自有 2D Canvas 渲染","buildCommand":"npm run build","timeModel":"逻辑按行动推进，动画使用呈现时钟"},
+  "targets":[{"id":"desktop","platform":"桌面浏览器","device":"团队基准笔记本","inputs":["keyboard","pointer"],"views":[{"id":"board","framing":"固定棋盘，全盘可见","priority":"方向、连通、光标和不可操作状态"}],"budgets":[{"id":"action-feedback","unit":"ms","max":100}]}],
+  "features":["saves","settings"],"extraChecks":[{"id":"undo-chain","stage":"slice","targets":["desktop"],"expected":"连续撤销三步恢复完整局面、步数和光标逻辑，重新进入可继续操作"}]
+}

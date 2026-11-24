@@ -1,0 +1,82 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>潮间灯塔 · 光影实验室</title>
+<style>*{box-sizing:border-box}body{margin:0;background:#0c232b;color:#edf6eb;font:16px/1.5 system-ui,sans-serif}main{max-width:920px;margin:auto;padding:18px}h1{font-size:clamp(24px,5vw,42px);margin:6px 0 12px}canvas{width:100%;height:clamp(240px,54vh,480px);display:block;border-radius:16px;background:#324a55}fieldset{border:1px solid #405d62;border-radius:16px;display:flex;gap:16px;flex-wrap:wrap;margin:14px 0;padding:14px}label{display:grid;gap:4px}select,input{font:inherit;accent-color:#f6c07e}output{font:13px/1.5 monospace;color:#b6d3cc}</style>
+<main><h1>潮间灯塔 · 光影实验室</h1><canvas aria-label="灯塔和岩石在斜射光下的阴影"></canvas><fieldset><label>太阳高度<input id="sun" type="range" min="8" max="75" value="28"></label><label>阴影强度<input id="strength" type="range" min="0" max="100" value="85"></label><label>阴影贴图<select id="size"><option>256</option><option selected>512</option><option>1024</option></select></label><label>天空补光<input id="fill" type="range" min="0" max="150" value="85"></label></fieldset><output id="status" aria-live="polite"></output></main>
+<script type="module">
+import {directionalFrame,shadowGLSL} from './light-rig.mjs';
+const el=id=>document.getElementById(id);
+const canvas=document.querySelector('canvas'), status=el('status');
+function start(){
+const gl=canvas.getContext('webgl2',{antialias:true});
+if(!gl)throw Error('此设备未提供 WebGL2');
+function program(vs,fs){
+ const p=gl.createProgram();
+ for(const [kind,source] of [[gl.VERTEX_SHADER,vs],[gl.FRAGMENT_SHADER,fs]]){
+  const sh=gl.createShader(kind);gl.shaderSource(sh,'#version 300 es\nprecision highp float;\n'+source);
+  gl.compileShader(sh);if(!gl.getShaderParameter(sh,gl.COMPILE_STATUS))throw Error(gl.getShaderInfoLog(sh));
+  gl.attachShader(p,sh);gl.deleteShader(sh);
+ }
+ gl.linkProgram(p);if(!gl.getProgramParameter(p,gl.LINK_STATUS))throw Error(gl.getProgramInfoLog(p));return p;
+}
+const common='layout(location=0) in vec3 pos; uniform mat4 light;';
+const depthPass=program(common+'void main(){gl_Position=light*vec4(pos,1.);}','void main(){}');
+const litPass=program(common+`layout(location=1) in vec3 normal;layout(location=2) in vec3 base;
+uniform float aspect;out vec4 sc;out vec3 N;out vec3 color;
+void main(){vec3 p=pos-vec3(0,1.6,0);vec3 eye=normalize(vec3(7,5,10)),right=normalize(cross(vec3(0,1,0),eye));
+gl_Position=vec4(dot(right,p)/(7.*aspect),dot(cross(eye,right),p)/7.,-dot(eye,p)/40.,1.);
+sc=light*vec4(pos,1.);N=normal;color=base;}`,`
+in vec4 sc;in vec3 N,color;out vec4 outColor;
+uniform highp sampler2D uDepth;uniform bool uShadows;uniform float uDepthSpan,uStrength,fill;uniform vec2 uBiasM;uniform vec3 sun;
+`+shadowGLSL+`
+void main(){vec3 n=normalize(N);float nl=max(0.,dot(n,sun));float hemi=.5+.5*n.y;
+vec3 ambient=mix(vec3(.16,.13,.10),vec3(.32,.47,.66),hemi)*fill;
+vec3 direct=mix(vec3(1.55,.85,.48),vec3(1.35,1.28,1.18),sun.y);
+vec3 scene=color*(ambient+direct*nl*mainVisibility(sc,nl));scene=scene/(1.+scene);
+vec3 srgb=mix(12.92*scene,1.055*pow(scene,vec3(1./2.4))-.055,greaterThan(scene,vec3(.0031308)));
+outColor=vec4(srgb,1.);}`);
+const data=[];
+function tri(a,b,c,color){
+ const u=b.map((v,i)=>v-a[i]),v=c.map((x,i)=>x-a[i]);
+ const n=[u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]];
+ const len=Math.hypot(...n);if(len<1e-8)return;
+ for(const p of [a,b,c])data.push(...p,...n.map(v=>v/len),...color);
+}
+function ring(cx,cz,bottom,top,r0,r1,n,col,stretch=1){
+ for(let i=0;i<n;i++){const P=(j,y,r)=>[cx+Math.cos(j*2*Math.PI/n)*r,y,cz+Math.sin(j*2*Math.PI/n)*r*stretch];
+ const a=P(i,bottom,r0),b=P(i+1,bottom,r0),c=P(i+1,top,r1),d=P(i,top,r1);
+ tri(a,d,c,col);tri(a,c,b,col);tri([cx,top,cz],c,d,col);}
+}
+tri([-24,0,-24],[-24,0,24],[24,0,24],[.54,.57,.50]);tri([-24,0,-24],[24,0,24],[24,0,-24],[.54,.57,.50]);
+ring(-1,0,0,2.7,.87,.64,24,[.77,.66,.48]);ring(-1,0,2.7,3.3,.64,.60,24,[.61,.14,.07]);ring(-1,0,3.3,4.1,.60,.52,24,[.8,.73,.58]);
+ring(-1,0,4.1,4.25,.78,.78,16,[.15,.21,.21]);ring(-1,0,4.25,4.95,.46,.46,12,[.36,.57,.57]);ring(-1,0,4.95,5.45,.77,.06,16,[.42,.13,.08]);
+for(const [x,z,r,h] of [[2,1,.78,.66],[2.9,1.4,.55,.39],[-3,-1,1.26,.88],[-3.6,.4,.7,.32]])ring(x,z,0,h,r,r*.43,7,[.24,.31,.32],.78);
+const vao=gl.createVertexArray();gl.bindVertexArray(vao);gl.bindBuffer(gl.ARRAY_BUFFER,gl.createBuffer());
+gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(data),gl.STATIC_DRAW);
+for(let i=0;i<3;i++){gl.enableVertexAttribArray(i);gl.vertexAttribPointer(i,3,gl.FLOAT,false,36,i*12);}
+const fb=gl.createFramebuffer();let tex=null,res=0,shadowKey='',draws=0;
+function draw(){
+ const next=Number(el('size').value),angle=Number(el('sun').value)*Math.PI/180;
+ const sun=[Math.cos(angle)*.8,Math.sin(angle),Math.cos(angle)*.6],span=64;
+ const {matrix,texel}=directionalFrame([0,2,0],sun,10,span,next);
+ if(next!==res){if(tex)gl.deleteTexture(tex);tex=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,tex);
+ gl.texStorage2D(gl.TEXTURE_2D,1,gl.DEPTH_COMPONENT24,next,next);
+ for(const [k,v] of [[gl.TEXTURE_MIN_FILTER,gl.NEAREST],[gl.TEXTURE_MAG_FILTER,gl.NEAREST],[gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE],[gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE]])gl.texParameteri(gl.TEXTURE_2D,k,v);
+ gl.bindFramebuffer(gl.FRAMEBUFFER,fb);gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.DEPTH_ATTACHMENT,gl.TEXTURE_2D,tex,0);
+ gl.drawBuffers([gl.NONE]);gl.readBuffer(gl.NONE);if(gl.checkFramebufferStatus(gl.FRAMEBUFFER)!==gl.FRAMEBUFFER_COMPLETE)throw Error('阴影深度缓冲创建失败');
+ res=next;}
+ const key=next+'-'+angle;
+ gl.enable(gl.DEPTH_TEST);
+ if(key!==shadowKey){gl.bindFramebuffer(gl.FRAMEBUFFER,fb);gl.viewport(0,0,res,res);gl.clear(gl.DEPTH_BUFFER_BIT);gl.useProgram(depthPass);
+ gl.uniformMatrix4fv(gl.getUniformLocation(depthPass,'light'),false,matrix);gl.drawArrays(gl.TRIANGLES,0,data.length/9);shadowKey=key;draws++;}
+ const dpr=Math.min(window.devicePixelRatio||1,2),w=Math.round(canvas.clientWidth*dpr),h=Math.round(canvas.clientHeight*dpr);
+ if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;}
+ gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.viewport(0,0,w,h);gl.clearColor(.42,.57,.66,1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.useProgram(litPass);
+ const u=n=>gl.getUniformLocation(litPass,n);gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,tex);gl.uniform1i(u('uDepth'),0);
+ gl.uniformMatrix4fv(u('light'),false,matrix);gl.uniform3fv(u('sun'),sun);gl.uniform1f(u('aspect'),w/Math.max(h,1));
+ gl.uniform2f(u('uBiasM'),.003,.025);gl.uniform1f(u('uDepthSpan'),span);gl.uniform1i(u('uShadows'),1);
+ gl.uniform1f(u('uStrength'),el('strength').value/100);gl.uniform1f(u('fill'),el('fill').value/100);
+ gl.drawArrays(gl.TRIANGLES,0,data.length/9);status.textContent='每个阴影纹素 '+(texel*100).toFixed(1)+' cm · 深度图已绘制 '+draws+' 次';
+}
+document.querySelector('fieldset').addEventListener('input',draw);new ResizeObserver(draw).observe(canvas);draw();
+}
+try{start()}catch(err){status.textContent=err.message;console.error(err);}
+</script></html>

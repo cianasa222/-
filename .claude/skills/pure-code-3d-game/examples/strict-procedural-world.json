@@ -1,0 +1,16 @@
+{
+  "exampleOnly": true,
+  "name": "procedural-world-demo",
+  "assetMode": "code-only",
+  "generationPolicy": "strict-math-reproducible",
+  "worldSeed": 20261124,
+  "coordinateSystem": "right-handed-y-up",
+  "units": {"distance":"meters","time":"seconds","angle":"radians"},
+  "generatorContracts": [
+    {"generatorId":"anatomy.head","generatorVersion":"1","parameters":{"headHeightM":0.23,"headWidthM":0.17},"source":"design-hypothesis"},
+    {"generatorId":"groom.eyebrows","generatorVersion":"1","parameters":{"archM":0.016,"browThicknessM":0.007},"source":"design-hypothesis"},
+    {"generatorId":"motion.walk","generatorVersion":"1","parameters":{"stanceRatio":0.61},"source":"design-hypothesis"},
+    {"generatorId":"weather.snow","generatorVersion":"1","parameters":{"windMps":0.2,"heightM":8},"source":"designed-weather-rule"}
+  ],
+  "releaseMustProve": ["source-and-build-no-assets","deterministic-seed-regeneration","real-gpu-character-lab","motion-contact-and-pose","visual-approval","target-device-frame-budget"]
+}

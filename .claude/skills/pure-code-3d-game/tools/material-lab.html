@@ -1,0 +1,64 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1,viewport-fit=cover">
+<title>人物材质 · 光学样片</title><style>*{box-sizing:border-box}body{margin:0;background:#1e2427;color:#fff8ec;font:16px/1.5 system-ui,sans-serif}main{max-width:780px;margin:auto;padding:24px 16px}h1{margin:0 0 16px;font-size:clamp(25px,5vw,42px)}canvas{width:100%;height:clamp(216px,52vh,480px);border-radius:18px;background:#2f3a3e}nav{display:flex;gap:7px;margin:12px 0;flex-wrap:wrap}button{background:#303b40;border:1px solid #727e7b;color:inherit;border-radius:12px;padding:10px 16px;cursor:pointer;font:inherit}button[aria-pressed=true]{background:#e5bf94;color:#30271e}label{display:inline-flex;gap:8px;align-items:center;margin:8px 16px 4px 0}input{accent-color:#e8be90}p{color:#d1d1c5}</style>
+<main><h1>人物材质 · 光学样片</h1><canvas aria-label="程序化材质试样"></canvas><nav aria-label="选择材质"><button aria-pressed="true">棉布</button><button aria-pressed="false">丝缎</button><button aria-pressed="false">皮肤</button><button aria-pressed="false">镜片</button></nav><label>灯位<input id="angle" type="range" min="-95" max="155" value="32"></label><label>观察角<input id="view" type="range" min="-48" max="48" value="0"></label><p id="note" role="status"></p></main>
+<script type="module">
+import {surfaceGLSL,dielectricF0} from './wardrobe.mjs';
+const vs=`#version 300 es
+void main(){vec2 p=vec2((gl_VertexID<<1)&2,gl_VertexID&2);gl_Position=vec4(p*2.-1.,0,1);}`;
+const fs=`#version 300 es
+precision highp float;
+uniform vec2 size;uniform int mode;uniform float lightAngle,viewAngle,f0;out vec4 col;
+`+surfaceGLSL+`
+vec3 room(vec3 d,vec3 l){float windowLight=smoothstep(.74,.79,dot(d,l));return mix(vec3(.12,.22,.32)+max(d.y,0.)*.38,vec3(4.,3.5,2.9),windowLight);}
+vec3 eye(vec2 p){
+ float r=length(p*vec2(1.,1.65));float iris=length(p-vec2(.08,0.));
+ vec3 c=mix(vec3(.37,.21,.14),vec3(.76,.71,.6),1.-smoothstep(.91,.97,r));
+ if(iris<.36)c=mix(vec3(.018,.085,.065),vec3(.09,.25,.17),.5+.5*cos(atan(p.y,p.x-.08)*28.));
+ if(iris<.16)c=vec3(.009,.012,.015);return c;
+}
+void main(){
+ vec2 p=(gl_FragCoord.xy-.5*size)/min(size.x,size.y)*2.36;
+ vec3 l=normalize(vec3(sin(lightAngle),.38,cos(lightAngle))),v=vec3(sin(viewAngle),0.,cos(viewAngle));
+ vec3 c=mix(vec3(.07,.09,.10),vec3(.15,.17,.16),clamp(.5+p.y*.23,0.,1.));
+ if(mode<2){
+  vec2 uv=p*vec2(.87,1.);float bend=.14*sin(5.*uv.x+.65*uv.y);
+  float inside=max(abs(uv.x)-.93,abs(uv.y-bend)-.79);
+  vec3 n=normalize(vec3(.65*cos(5.*uv.x+.65*uv.y),.13*sin(7.*uv.y),1.));
+  vec3 fabric=shadeFabric(vec3(.17,.065,.28),n,vec3(1,0,0),l,v,uv,mode==1);
+  c=mix(c,fabric,1.-smoothstep(-.004,.004,inside));
+ }else if(mode==2){
+  float r=dot(p,p);vec3 n=normalize(vec3(p,sqrt(max(.001,1.-r))));
+  vec3 axis=abs(n.y)<.95?vec3(0,1,0):vec3(1,0,0),t=normalize(cross(axis,n));
+  vec3 skin=shadeSkin(vec3(.52,.25,.15),n,t,l,v,smoothstep(.72,1.,r),smoothstep(-.4,.55,n.y));
+  c=mix(c,skin,1.-smoothstep(.986,1.,r));
+ }else{
+  vec2 q=p*vec2(.83,1.27);float r=length(q);vec3 behind=eye(p);
+  vec3 n=normalize(vec3(q*.28,1.));vec3 reflection=room(reflect(-v,n),l);
+  vec3 lens=lensComposite(behind,reflection,dot(n,v),f0,vec3(.975,.985,1.));
+  c=mix(c,behind,1.-smoothstep(1.10,1.14,r));c=mix(c,lens,1.-smoothstep(.97,.98,r));
+  float rim=(1.-smoothstep(.018,.034,abs(r-.994)));
+  c=mix(c,.05+room(reflect(-v,normalize(vec3(q,.55))),l)*.18,rim);
+ }
+ vec3 mapped=c/(1.+c);col=vec4(mix(12.92*mapped,1.055*pow(mapped,vec3(1./2.4))-.055,greaterThan(mapped,vec3(.0031308))),1.);
+}`;
+const canvas=document.querySelector('canvas'),note=document.getElementById('note');
+const notes=['看褶峰与褶谷，棉布的亮部较宽，擦边有轻微绒光。','比较同一褶面的丝缎，转灯时窄亮带随经纬方向变化。','薄区暖透和表面高光分别计算；这一球面演示的是皮肤响应。','转动观察方向，跟踪窗形反光与镜后的虹膜。此样片采用薄透射近似。'];
+function start(){
+ const gl=canvas.getContext('webgl2');if(!gl)throw Error('此浏览器无法打开 WebGL2。');const prog=gl.createProgram();
+ for(const [kind,src] of [[gl.VERTEX_SHADER,vs],[gl.FRAGMENT_SHADER,fs]]){
+  const sh=gl.createShader(kind);gl.shaderSource(sh,src);gl.compileShader(sh);
+  if(!gl.getShaderParameter(sh,gl.COMPILE_STATUS))throw Error(gl.getShaderInfoLog(sh));
+  gl.attachShader(prog,sh);gl.deleteShader(sh);
+ }
+ gl.linkProgram(prog);if(!gl.getProgramParameter(prog,gl.LINK_STATUS))throw Error(gl.getProgramInfoLog(prog));gl.useProgram(prog);
+ let mode=0;const buttons=[...document.querySelectorAll('button')],u=k=>gl.getUniformLocation(prog,k);
+ function draw(){const dpr=Math.min(2,devicePixelRatio||1),w=Math.max(1,Math.round(canvas.clientWidth*dpr)),h=Math.max(1,Math.round(canvas.clientHeight*dpr));
+  if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;}gl.viewport(0,0,w,h);gl.uniform2f(u('size'),w,h);
+  gl.uniform1i(u('mode'),mode);gl.uniform1f(u('f0'),dielectricF0(1.5));gl.uniform1f(u('lightAngle'),Number(document.querySelector('#angle').value)*Math.PI/180);
+  gl.uniform1f(u('viewAngle'),Number(document.querySelector('#view').value)*Math.PI/180);gl.drawArrays(gl.TRIANGLES,0,3);
+ }
+ buttons.forEach((btn,i)=>btn.onclick=()=>{mode=i;buttons.forEach((b,j)=>b.setAttribute('aria-pressed',String(i===j)));note.textContent=notes[i];draw()});
+ document.querySelectorAll('input').forEach(i=>i.oninput=draw);new ResizeObserver(draw).observe(canvas);note.textContent=notes[0];draw();
+}
+try{start()}catch(err){note.textContent=err.message}
+</script></html>

@@ -54,3 +54,10 @@
 
 - Blender 系列（28 个）：[EL4CTEO/blender-skills](https://github.com/EL4CTEO/blender-skills)（MIT，协议见 `.claude/skills/blender-skills.LICENSE`）
 - xilo-opus-video：[Kianzzz/xilo-opus-video](https://github.com/Kianzzz/xilo-opus-video)（MIT，协议在技能文件夹内的 `LICENSE`）
+
+## 🎮 纯代码游戏开发
+
+- [GameKit v4.3.0](.claude/skills/pure-code-3d-game)：数学程序化世界、性能、视觉验收与原创 UI/UX；KV 同步发行。
+- [fast-anything](.claude/skills/fast-anything)：官方 MIT 热点优化技能。
+- [raea-gamekit](.claude/skills/raea-gamekit)：可选原生渲染与视觉验收适配。
+- [game-ui-research](.claude/skills/game-ui-research)：游戏 UI 参考与程序化设计。

@@ -1,0 +1,7 @@
+{
+  "schemaVersion":2,"kitVersion":"4.0.0","workflow":"general","name":"雾港来信","genre":"第三人称探索，含第一人称检查物件","assetMode":"code-only",
+  "coreLoop":{"action":"观察现场、收集线索并组合推断","decision":"选择调查地点及线索组合","feedback":"可交互轮廓、空间音效和笔记共同确认发现","continueOrFinish":"解开线索开启新区域，错误推断保留尝试机会"},
+  "runtime":{"engine":"项目既有的原生 3D 引擎","buildCommand":"项目构建流水线的 desktop-release 任务","timeModel":"固定物理步，渲染插值，交互菜单独立时钟"},
+  "targets":[{"id":"pc","platform":"原生桌面","device":"团队指定的最低档 PC","inputs":["keyboard-mouse","gamepad"],"views":[{"id":"follow","framing":"第三人称跟随含近墙情况","priority":"遮挡、衣摆和镜头避障","checks":["camera-occlusion","garment-motion"]},{"id":"inspect","framing":"第一人称近距离物件检查","priority":"表面质感、近裁剪、线索可读性","checks":["material-response","near-clip"]}],"budgets":[{"id":"frame-p95","unit":"ms","max":16.7},{"id":"peak-working-set","unit":"MiB","max":900}]}],
+  "features":["saves","audio","wardrobe","streaming"],"extraChecks":[{"id":"camera-transition","stage":"slice","targets":["pc"],"expected":"贴墙由跟随进入检查再返回，目标、镜头和输入焦点恢复，无穿墙"}]
+}

@@ -1,0 +1,87 @@
+{
+  "schema": 1,
+  "targets": [
+    {
+      "id": "desktop",
+      "device": "project-desktop",
+      "backend": "webgpu",
+      "width": 1280,
+      "height": 720,
+      "maxFrameP95Ms": 16.7,
+      "minSampleFrames": 300,
+      "shadowBudget": {
+        "maxMapSize": 2048,
+        "maxWorldTexelM": 0.08,
+        "maxEdgeDriftPx": 1.0,
+        "maxContactGapM": 0.025,
+        "maxDeltaFrameP95Ms": 2.0
+      }
+    },
+    {
+      "id": "phone",
+      "device": "project-phone",
+      "backend": "webgl2",
+      "width": 844,
+      "height": 390,
+      "maxFrameP95Ms": 33.3,
+      "minSampleFrames": 300,
+      "shadowBudget": {
+        "maxMapSize": 1024,
+        "maxWorldTexelM": 0.08,
+        "maxEdgeDriftPx": 1.0,
+        "maxContactGapM": 0.025,
+        "maxDeltaFrameP95Ms": 2.0
+      }
+    }
+  ],
+  "shots": [
+    "gameplay",
+    "side",
+    "back",
+    "action"
+  ],
+  "collision": {
+    "enabled": true,
+    "radiusM": 0.3,
+    "heightM": 1.75,
+    "skinM": 0.01,
+    "maxPenetrationM": 0.015,
+    "fastestSpeedMps": 24,
+    "thinnestBarrierM": 0.12,
+    "fastMotion": "sweep",
+    "shape": "capsule"
+  },
+  "character": {
+    "enabled": true,
+    "heightM": 1.75,
+    "heightToleranceM": 0.025,
+    "maxFootErrorM": 0.02,
+    "minGameHeightPx": 70,
+    "views": [
+      "gameplay",
+      "side",
+      "back",
+      "action"
+    ],
+    "materialRegions": [
+      "skin",
+      "cloth",
+      "metal"
+    ]
+  },
+  "fx": {
+    "enabled": true,
+    "events": [
+      "windup",
+      "impact",
+      "decay"
+    ],
+    "peakEmitters": 8,
+    "particleCap": 384,
+    "maxDeltaFrameP95Ms": 2
+  },
+  "lighting": {
+    "enabled": true,
+    "method": "directional-depth-pcf"
+  }
+}

@@ -1,0 +1,281 @@
+{
+  "name": "pure-code-3d-game",
+  "version": "4.3.0",
+  "generated_at_cst": "2026-11-24",
+  "single_get_bundle_key": "skills/pure-code-3d-game/versions/v4.3.0/bundle.json",
+  "bundle_sha256": "0a6012f483d0c448d864d81b04b45376d1dadfcd105e5106d603a40f67169700",
+  "source_archive_prefix": "skills/pure-code-3d-game/versions/v4.2.0/",
+  "file_count": 51,
+  "files": {
+    "skills/pure-code-3d-game/SKILL.md": {
+      "rel": "SKILL.md",
+      "sha256": "198ebe99764711aac3227259c69873ac0d38e2ee46d69406256b3344d9006e8b",
+      "bytes": 11705
+    },
+    "skills/pure-code-3d-game/examples/general-exploration.json": {
+      "rel": "examples/general-exploration.json",
+      "sha256": "fa9d04ef4970e5822a101582429952d9d448e0b4c2548a6e432045ca0b82e439",
+      "bytes": 1426
+    },
+    "skills/pure-code-3d-game/examples/general-puzzle.json": {
+      "rel": "examples/general-puzzle.json",
+      "sha256": "c7f0a9c6bb83b28533134851bf29548293cda4d90a5d036bfcfc4c48997912e1",
+      "bytes": 1086
+    },
+    "skills/pure-code-3d-game/examples/strict-procedural-world.json": {
+      "rel": "examples/strict-procedural-world.json",
+      "sha256": "46667d33f5a03df19ffef53aefb7119e94277d96674edb8ff841977461143734",
+      "bytes": 1027
+    },
+    "skills/pure-code-3d-game/references/ai-task-contract.md": {
+      "rel": "references/ai-task-contract.md",
+      "sha256": "4d665dd606e1536db97ea6b2d49445d893fb233b15ad3ff12d7abb2ce50cbdfc",
+      "bytes": 3263
+    },
+    "skills/pure-code-3d-game/references/algorithm-component-library.md": {
+      "rel": "references/algorithm-component-library.md",
+      "sha256": "5d7e9b1e40680db095e37a3ad05e97cb7fbd635e8411a8523355691f2802a47b",
+      "bytes": 5411
+    },
+    "skills/pure-code-3d-game/references/calibration.md": {
+      "rel": "references/calibration.md",
+      "sha256": "de527b590c51e95312533e0c1ce102363e136eb01feda496ca15114aa38f399c",
+      "bytes": 5882
+    },
+    "skills/pure-code-3d-game/references/character-and-shading.md": {
+      "rel": "references/character-and-shading.md",
+      "sha256": "cfcfe1bc44ea799a86efbdddc2ab5b7e4aaf8013291d8e89349e156e9abb2cef",
+      "bytes": 5312
+    },
+    "skills/pure-code-3d-game/references/character-surfaces.md": {
+      "rel": "references/character-surfaces.md",
+      "sha256": "a4415ce87a93f0e1101f3f629070ef2096b30c055dd768fe1c9b5df582ca8777",
+      "bytes": 7883
+    },
+    "skills/pure-code-3d-game/references/general-contract.md": {
+      "rel": "references/general-contract.md",
+      "sha256": "473f4792d37c3eff08b49f3360212fc3f97a728d7b73e2768a078d847eecca62",
+      "bytes": 3770
+    },
+    "skills/pure-code-3d-game/references/lighting-and-shadows.md": {
+      "rel": "references/lighting-and-shadows.md",
+      "sha256": "1dd407176959eb85cbfaec1c9a1213fc3826347bebc828a47491f102821c4b4d",
+      "bytes": 6796
+    },
+    "skills/pure-code-3d-game/references/micro-polishing-loop.md": {
+      "rel": "references/micro-polishing-loop.md",
+      "sha256": "fac299509a1696089939c38bee7b5f36ae374e34f7eaae6c783474c5caeb380c",
+      "bytes": 3190
+    },
+    "skills/pure-code-3d-game/references/module-architecture.md": {
+      "rel": "references/module-architecture.md",
+      "sha256": "8b64d6e5acb425050736199bbc1cce6918d8155e66add49c3b1193882053007d",
+      "bytes": 4162
+    },
+    "skills/pure-code-3d-game/references/procedural-anatomy-motion.md": {
+      "rel": "references/procedural-anatomy-motion.md",
+      "sha256": "488c10b7c78329554b593ef791ca5e207694df030deb63857ac08d33d0429ddf",
+      "bytes": 5087
+    },
+    "skills/pure-code-3d-game/references/production-flow.md": {
+      "rel": "references/production-flow.md",
+      "sha256": "1bc6ed4d9e540b64cf39afa85794bdcc44ef117d3808fefc1d6ec6db9059c3a9",
+      "bytes": 5835
+    },
+    "skills/pure-code-3d-game/references/recipe-schema.md": {
+      "rel": "references/recipe-schema.md",
+      "sha256": "8f3756915126b522593b6826b7cbb970a737f4021a6beb25cd279d03250faf42",
+      "bytes": 2881
+    },
+    "skills/pure-code-3d-game/references/rendering-and-fx-styles.md": {
+      "rel": "references/rendering-and-fx-styles.md",
+      "sha256": "dd8d0a2dba1238e4240a8a6d73209b7468592582674b7d7827feca6487d721d4",
+      "bytes": 2019
+    },
+    "skills/pure-code-3d-game/references/sdf-character-method.md": {
+      "rel": "references/sdf-character-method.md",
+      "sha256": "05f00a894b3f0789ae6d31355885f18853516c8750ec64bdd5560963fbc2b579",
+      "bytes": 7333
+    },
+    "skills/pure-code-3d-game/references/sources-and-licenses.md": {
+      "rel": "references/sources-and-licenses.md",
+      "sha256": "5f5be356f64392c3e1a89a3fdfc188079bd2859b275f2f7a1bfe7f5d03f8122b",
+      "bytes": 2299
+    },
+    "skills/pure-code-3d-game/references/strict-procedural-world.md": {
+      "rel": "references/strict-procedural-world.md",
+      "sha256": "0ab7047fff0e106ad5084631b04419510fcce72dc86afc004863ccedcffb9c0a",
+      "bytes": 8513
+    },
+    "skills/pure-code-3d-game/references/verification-gates.md": {
+      "rel": "references/verification-gates.md",
+      "sha256": "649fcf60452c8dc9cfa4bfc7d5c0a1c764cc66fc7a30801f09b31b9a6354733b",
+      "bytes": 5425
+    },
+    "skills/pure-code-3d-game/references/web3d-adapter.md": {
+      "rel": "references/web3d-adapter.md",
+      "sha256": "f429bc60a22a73c86da3488c8c36d811f4bfe280ff8db5ac1e4d791dc5a572a8",
+      "bytes": 6721
+    },
+    "skills/pure-code-3d-game/tests/test_gate.mjs": {
+      "rel": "tests/test_gate.mjs",
+      "sha256": "71372e22fabbc0802b369599ff5c3140d86b81140229d3d0822c749a50c9e2ad",
+      "bytes": 2700
+    },
+    "skills/pure-code-3d-game/tests/test_light.mjs": {
+      "rel": "tests/test_light.mjs",
+      "sha256": "2a3763dfacf37f411517606d55e65bbbc8f5a9bb22b704acae14eb446e8d93df",
+      "bytes": 1214
+    },
+    "skills/pure-code-3d-game/tests/test_procedural_core.mjs": {
+      "rel": "tests/test_procedural_core.mjs",
+      "sha256": "ad40016c578789261c037593cd47374237c5ddc144b23d706bed6accf94c3143",
+      "bytes": 3805
+    },
+    "skills/pure-code-3d-game/tests/test_procedural_gate.mjs": {
+      "rel": "tests/test_procedural_gate.mjs",
+      "sha256": "846908ede333e2bc4b8db92fac0b01107257126024322e6ae491efe3d68d95a3",
+      "bytes": 3082
+    },
+    "skills/pure-code-3d-game/tests/test_production.mjs": {
+      "rel": "tests/test_production.mjs",
+      "sha256": "f664a183875140e9cd9300b8599b0c50857f8c910793821af70fa1846b84b74a",
+      "bytes": 4519
+    },
+    "skills/pure-code-3d-game/tests/test_quality.mjs": {
+      "rel": "tests/test_quality.mjs",
+      "sha256": "decdf0fc12920bab8b562cb273e52b15fa20a3bb4dab75e94579ed62588b98ec",
+      "bytes": 7266
+    },
+    "skills/pure-code-3d-game/tests/test_wardrobe.mjs": {
+      "rel": "tests/test_wardrobe.mjs",
+      "sha256": "c3cc19a5144ce15bbcef90b6fc577a2d7d680b22b0f95b5d45ab3b45f65734f6",
+      "bytes": 2179
+    },
+    "skills/pure-code-3d-game/tools/README.md": {
+      "rel": "tools/README.md",
+      "sha256": "6850b79bf6ba9a05d6198d3a82a91e69c64c82fec5a6de188d20a01eff2e71fc",
+      "bytes": 2898
+    },
+    "skills/pure-code-3d-game/tools/character-lab.html": {
+      "rel": "tools/character-lab.html",
+      "sha256": "00033ddf8a248bea8a76f762ffa58895f65e963207be4e0dec76c004767144c5",
+      "bytes": 10063
+    },
+    "skills/pure-code-3d-game/tools/gamekit.mjs": {
+      "rel": "tools/gamekit.mjs",
+      "sha256": "9e7b14fda7a99e242e4b94fa8a6404fcbec87ec8b6941532d7a4ed944335e5d9",
+      "bytes": 19352
+    },
+    "skills/pure-code-3d-game/tools/light-rig.mjs": {
+      "rel": "tools/light-rig.mjs",
+      "sha256": "46bb8fb0f3e335250723fe9025abd57663a4c29c820dc2afa7015afbb525c659",
+      "bytes": 2542
+    },
+    "skills/pure-code-3d-game/tools/lighting-lab.html": {
+      "rel": "tools/lighting-lab.html",
+      "sha256": "519e96f0348da5f073d3ac795f8dac98b4f5bca986997936eeef76df9a3464da",
+      "bytes": 7209
+    },
+    "skills/pure-code-3d-game/tools/material-lab.html": {
+      "rel": "tools/material-lab.html",
+      "sha256": "9fa5c229643f6e070471f41f7ea67d554bfbae01c43b0f5c3597171d25f2aabe",
+      "bytes": 5641
+    },
+    "skills/pure-code-3d-game/tools/procedural-README.md": {
+      "rel": "tools/procedural-README.md",
+      "sha256": "4172ccbd4ccba5eb7c9d51c48486f663ce0f9b5601609229ce8d37ad69bc8f22",
+      "bytes": 2160
+    },
+    "skills/pure-code-3d-game/tools/procedural-core.mjs": {
+      "rel": "tools/procedural-core.mjs",
+      "sha256": "6a675581a598e3f3daa17b876c25f1363192f60b201fefe16c513a9b819ddcce",
+      "bytes": 12043
+    },
+    "skills/pure-code-3d-game/tools/procedural-gate.mjs": {
+      "rel": "tools/procedural-gate.mjs",
+      "sha256": "23f27c63495d14f65d048477c39912ff124763a95f0e23464945da6c4fdba3a9",
+      "bytes": 5352
+    },
+    "skills/pure-code-3d-game/tools/production.mjs": {
+      "rel": "tools/production.mjs",
+      "sha256": "81c67fd5c84a29e5e31f1826dc962592516de71cb65f1032d9b8b9e99e25321d",
+      "bytes": 6335
+    },
+    "skills/pure-code-3d-game/tools/quality-contract.mjs": {
+      "rel": "tools/quality-contract.mjs",
+      "sha256": "ec1600ecccc91a7438f1998e094ef3b369f4baff400f0d42d726e22c552dcb68",
+      "bytes": 9324
+    },
+    "skills/pure-code-3d-game/tools/quality-example.json": {
+      "rel": "tools/quality-example.json",
+      "sha256": "18379fc84e23cd90b389d02417d07eb85afa7ba10df0c6e79367c5d907f5c3d9",
+      "bytes": 1687
+    },
+    "skills/pure-code-3d-game/tools/wardrobe.mjs": {
+      "rel": "tools/wardrobe.mjs",
+      "sha256": "d2fa8393021f9301056e890eccbe54d3086a0c59ce99ced2b6506ba5ff1a3637",
+      "bytes": 4115
+    },
+    "skills/pure-code-3d-game/references/performance-hotpaths.md": {
+      "rel": "references/performance-hotpaths.md",
+      "sha256": "6b00c4352d6ec0d411ce96b71d56f00e819db140d91bc8fb8e120ce6fd72acdc",
+      "bytes": 2617
+    },
+    "skills/pure-code-3d-game/references/renderer-visual-evidence.md": {
+      "rel": "references/renderer-visual-evidence.md",
+      "sha256": "a0587397378e40144c4a4a4d7c0174854cf813ebfa0f90d071cf7ff27a57ce97",
+      "bytes": 2649
+    },
+    "skills/pure-code-3d-game/references/procedural-ui-ux.md": {
+      "rel": "references/procedural-ui-ux.md",
+      "sha256": "abdb085ebb88fb29a00b7924a174d43956113a7ec45ceca65a592913fbca1568",
+      "bytes": 2275
+    },
+    "skills/pure-code-3d-game/integrations/fast-anything/SKILL.md": {
+      "rel": "integrations/fast-anything/SKILL.md",
+      "sha256": "86d532ae07d12bc783480bf2ca76506d469a513e518397df3dcfd7edbd7b594f",
+      "bytes": 2257
+    },
+    "skills/pure-code-3d-game/integrations/fast-anything/LICENSE": {
+      "rel": "integrations/fast-anything/LICENSE",
+      "sha256": "d81d0037e3a29a01ccfefaae420d5ba73e905cabf3995700e9075c7205c06cc5",
+      "bytes": 1064
+    },
+    "skills/pure-code-3d-game/integrations/raea-gamekit/SKILL.md": {
+      "rel": "integrations/raea-gamekit/SKILL.md",
+      "sha256": "1a3ecac59be768fbd2e9099fa47993b06f8985430b1728749b5471945bf5ea0d",
+      "bytes": 838
+    },
+    "skills/pure-code-3d-game/integrations/game-ui-research/SKILL.md": {
+      "rel": "integrations/game-ui-research/SKILL.md",
+      "sha256": "2603615ab532a5297f3eb21b44d72f0306517c8ff06c8502eba1ca5d69c622b7",
+      "bytes": 609
+    },
+    "skills/pure-code-3d-game/integrations/README.md": {
+      "rel": "integrations/README.md",
+      "sha256": "baaa0956a89d99eef4fc60d086828bd9c97fcd0641303797933d15b4f29c8e63",
+      "bytes": 1099
+    },
+    "skills/pure-code-3d-game/references/integration-release-4.3.0.md": {
+      "rel": "references/integration-release-4.3.0.md",
+      "sha256": "a1b0344988f24d4ae98cac0032695eeea47a68e5588b64a2bf9ea508d4a85cd7",
+      "bytes": 786
+    }
+  },
+  "validation": {
+    "node_tests": "61/61 historical v4.2.0; not rerun for v4.3.0",
+    "general_contracts": "2D turn-based and multi-perspective native 3D declarations checked; CLI release exercised with synthetic evidence",
+    "web3d_schema1": "legacy regression suite PASS",
+    "production_game_validation": "PROJECT-SPECIFIC, NOT RUN",
+    "strict_code_only": "user_direction_locked",
+    "procedural_algorithms": "Historical v4.2.0: 19/19 Node tests PASS (within 61/61 local run)",
+    "v4_general_tests": "Historical v4.2.0: 61/61 local run 2026-11-24 (v4.2.0)",
+    "real_gpu_visual": "PENDING",
+    "real_character_fidelity": "PENDING",
+    "runtime_network_asset_audit": "REQUIRED_PER_PROJECT",
+    "v4_2_0_changes": "Anti-rubber-person method (SDF+smin sculpting, LEN proportions, hide-face design, mandatory screenshot feedback loop max 5 rounds, human-likeness gate 3.4); CapsuleGeometry rejected by gamekit check; v4.1 eyebrow/eyelash-level facial anatomy requirement revoked; complete_3d_character still NOT_IMPLEMENTED (method specified, no character built and verified with it yet)",
+    "v4_3_0": "Skill/workflow integration; optional external tools not installed or exercised on host",
+    "final_device_performance": "PENDING"
+  }
+}
