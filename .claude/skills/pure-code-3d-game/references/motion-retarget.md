@@ -1,0 +1,2 @@
+# MotionKit：骨骼重定向
+参考 Godot RetargetModifier3D、Three.js SkeletonUtils/CCDIKSolver、Blender Simple Retarget Tool 的工作流。独立 motion-kit.mjs：语义骨骼映射（显式 alias，拒绝歧义，报告缺失）；局部旋转重定向，四元数 XYZW，主动旋转，qPose=qRest*qDelta，qDelta=inverse(qSourceRest)*qSourcePose，qTarget=qTargetRest*B*qDelta*inverse(B)，B 是源静止骨骼轴到目标静止骨骼轴的已校准旋转。不能把任意世界姿态直接代入。静止姿态一致性、单位四元数、轴转换与缺失映射已做独立断言。实际骨架需从 rest matrices/inverse binds 求 B、校验父子关系与轴、手性和尺度，根运动按腿长/角色尺度校准，保留目标骨长；扭转骨分配、关节限位、脚锁、手接触、面部与蒙皮随后由 rig-motion-kit / 引擎适配器完成。不要用导入 mocap 或预制关键帧代替严格代码动作。动作意图、步态周期、接触约束、IK、程序生成姿态再重定向；不得声称此局部旋转函数就是完整动作系统。

@@ -19,3 +19,5 @@ If code is copied from other repos into a downstream project, review their licen
 fast-anything MIT (official skill + license mirrored); raea engine FSL-1.1-ALv2, raea-skills Apache-2.0 (adapter only); Game UI Database reference only, no copied assets. See integrations/README.md.
 
 Google Colab CLI/Operator skill: https://github.com/googlecolab/google-colab-cli, Apache-2.0, original licensed mirror with pinned commit in integrations/colab-operator/UPSTREAM.md.
+
+GameKit 4.7: see ALGORITHMS.json for pinned source paths and license boundaries; no upstream source copied for new independent reference components. GPL Blender plugins reference only; audit license and notices before any future reuse.

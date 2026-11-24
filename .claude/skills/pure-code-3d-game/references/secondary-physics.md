@@ -1,0 +1,2 @@
+# PhysicsKit：次级动画
+上游参考 Blender Jiggle Physics 工作流、MIT JigglePhysics Unity 求解、Godot SpringBoneSimulator3D。独立 baseline: tools/secondary-physics.mjs，用固定时间步 Verlet 预测 x'=x+(x-xPrev)*(1-damping)+a*dt²；XPBD 距离约束 C=|b-a|-L, alpha=compliance/dt², deltaLambda=(-C-alpha*lambda)/(wa+wb+alpha)，根节点逆质量零，自由点为一；多次迭代并做球碰撞投影，返回最大长度残差与穿透深度。阻尼为每步量，改步长需重新校准。限制迭代和 dt，禁止 NaN；位置相同采用确定性回退轴。约束冲突时长度残差必须可见。头发/尾巴/吊饰可将解算点转换成骨骼旋转，限制角度、加风与碰撞代理；裙摆/披风需二维网格、弯曲/剪切、质量分布、摩擦、自碰撞与 LOD；完整布料或软体尚未实现。固定步、重置/瞬移、静止平衡、碰撞残差和长时稳定性分开测试，不凭一个弹簧模型宣称写实软组织。

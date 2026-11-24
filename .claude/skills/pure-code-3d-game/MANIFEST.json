@@ -1,17 +1,17 @@
 {
   "name": "pure-code-3d-game",
-  "version": "4.6.0",
+  "version": "4.7.0",
   "generated_at_cst": "2026-11-24",
-  "single_get_bundle_key": "skills/pure-code-3d-game/versions/v4.6.0/bundle.json",
-  "module_index_key": "skills/pure-code-3d-game/versions/v4.6.0/MODULES.json",
-  "bundle_sha256": "1de3a1efa670059eabf0883dd31e682320fe27fb3a06e9334e8a8b9b4ca9d93c",
-  "source_archive_prefix": "skills/pure-code-3d-game/versions/v4.5.0/",
-  "file_count": 104,
+  "single_get_bundle_key": "skills/pure-code-3d-game/versions/v4.7.0/bundle.json",
+  "module_index_key": "skills/pure-code-3d-game/versions/v4.7.0/MODULES.json",
+  "bundle_sha256": "485954e2a053694c6ad44af62f9d2f3feb0ac9393ad1f22449d3aabfca4cdb1f",
+  "source_archive_prefix": "skills/pure-code-3d-game/versions/v4.6.0/",
+  "file_count": 115,
   "files": {
     "skills/pure-code-3d-game/SKILL.md": {
       "rel": "SKILL.md",
-      "sha256": "b6e0ed5cb11e8c6b99a0859fd0d660d713606a75dddf5d3dd77d2c515806569f",
-      "bytes": 8307
+      "sha256": "42187c4d7bc686fe5f7dd1d5fab650c5c097c1cc01553176c267a540736b0ff9",
+      "bytes": 8938
     },
     "skills/pure-code-3d-game/examples/general-exploration.json": {
       "rel": "examples/general-exploration.json",
@@ -100,8 +100,8 @@
     },
     "skills/pure-code-3d-game/references/sources-and-licenses.md": {
       "rel": "references/sources-and-licenses.md",
-      "sha256": "7392337a91b0c284406f3791f05bf59ba6701c8d57f05edda662ee5aebb03027",
-      "bytes": 2482
+      "sha256": "5f4c008c441c784ff1c9b638ca9b28082dcf03b4ed44af5985c93c282c13c6f6",
+      "bytes": 2719
     },
     "skills/pure-code-3d-game/references/strict-procedural-world.md": {
       "rel": "references/strict-procedural-world.md",
@@ -255,8 +255,8 @@
     },
     "skills/pure-code-3d-game/integrations/README.md": {
       "rel": "integrations/README.md",
-      "sha256": "270cd82c9d45d17fede54ce9e591ec4380745819850f2b9e91d809453e39d57f",
-      "bytes": 1541
+      "sha256": "98e621e395bb3e7ef8947fbc5bfff5d37b15aa68ffbb40b22134daa01423c024",
+      "bytes": 1784
     },
     "skills/pure-code-3d-game/references/integration-release-4.3.0.md": {
       "rel": "references/integration-release-4.3.0.md",
@@ -265,8 +265,8 @@
     },
     "skills/pure-code-3d-game/MODULES.json": {
       "rel": "MODULES.json",
-      "sha256": "45ce9257ed44889524cc4df06185be9a82cb7079847bd8c0dc9906eecf049e4e",
-      "bytes": 7478
+      "sha256": "66f6d1be8a88f190347fac227563f9e5cdaf4096e73d427fe4f17c4dd60451f7",
+      "bytes": 8770
     },
     "skills/pure-code-3d-game/tools/module-router.mjs": {
       "rel": "tools/module-router.mjs",
@@ -527,10 +527,65 @@
       "rel": "integrations/colab-gamekit/SKILL.md",
       "sha256": "80abce2f1bcabf5eb7c6afca062c82dcf90ace9c653a6f58032ff52c628c5612",
       "bytes": 1480
+    },
+    "skills/pure-code-3d-game/ALGORITHMS.json": {
+      "rel": "ALGORITHMS.json",
+      "sha256": "fc8726b19db62032c1a84b04c99943c4ac4720344ff57292d1b675b1de7e57b6",
+      "bytes": 6034
+    },
+    "skills/pure-code-3d-game/tools/motion-kit.mjs": {
+      "rel": "tools/motion-kit.mjs",
+      "sha256": "2aa8a94d0f10c21e0fd312de7f5e171fdd5684b1baf6c455148f90124962c575",
+      "bytes": 1600
+    },
+    "skills/pure-code-3d-game/tools/secondary-physics.mjs": {
+      "rel": "tools/secondary-physics.mjs",
+      "sha256": "0ac869fbeb6fc572d0cd944faaf6cfb78c7685508989193b1273b7dc16635020",
+      "bytes": 1915
+    },
+    "skills/pure-code-3d-game/tools/fixed-clock.mjs": {
+      "rel": "tools/fixed-clock.mjs",
+      "sha256": "8abb2a1a787aeef7b39658a40e14db3b1fa5d51c6c75cb509fc02c49b700d635",
+      "bytes": 728
+    },
+    "skills/pure-code-3d-game/tools/vfx-kit.mjs": {
+      "rel": "tools/vfx-kit.mjs",
+      "sha256": "14f6a5c59019496d6b89cec99a5eacbfb8e87b1fdd221f4a92115335ec8a883f",
+      "bytes": 2017
+    },
+    "skills/pure-code-3d-game/tests/test_algorithm_kits.mjs": {
+      "rel": "tests/test_algorithm_kits.mjs",
+      "sha256": "a97829865d37d7b2829dca0a259b368f228a2bb54c0b098fde614b5a8882367d",
+      "bytes": 3070
+    },
+    "skills/pure-code-3d-game/references/algorithm-registry.md": {
+      "rel": "references/algorithm-registry.md",
+      "sha256": "139ca3f780769bad8d270dcfe00193e84ba7bda82cae58184f30a46e946338ec",
+      "bytes": 1433
+    },
+    "skills/pure-code-3d-game/references/motion-retarget.md": {
+      "rel": "references/motion-retarget.md",
+      "sha256": "72c2bd193cfc629d8db45105915fa5ff9bffa8d07c54cd4268f104e84725db79",
+      "bytes": 1087
+    },
+    "skills/pure-code-3d-game/references/secondary-physics.md": {
+      "rel": "references/secondary-physics.md",
+      "sha256": "e34c1c79446c629c87515924eb34ebc16a946689df4a01dd5012e74855994371",
+      "bytes": 996
+    },
+    "skills/pure-code-3d-game/references/vfx-kit.md": {
+      "rel": "references/vfx-kit.md",
+      "sha256": "f1972b0f887003bf20c38299dee29b83eeffdbc75fa5959315c4567d4f810373",
+      "bytes": 1053
+    },
+    "skills/pure-code-3d-game/references/engine-adapters.md": {
+      "rel": "references/engine-adapters.md",
+      "sha256": "b38eb331afca0e384486168003c320aa7e9039b25e4a53cca2f0bfdb054c5f74",
+      "bytes": 1572
     }
   },
   "validation": {
-    "node_tests": "Legacy 61/61 v4.2 historical; full Node suite not rerun for v4.6",
+    "node_tests": "Legacy 61/61 v4.2 historical; full Node suite not rerun for v4.7",
     "general_contracts": "2D turn-based and multi-perspective native 3D declarations checked; CLI release exercised with synthetic evidence",
     "web3d_schema1": "legacy regression suite PASS",
     "production_game_validation": "PROJECT-SPECIFIC, NOT RUN",
@@ -549,6 +604,7 @@
     "compute_watchdog": "USER_EXCLUDED",
     "v4_6_0": "29 direct JS policy assertions passed; no central gateway/watchdog/Cloudflare compute; no live Colab auth/run; full Node suite not rerun",
     "compute_gateway": "USER_EXCLUDED",
-    "compute_mode": "agent-direct-one-shot"
+    "compute_mode": "agent-direct-one-shot",
+    "v4_7_0": "24 direct JS assertions passed for independent motion/physics/fixed clock/VFX baselines; 7 pinned source repos indexed; no upstream runtime installed, full Node suite and GPU/device not run"
   }
 }

@@ -8,3 +8,5 @@ All three workflows accessible via main SKILL.md and single-get bundle even with
 GameKit 4.4: curated 36 official raea reference files with LICENSE/NOTICE, pinned commit; see integrations/raea-gamekit/UPSTREAM.md. Official full plugin not installed on host. MODULES.json enables selective retrieval.
 
 GameKit 4.6: official Google Colab Operator skill mirrored with Apache-2.0 license. Agent direct CLI/MCP, one-shot lifecycle; no Compute Gateway, Cloudflare runtime or independent watchdog. Live authorization not tested.
+
+GameKit 4.7 adds pinned algorithm source registry covering Simple Retarget Tool, Effekseer, Blender Jiggle Physics, MIT JigglePhysics, Godot, Three.js, Bevy. Independent CPU reference components; no full engine or upstream runtime installed.

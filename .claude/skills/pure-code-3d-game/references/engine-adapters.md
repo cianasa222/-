@@ -1,0 +1,5 @@
+# RenderKit / engine adapters
+Three.js: 浏览器优先候选（不强制），BufferGeometry 生成网格、SkinnedMesh 骨骼绑定、SkeletonUtils/CCDIK 为可选成熟功能、InstancedMesh 批绘；TSL/节点材质需要对当前版本确认 API。区分 WebGL2 渲染 fallback 与 WebGPU compute 支持，特效 GPU 模块不可在 WebGL fallback 中假定能执行。程序化 PBR、光影、雾、水、风场使用统一 Recipe、坐标约定和参数库，不把 shader 特定后端绑定到游戏状态。
+Godot: 原生游戏可使用 ArrayMesh、Skeleton3D、RetargetModifier3D、SpringBoneSimulator3D、GPU 粒子等对应安装版本 API；纯代码项目由代码生成场景/网格/材质，保留可复算 seed；Godot 的完整引擎能力不能直接算作 GameKit 自研实现。
+Bevy: Rust/代码优先、ECS、FixedUpdate、资源与调度依赖；计算 shader 示例采用存储纹理 ping-pong、bind group 与 pipeline readiness；仿真状态和渲染提取分离，冲突访问和顺序敏感系统显式定义依赖，不假定并行系统确定性。tools/fixed-clock.mjs 是独立时间步基准：累积真实时间、固定步长、渲染插值 alpha、最大补步、超额时间显式计数；丢时策略需按联机/回放场景调整，不能在权威网络模拟中静默跳 tick。并非 Bevy ECS 的实现。适配器仅在选定引擎和版本后实现并验证，避免强制更换引擎。
+按任务读取 ALGORITHMS.json 的源码路径；本文与现有 lighting、geometry、web3d、performance、verification 模块协作。

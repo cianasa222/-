@@ -1,5 +1,5 @@
 {
-  "version": "4.6.0",
+  "version": "4.7.0",
   "core": [
     "SKILL.md",
     "references/strict-procedural-world.md",
@@ -128,7 +128,8 @@
         "references/verification-gates.md",
         "references/renderer-visual-evidence.md",
         "references/micro-polishing-loop.md",
-        "tools/quality-contract.mjs"
+        "tools/quality-contract.mjs",
+        "tests/test_algorithm_kits.mjs"
       ],
       "trigger": "QA, screenshots, tests, release, handoff",
       "upstreamOptional": [
@@ -192,6 +193,56 @@
       ],
       "upstreamOptional": [
         "integrations/colab-operator/LICENSE"
+      ]
+    },
+    "motion": {
+      "depends": [
+        "character",
+        "registry"
+      ],
+      "trigger": "animation retargeting, semantic skeleton mapping, procedural poses",
+      "files": [
+        "references/motion-retarget.md",
+        "tools/motion-kit.mjs"
+      ]
+    },
+    "physics": {
+      "depends": [
+        "registry"
+      ],
+      "trigger": "secondary motion, spring bone, hair, tail, cloth, Verlet, XPBD",
+      "files": [
+        "references/secondary-physics.md",
+        "tools/secondary-physics.mjs"
+      ]
+    },
+    "vfx": {
+      "depends": [
+        "registry"
+      ],
+      "trigger": "particles, effects, ribbons, force field, weather, VFX",
+      "files": [
+        "references/vfx-kit.md",
+        "tools/vfx-kit.mjs"
+      ]
+    },
+    "engines": {
+      "depends": [
+        "architecture",
+        "registry"
+      ],
+      "trigger": "Godot, Bevy, Three.js, engine adapter, ECS, GPU compute",
+      "files": [
+        "references/engine-adapters.md",
+        "tools/fixed-clock.mjs"
+      ]
+    },
+    "registry": {
+      "depends": [],
+      "trigger": "source lookup, algorithm reuse, library choice, licensing",
+      "files": [
+        "ALGORITHMS.json",
+        "references/algorithm-registry.md"
       ]
     }
   }

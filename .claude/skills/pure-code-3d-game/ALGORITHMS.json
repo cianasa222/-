@@ -1,0 +1,172 @@
+{
+  "version": "1.0.0",
+  "policy": "Pinned source index, not vendored code. Inspect exact paths before reuse; preserve license notices. Independently implemented baseline components below are not full upstream ports.",
+  "sources": [
+    {
+      "id": "blender-retarget",
+      "repo": "cgvirus/Simple-Retarget-Tool-Blender",
+      "commit": "3adcfaf5c0fcd582e5ace918c0ca414f247b7a19",
+      "license": "GPL-3.0",
+      "mode": "reference-only",
+      "paths": [
+        "Simple_Retarget_Tool.py"
+      ],
+      "topics": [
+        "semantic mapping",
+        "rest pose",
+        "rotation constraints"
+      ],
+      "note": "Blender workflow reference; do not copy GPL implementation into differently licensed runtime."
+    },
+    {
+      "id": "effekseer",
+      "repo": "effekseer/Effekseer",
+      "commit": "b5700082b49bc5f919610880dafddc90211a9a4e",
+      "license": "MIT",
+      "mode": "reference-and-optional-adapter",
+      "paths": [
+        "Dev/Cpp/Effekseer/Effekseer/ForceField/Effekseer.ForceFields.cpp",
+        "Dev/Cpp/Effekseer/Effekseer/Parameter/Effekseer.GpuParticlesParameter.h",
+        "Dev/Cpp/Effekseer/Effekseer/Parameter/Effekseer.GpuParticlesParameter.cpp",
+        "Dev/Cpp/Effekseer/Effekseer/Effekseer.EffectNodeRibbon.cpp",
+        "Dev/Cpp/Effekseer/Effekseer/Effekseer.EffectNodeTrack.cpp",
+        "Dev/Cpp/Effekseer/Effekseer/Parameter/Effekseer.Easing.cpp"
+      ],
+      "topics": [
+        "force fields",
+        "emitters",
+        "ribbons",
+        "curves",
+        "gpu particle parameters"
+      ],
+      "note": "ForceFields.cpp inspected; remaining paths located for on-demand inspection. Strict procedural runtime must generate recipes, not import authored effect assets."
+    },
+    {
+      "id": "blender-jiggle",
+      "repo": "naelstrof/blender-jiggle-physics",
+      "commit": "792db09a22cd5c7dc5b5c1b4eb0ea12c4af3e6b1",
+      "license": "GPL-3.0",
+      "mode": "reference-only",
+      "paths": [
+        "__init__.py",
+        "presets/jigglebones/Hair.py",
+        "presets/jigglebones/Rope.py",
+        "presets/jigglebones/Tail.py"
+      ],
+      "topics": [
+        "Verlet integration",
+        "colliders",
+        "secondary animation"
+      ],
+      "note": "Workflow and general mathematical method only; no GPL code or presets copied."
+    },
+    {
+      "id": "jiggle-mit",
+      "repo": "naelstrof/JigglePhysics",
+      "commit": "d5b44e637ca9d4b5a6887b26dc8d7d5f0827aef4",
+      "license": "MIT",
+      "mode": "reference-and-optional-port",
+      "paths": [
+        "Packages/com.gator-dragon-games.jigglephysics/Scripts/JiggleJobSimulate.cs"
+      ],
+      "topics": [
+        "Verlet",
+        "constraints",
+        "fixed step",
+        "batch data"
+      ],
+      "note": "Unity-specific source, optional independently tested port; retain notices if copying."
+    },
+    {
+      "id": "godot",
+      "repo": "godotengine/godot",
+      "commit": "94fc09c62dd93f1d318ecd78ef50bd78dcd3955f",
+      "license": "MIT (core; audit third-party components separately)",
+      "mode": "reference-and-optional-engine",
+      "paths": [
+        "scene/3d/retarget_modifier_3d.cpp",
+        "scene/3d/spring_bone_simulator_3d.cpp",
+        "scene/3d/spring_bone_collision_capsule_3d.cpp",
+        "scene/3d/skeleton_ik_3d.cpp",
+        "scene/resources/particle_process_material.cpp"
+      ],
+      "topics": [
+        "rest-space retarget",
+        "spring bones",
+        "colliders",
+        "particles"
+      ],
+      "note": "First two sources inspected; others located. Use native APIs or license-audited isolated ports, not entire engine transplant."
+    },
+    {
+      "id": "three",
+      "repo": "mrdoob/three.js",
+      "commit": "6d91309bfcf9c2779f32dd98b61fcc5415a74912",
+      "license": "MIT",
+      "mode": "reference-and-optional-engine",
+      "paths": [
+        "examples/jsm/utils/SkeletonUtils.js",
+        "examples/jsm/animation/CCDIKSolver.js",
+        "src/objects/SkinnedMesh.js",
+        "src/nodes/gpgpu/ComputeNode.js",
+        "src/renderers/common/StorageBufferAttribute.js"
+      ],
+      "topics": [
+        "retarget",
+        "CCD IK",
+        "skinning",
+        "TSL",
+        "GPU compute"
+      ],
+      "note": "First two inspected. Pin compatible package version; verify renderer and compute capabilities separately."
+    },
+    {
+      "id": "bevy",
+      "repo": "bevyengine/bevy",
+      "commit": "1c4460b102a6a4380319455051c0e4c6051708a6",
+      "license": "MIT OR Apache-2.0 (verify per crate and asset)",
+      "mode": "reference-and-optional-engine",
+      "paths": [
+        "crates/bevy_time/src/fixed.rs",
+        "crates/bevy_ecs/src/schedule/executor/mod.rs",
+        "examples/shader/compute_shader_game_of_life.rs",
+        "crates/bevy_render/src/render_resource/pipeline_cache.rs",
+        "crates/bevy_animation/src/lib.rs"
+      ],
+      "topics": [
+        "fixed update",
+        "ECS scheduling",
+        "ping-pong compute",
+        "pipeline cache",
+        "animation"
+      ],
+      "note": "First three inspected; remaining paths located. Keep simulation/render separate and avoid blind engine migration."
+    }
+  ],
+  "components": [
+    {
+      "id": "motion.retarget-local",
+      "path": "tools/motion-kit.mjs",
+      "status": "tested baseline",
+      "limits": "local rotations only; explicit rest-axis basis; no automatic retarget rig solving"
+    },
+    {
+      "id": "physics.xpbd-chain",
+      "path": "tools/secondary-physics.mjs",
+      "status": "tested baseline",
+      "limits": "point chain, equal free inverse masses, sphere collision; not full cloth or spring-bone pose reconstruction"
+    },
+    {
+      "id": "vfx.seeded-emitter",
+      "path": "tools/vfx-kit.mjs",
+      "status": "tested baseline",
+      "limits": "CPU reference emitter, no renderer/GPU adapter"
+    },
+    {
+      "id": "architecture.fixed-clock",
+      "path": "tools/fixed-clock.mjs",
+      "status": "tested baseline",
+      "limits": "single-thread fixed-step accumulator, not ECS scheduler"
+    }
+  ]
+}

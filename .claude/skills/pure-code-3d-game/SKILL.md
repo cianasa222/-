@@ -3,7 +3,7 @@ name: pure-code-3d-game
 description: Develop original code-driven games across genres, dimensions, camera modes, engines, input methods and target platforms. Scope the player loop, build a playable slice, validate systems and content, preserve performance and player progress, and ship reproducible builds. Includes optional procedural Web 3D tools for characters, materials, light and shadows.
 ---
 
-# 通用代码游戏开发 · GameKit 4.6
+# 通用代码游戏开发 · GameKit 4.7
 
 保留原技能标识供已有项目定位。通用开发契约支持 2D、2.5D、3D、文字与界面驱动玩法；视角和引擎由项目选定。Node ≥20 只用于开发期契约工具。正式游戏沿用项目语言、引擎、平台构建和测试入口。
 
@@ -70,3 +70,7 @@ node tools/gamekit.mjs verify ./my-game --stage release --evidence evidence/rele
 ## v4.6 ComputeKit Agent 自主算力调度
 
 用户指定不部署独立网关、Cloudflare 计算调度或看门狗。按需加载 compute 模块；Agent 直接用自身已授权的 Colab CLI/MCP 或本地工具，在预算内选择最低成本的可用后端。优先一次性任务，集中执行后立即释放并核验；不跨工具调用、模型思考或用户等待保留付费 Runtime。无实际连接则继续可用研发；清理不明则停止该 Agent 新付费申请并报告手动回收，硬断线风险不能保证消除。KV 仅作既有技能分发。详见 references/compute-kit.md。
+
+## v4.7 算法注册库与跨引擎组件
+
+涉及成熟算法复用，按需加载 registry、motion、physics、vfx、engines 模块；ALGORITHMS.json 固定上游仓库提交和源码路径。优先现有兼容库/原生接口，不盲目迁移引擎。独立参考组件实现语义映射/局部四元数重定向、Verlet+XPBD 点链、固定时间步、种子化粒子及曲线。它们是基础组件，不是完整人物、布料、GPU 特效或 ECS；真实画面与设备必须独立验收。GPL 源只参考一般方法，保留第三方许可；严格纯代码不变。ComputeKit v4.6 Agent 直连策略保持不变。
