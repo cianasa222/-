@@ -1,16 +1,17 @@
 {
   "name": "pure-code-3d-game",
-  "version": "4.3.0",
+  "version": "4.4.0",
   "generated_at_cst": "2026-11-24",
-  "single_get_bundle_key": "skills/pure-code-3d-game/versions/v4.3.0/bundle.json",
-  "bundle_sha256": "0a6012f483d0c448d864d81b04b45376d1dadfcd105e5106d603a40f67169700",
-  "source_archive_prefix": "skills/pure-code-3d-game/versions/v4.2.0/",
-  "file_count": 51,
+  "single_get_bundle_key": "skills/pure-code-3d-game/versions/v4.4.0/bundle.json",
+  "module_index_key": "skills/pure-code-3d-game/versions/v4.4.0/MODULES.json",
+  "bundle_sha256": "9dfa61794b9157ba6777a51ef469946d20566158d653bf5e58c4bb0b583af9ac",
+  "source_archive_prefix": "skills/pure-code-3d-game/versions/v4.3.0/",
+  "file_count": 97,
   "files": {
     "skills/pure-code-3d-game/SKILL.md": {
       "rel": "SKILL.md",
-      "sha256": "198ebe99764711aac3227259c69873ac0d38e2ee46d69406256b3344d9006e8b",
-      "bytes": 11705
+      "sha256": "a92a8bd3cabdcf9c9b4fcfe647806466256ac57d681603978d802e6346d1966e",
+      "bytes": 7697
     },
     "skills/pure-code-3d-game/examples/general-exploration.json": {
       "rel": "examples/general-exploration.json",
@@ -29,8 +30,8 @@
     },
     "skills/pure-code-3d-game/references/ai-task-contract.md": {
       "rel": "references/ai-task-contract.md",
-      "sha256": "4d665dd606e1536db97ea6b2d49445d893fb233b15ad3ff12d7abb2ce50cbdfc",
-      "bytes": 3263
+      "sha256": "7ee48493a0c9e0663787e4a5066a02e50eb6160fff253bdef50d5e6745996906",
+      "bytes": 3044
     },
     "skills/pure-code-3d-game/references/algorithm-component-library.md": {
       "rel": "references/algorithm-component-library.md",
@@ -44,13 +45,13 @@
     },
     "skills/pure-code-3d-game/references/character-and-shading.md": {
       "rel": "references/character-and-shading.md",
-      "sha256": "cfcfe1bc44ea799a86efbdddc2ab5b7e4aaf8013291d8e89349e156e9abb2cef",
-      "bytes": 5312
+      "sha256": "d875688c87cf2d5e6ffa486a7f08b8abb0361eb87706f2f33f55939ef7c49049",
+      "bytes": 4971
     },
     "skills/pure-code-3d-game/references/character-surfaces.md": {
       "rel": "references/character-surfaces.md",
-      "sha256": "a4415ce87a93f0e1101f3f629070ef2096b30c055dd768fe1c9b5df582ca8777",
-      "bytes": 7883
+      "sha256": "453721fd9b1aed2d5b237ce8e386bfca89cadc2d114a623a2cc5ff42ff7530c1",
+      "bytes": 7387
     },
     "skills/pure-code-3d-game/references/general-contract.md": {
       "rel": "references/general-contract.md",
@@ -64,8 +65,8 @@
     },
     "skills/pure-code-3d-game/references/micro-polishing-loop.md": {
       "rel": "references/micro-polishing-loop.md",
-      "sha256": "fac299509a1696089939c38bee7b5f36ae374e34f7eaae6c783474c5caeb380c",
-      "bytes": 3190
+      "sha256": "6de31b15e38951e025631fad84f357ca49368627e98ac3cc1d50dab4e709a9a5",
+      "bytes": 2904
     },
     "skills/pure-code-3d-game/references/module-architecture.md": {
       "rel": "references/module-architecture.md",
@@ -74,8 +75,8 @@
     },
     "skills/pure-code-3d-game/references/procedural-anatomy-motion.md": {
       "rel": "references/procedural-anatomy-motion.md",
-      "sha256": "488c10b7c78329554b593ef791ca5e207694df030deb63857ac08d33d0429ddf",
-      "bytes": 5087
+      "sha256": "951c8fd84d1b5953d67e28fd07c32e308bb4534558c7a7d0b93ee73e25217053",
+      "bytes": 4266
     },
     "skills/pure-code-3d-game/references/production-flow.md": {
       "rel": "references/production-flow.md",
@@ -94,8 +95,8 @@
     },
     "skills/pure-code-3d-game/references/sdf-character-method.md": {
       "rel": "references/sdf-character-method.md",
-      "sha256": "05f00a894b3f0789ae6d31355885f18853516c8750ec64bdd5560963fbc2b579",
-      "bytes": 7333
+      "sha256": "8e00f417215801de2a4e88b83ad73706d8d9f2edaf6eb6975d70b2bd902d9ade",
+      "bytes": 6954
     },
     "skills/pure-code-3d-game/references/sources-and-licenses.md": {
       "rel": "references/sources-and-licenses.md",
@@ -104,13 +105,13 @@
     },
     "skills/pure-code-3d-game/references/strict-procedural-world.md": {
       "rel": "references/strict-procedural-world.md",
-      "sha256": "0ab7047fff0e106ad5084631b04419510fcce72dc86afc004863ccedcffb9c0a",
-      "bytes": 8513
+      "sha256": "9f4cbb1e924dfa923f7ab782d1c8bfeba567c0345958ff4d0072640d1e811317",
+      "bytes": 8039
     },
     "skills/pure-code-3d-game/references/verification-gates.md": {
       "rel": "references/verification-gates.md",
-      "sha256": "649fcf60452c8dc9cfa4bfc7d5c0a1c764cc66fc7a30801f09b31b9a6354733b",
-      "bytes": 5425
+      "sha256": "d0292256c1fb1916c9a5e7be9b058faac04d9d230cfec7be7b04521d19aa4325",
+      "bytes": 4936
     },
     "skills/pure-code-3d-game/references/web3d-adapter.md": {
       "rel": "references/web3d-adapter.md",
@@ -164,8 +165,8 @@
     },
     "skills/pure-code-3d-game/tools/gamekit.mjs": {
       "rel": "tools/gamekit.mjs",
-      "sha256": "9e7b14fda7a99e242e4b94fa8a6404fcbec87ec8b6941532d7a4ed944335e5d9",
-      "bytes": 19352
+      "sha256": "55e94c763dc488901cc970249e88376fac1f2f05723e3649bd5c225e05d9fee5",
+      "bytes": 19394
     },
     "skills/pure-code-3d-game/tools/light-rig.mjs": {
       "rel": "tools/light-rig.mjs",
@@ -224,8 +225,8 @@
     },
     "skills/pure-code-3d-game/references/renderer-visual-evidence.md": {
       "rel": "references/renderer-visual-evidence.md",
-      "sha256": "a0587397378e40144c4a4a4d7c0174854cf813ebfa0f90d071cf7ff27a57ce97",
-      "bytes": 2649
+      "sha256": "cfe9d52f968e83085a1f5847547ea764035cb9c8619eb4315d0584970d5f6714",
+      "bytes": 2151
     },
     "skills/pure-code-3d-game/references/procedural-ui-ux.md": {
       "rel": "references/procedural-ui-ux.md",
@@ -254,17 +255,247 @@
     },
     "skills/pure-code-3d-game/integrations/README.md": {
       "rel": "integrations/README.md",
-      "sha256": "baaa0956a89d99eef4fc60d086828bd9c97fcd0641303797933d15b4f29c8e63",
-      "bytes": 1099
+      "sha256": "3fdc6e38b2769d0e760fca994385ac77a069f7aa6c06730f7d520577f749c98a",
+      "bytes": 1319
     },
     "skills/pure-code-3d-game/references/integration-release-4.3.0.md": {
       "rel": "references/integration-release-4.3.0.md",
       "sha256": "a1b0344988f24d4ae98cac0032695eeea47a68e5588b64a2bf9ea508d4a85cd7",
       "bytes": 786
+    },
+    "skills/pure-code-3d-game/MODULES.json": {
+      "rel": "MODULES.json",
+      "sha256": "7605cf3c3a903f0ed2aab200c0058c594235f0ee80a908f1bb6860e033905e51",
+      "bytes": 6914
+    },
+    "skills/pure-code-3d-game/tools/module-router.mjs": {
+      "rel": "tools/module-router.mjs",
+      "sha256": "22181925a5e8414ae832b2751192cc5f42886f52703f63d7756ee6db1b40a793",
+      "bytes": 797
+    },
+    "skills/pure-code-3d-game/tools/rig-kit.mjs": {
+      "rel": "tools/rig-kit.mjs",
+      "sha256": "76f3bddec72019a49baebe2e0275f4b8200945db999af91aa0f9cca16f0af422",
+      "bytes": 3422
+    },
+    "skills/pure-code-3d-game/tests/test_rig_kit.mjs": {
+      "rel": "tests/test_rig_kit.mjs",
+      "sha256": "0bf6f5961fa5ad9a6e32acfcc821ba85092a507c719b725cc8eb17402a53a9da",
+      "bytes": 1642
+    },
+    "skills/pure-code-3d-game/references/environment-evidence.md": {
+      "rel": "references/environment-evidence.md",
+      "sha256": "e6a9ce4769fbafe118a472c854efa9afd7f2a0b67058b9d341089b371126fa0e",
+      "bytes": 1696
+    },
+    "skills/pure-code-3d-game/references/algorithm-routing.md": {
+      "rel": "references/algorithm-routing.md",
+      "sha256": "87e86032475e9c85f877c86889d7e5d6ae906bab2a30cedd5abe5eda4a0c9cf3",
+      "bytes": 2450
+    },
+    "skills/pure-code-3d-game/references/rig-motion-kit.md": {
+      "rel": "references/rig-motion-kit.md",
+      "sha256": "736d14439226ba167b7d3dba016a4402d005caa7f43e727df9993ae7d9b4b6a7",
+      "bytes": 2759
+    },
+    "skills/pure-code-3d-game/integrations/raea-gamekit/UPSTREAM.md": {
+      "rel": "integrations/raea-gamekit/UPSTREAM.md",
+      "sha256": "f106a2719656dcc03c99cc56149e17776812f0534df84189d654a5a49ec34414",
+      "bytes": 973
+    },
+    "skills/pure-code-3d-game/references/skill-maintenance.md": {
+      "rel": "references/skill-maintenance.md",
+      "sha256": "abfdb4ba643a160cd092eb7a031566cf9caddd3243a919ed888fc14708ec63d1",
+      "bytes": 1155
+    },
+    "skills/pure-code-3d-game/upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/LICENSE": {
+      "rel": "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/LICENSE",
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "bytes": 11357
+    },
+    "skills/pure-code-3d-game/upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/docs/HOW-SKILLS-WORK.md": {
+      "rel": "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/docs/HOW-SKILLS-WORK.md",
+      "sha256": "c9492dd0edaf1e920ac2be55777ffdbc82ebe192f314d5cc1ef45c6fbbb9a698",
+      "bytes": 2608
+    },
+    "skills/pure-code-3d-game/upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/docs/RULES.md": {
+      "rel": "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/docs/RULES.md",
+      "sha256": "94f30e5ca3b8d9c513789bb94055ced963a21612eb0e8e4ff8c9517293cb8e93",
+      "bytes": 2811
+    },
+    "skills/pure-code-3d-game/upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/docs/SOP.md": {
+      "rel": "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/docs/SOP.md",
+      "sha256": "260538f3822d5417c0019316f9266f3057129e4b1c008624a2d1457df1138081",
+      "bytes": 2064
+    },
+    "skills/pure-code-3d-game/upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d.md": {
+      "rel": "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d.md",
+      "sha256": "74e8ebd896fc95d1f29bc590ca518e1221efeef38448c567861d9117a8b1339d",
+      "bytes": 11412
+    },
+    "skills/pure-code-3d-game/upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/NOTICE": {
+      "rel": "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/NOTICE",
+      "sha256": "37dac497e57d6a02676fde74ebf66460be911d23c002bb975a953c743b4f93fd",
+      "bytes": 1674
+    },
+    "skills/pure-code-3d-game/upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/animation.md": {
+      "rel": "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/animation.md",
+      "sha256": "6e454b8933e651e6cec85eddf9ec8eee160978f75da82d37213c4f297c31ccba",
+      "bytes": 4135
+    },
+    "skills/pure-code-3d-game/upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/characters.md": {
+      "rel": "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/characters.md",
+      "sha256": "3264d87d4e9e4b5e232a082d23920f6bcfc68e72d70d137b45ac64f1c40620d7",
+      "bytes": 14200
+    },
+    "skills/pure-code-3d-game/upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/games.md": {
+      "rel": "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/games.md",
+      "sha256": "c8426cdf7cedaec529d4bcd7968a2298c90a75221a968908fa2d053afd92c827",
+      "bytes": 15689
+    },
+    "skills/pure-code-3d-game/upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/lights.md": {
+      "rel": "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/lights.md",
+      "sha256": "5f185c5d8502afb81a0d61bf72c5038650bad9877163e4fe858fed6f93a1cf2e",
+      "bytes": 11146
+    },
+    "skills/pure-code-3d-game/upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/limits.md": {
+      "rel": "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/limits.md",
+      "sha256": "ced4e3e2ec1a0fa3abd31730e02c39ea3851444acfe79e92aa4385faa3bc48ea",
+      "bytes": 10024
+    },
+    "skills/pure-code-3d-game/upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/liquids.md": {
+      "rel": "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/liquids.md",
+      "sha256": "9859ec628a3959bb01216b8931df01b5952a25a68468e6d65e68e48bf9ba19fc",
+      "bytes": 4766
+    },
+    "skills/pure-code-3d-game/upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/materials.md": {
+      "rel": "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/materials.md",
+      "sha256": "0ba8f761fa689016b2e1c1a8e8c339cc6e26d747b42e25d32c2c694594933399",
+      "bytes": 19797
+    },
+    "skills/pure-code-3d-game/upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/meshes.md": {
+      "rel": "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/meshes.md",
+      "sha256": "018bcb301d85de6badf48f7906e461ec00e746407032e0530b0114082e9301be",
+      "bytes": 14114
+    },
+    "skills/pure-code-3d-game/upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/plugins.md": {
+      "rel": "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/plugins.md",
+      "sha256": "192092f8c34b86faa3b01c0a6aa35d8f074093223df72f61afa859cffcebc1dc",
+      "bytes": 6873
+    },
+    "skills/pure-code-3d-game/upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/post.md": {
+      "rel": "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/post.md",
+      "sha256": "fa07a88f7617e0f220a676c3dbaf50db570ecfb291315c70ee3d5ae5637e9242",
+      "bytes": 26893
+    },
+    "skills/pure-code-3d-game/upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/scene.md": {
+      "rel": "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/scene.md",
+      "sha256": "e9d3f02073551099a2fff00f8406f1dc60eaf2574439209dbc6aa43cc1d82c12",
+      "bytes": 7081
+    },
+    "skills/pure-code-3d-game/upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/scenes.md": {
+      "rel": "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/scenes.md",
+      "sha256": "d433c66dd2f61e12d2f9d31959e0bee3227fcb7a0aa82751c7fdc1218cb7ce53",
+      "bytes": 13887
+    },
+    "skills/pure-code-3d-game/upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/water.md": {
+      "rel": "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/water.md",
+      "sha256": "7d7b1ddd188b4badf61dd4b34d500c57a3a3bf7b690287add2cbe8996b7292cf",
+      "bytes": 11345
+    },
+    "skills/pure-code-3d-game/upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/SKILL.md": {
+      "rel": "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/SKILL.md",
+      "sha256": "77ca7306126c37a736b060f4277e8ed732c466f6453814daf6a1b0fd54b09ef7",
+      "bytes": 34525
+    },
+    "skills/pure-code-3d-game/upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/craft/NOTICE": {
+      "rel": "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/craft/NOTICE",
+      "sha256": "524802a7af35dd055de99f1e784c1ec23630869ddebe3c2da9ee4654d2c655db",
+      "bytes": 1574
+    },
+    "skills/pure-code-3d-game/upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/craft/floor.md": {
+      "rel": "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/craft/floor.md",
+      "sha256": "3ce814a92931242cc45e6db27d850831771359e1a0afe6218132c9dbc823a831",
+      "bytes": 6550
+    },
+    "skills/pure-code-3d-game/upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/craft/modes/play.md": {
+      "rel": "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/craft/modes/play.md",
+      "sha256": "5d30815c34d067a02784b738d98f72f5375d93904dba8834ca914c3699ddf582",
+      "bytes": 3134
+    },
+    "skills/pure-code-3d-game/upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/craft/rubric.md": {
+      "rel": "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/craft/rubric.md",
+      "sha256": "bf9fed7daa30c985bbb1676ece0a430d95a39f6d287344544ad4859e89fd67e6",
+      "bytes": 5528
+    },
+    "skills/pure-code-3d-game/upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/craft/verbs/harden.md": {
+      "rel": "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/craft/verbs/harden.md",
+      "sha256": "e0a43e8ad2510c749eda7ef81a979272059c60208cde2b6cd1640dc5f0c01c93",
+      "bytes": 1173
+    },
+    "skills/pure-code-3d-game/upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/craft/verbs/optimize.md": {
+      "rel": "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/craft/verbs/optimize.md",
+      "sha256": "9ea6890c85552e4d134c82e9f348e485bf1b167f14c0900062318cd70c9eace4",
+      "bytes": 1535
+    },
+    "skills/pure-code-3d-game/upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/fingerprint.md": {
+      "rel": "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/fingerprint.md",
+      "sha256": "481a5f6ef5a2b5e4b363e173ce883d1a435cf35e4ae7257efade252eec6ffbc6",
+      "bytes": 8266
+    },
+    "skills/pure-code-3d-game/upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/games.md": {
+      "rel": "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/games.md",
+      "sha256": "3c5d16daabc79e09d5e50dee3cd7ece12eeb34e6aa014149a4187b8c2023265b",
+      "bytes": 1884
+    },
+    "skills/pure-code-3d-game/upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/motion/animating.md": {
+      "rel": "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/motion/animating.md",
+      "sha256": "5db99679fd4a1fb1a2356e873e668615ad1d65473bc62519989dde3a4075e445",
+      "bytes": 7427
+    },
+    "skills/pure-code-3d-game/upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/motion/games.md": {
+      "rel": "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/motion/games.md",
+      "sha256": "b7e4db1563e449947ff595894adcb260e4ea5e6283d366c56bde1955a2697c17",
+      "bytes": 10588
+    },
+    "skills/pure-code-3d-game/upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/motion/interface.md": {
+      "rel": "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/motion/interface.md",
+      "sha256": "57faf37af8bafb6041139b8b62038bfdfd6a87dba4d24a0ecf8f45f78e738464",
+      "bytes": 6397
+    },
+    "skills/pure-code-3d-game/upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/motion/parts.md": {
+      "rel": "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/motion/parts.md",
+      "sha256": "7fb1f77eb6636314cdbc4388e64dc616ea3a5af049e1d4d807dea134964b284a",
+      "bytes": 8940
+    },
+    "skills/pure-code-3d-game/upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/motion/sound.md": {
+      "rel": "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/motion/sound.md",
+      "sha256": "dfb6df4e792b4e45511a550372beef9505995e62964d369bc55d45a07d56184b",
+      "bytes": 13389
+    },
+    "skills/pure-code-3d-game/upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/plan.md": {
+      "rel": "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/plan.md",
+      "sha256": "c4f7eb0347056a54ff1765f01e2fef1f7feb12df85be9994ac77c2650884a053",
+      "bytes": 14081
+    },
+    "skills/pure-code-3d-game/upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/reference/cli.md": {
+      "rel": "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/reference/cli.md",
+      "sha256": "9ef03871354e16534d264fb98af54cc97a9d958ae202e3e77e1e649695aedb67",
+      "bytes": 42144
+    },
+    "skills/pure-code-3d-game/upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/reference/sdk.md": {
+      "rel": "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/reference/sdk.md",
+      "sha256": "f08dd92094e05da6bcb6393b01e1bb2bbb059ebcd98682df5d694d671a0ec0b4",
+      "bytes": 11650
+    },
+    "skills/pure-code-3d-game/integrations/raea-gamekit/UPSTREAM.json": {
+      "rel": "integrations/raea-gamekit/UPSTREAM.json",
+      "sha256": "be3bee3ee31bfc1e0bf10cd3bf81fcca183db18e96d14a9e1526ab726380350d",
+      "bytes": 7712
     }
   },
   "validation": {
-    "node_tests": "61/61 historical v4.2.0; not rerun for v4.3.0",
+    "node_tests": "Legacy 61/61 v4.2 historical; Node suite not rerun for v4.4",
     "general_contracts": "2D turn-based and multi-perspective native 3D declarations checked; CLI release exercised with synthetic evidence",
     "web3d_schema1": "legacy regression suite PASS",
     "production_game_validation": "PROJECT-SPECIFIC, NOT RUN",
@@ -276,6 +507,7 @@
     "runtime_network_asset_audit": "REQUIRED_PER_PROJECT",
     "v4_2_0_changes": "Anti-rubber-person method (SDF+smin sculpting, LEN proportions, hide-face design, mandatory screenshot feedback loop max 5 rounds, human-likeness gate 3.4); CapsuleGeometry rejected by gamekit check; v4.1 eyebrow/eyelash-level facial anatomy requirement revoked; complete_3d_character still NOT_IMPLEMENTED (method specified, no character built and verified with it yet)",
     "v4_3_0": "Skill/workflow integration; optional external tools not installed or exercised on host",
-    "final_device_performance": "PENDING"
+    "final_device_performance": "PENDING",
+    "v4_4_0": "18 direct JS assertions passed (rig/IK/weights/module routing); Node suite not run; real GPU and device pending; official curated references mirrored."
   }
 }

@@ -1,0 +1,183 @@
+{
+  "version": "4.4.0",
+  "core": [
+    "SKILL.md",
+    "references/strict-procedural-world.md",
+    "references/environment-evidence.md"
+  ],
+  "modules": {
+    "architecture": {
+      "depends": [],
+      "files": [
+        "references/general-contract.md",
+        "references/module-architecture.md",
+        "references/production-flow.md",
+        "references/ai-task-contract.md"
+      ],
+      "trigger": "engine, game loop, simulation, ECS, networking, save",
+      "upstreamOptional": [
+        "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/games.md",
+        "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/motion/games.md",
+        "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/plugins.md",
+        "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/craft/modes/play.md"
+      ]
+    },
+    "geometry": {
+      "depends": [],
+      "files": [
+        "references/algorithm-routing.md",
+        "references/algorithm-component-library.md",
+        "tools/procedural-core.mjs"
+      ],
+      "trigger": "mesh, SDF, CSG, terrain, plants, props",
+      "upstreamOptional": [
+        "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/meshes.md"
+      ]
+    },
+    "character": {
+      "depends": [
+        "geometry"
+      ],
+      "files": [
+        "references/rig-motion-kit.md",
+        "references/procedural-anatomy-motion.md",
+        "references/character-and-shading.md",
+        "references/sdf-character-method.md",
+        "tools/rig-kit.mjs",
+        "tests/test_rig_kit.mjs"
+      ],
+      "trigger": "person, creature, anatomy, rig, skeleton, IK, motion, face",
+      "upstreamOptional": [
+        "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/characters.md",
+        "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/animation.md"
+      ]
+    },
+    "surface": {
+      "depends": [
+        "geometry"
+      ],
+      "files": [
+        "references/character-surfaces.md",
+        "references/rendering-and-fx-styles.md",
+        "tools/wardrobe.mjs"
+      ],
+      "trigger": "clothing, cloth, hair, skin, PBR, texture, materials",
+      "upstreamOptional": [
+        "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/materials.md"
+      ]
+    },
+    "lighting": {
+      "depends": [],
+      "files": [
+        "references/lighting-and-shadows.md",
+        "references/rendering-and-fx-styles.md",
+        "tools/light-rig.mjs"
+      ],
+      "trigger": "shadow, atmosphere, light, weather, postprocess",
+      "upstreamOptional": [
+        "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/lights.md",
+        "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/post.md",
+        "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/water.md",
+        "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/liquids.md"
+      ]
+    },
+    "scene": {
+      "depends": [
+        "geometry",
+        "lighting"
+      ],
+      "files": [
+        "references/algorithm-routing.md",
+        "references/calibration.md",
+        "references/recipe-schema.md"
+      ],
+      "trigger": "world, scene, blockout, level, architecture, composition",
+      "upstreamOptional": [
+        "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/scenes.md",
+        "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/scene.md",
+        "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/motion/parts.md"
+      ]
+    },
+    "ui": {
+      "depends": [],
+      "files": [
+        "references/procedural-ui-ux.md",
+        "integrations/game-ui-research/SKILL.md"
+      ],
+      "trigger": "HUD, UI, menu, inventory, controller, accessibility",
+      "upstreamOptional": [
+        "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/motion/interface.md"
+      ]
+    },
+    "performance": {
+      "depends": [],
+      "files": [
+        "references/performance-hotpaths.md",
+        "integrations/fast-anything/SKILL.md"
+      ],
+      "trigger": "profiling, CPU, GPU, Rust, WASM, FPS",
+      "upstreamOptional": [
+        "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/limits.md",
+        "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/craft/verbs/optimize.md"
+      ]
+    },
+    "verification": {
+      "depends": [],
+      "files": [
+        "references/environment-evidence.md",
+        "references/verification-gates.md",
+        "references/renderer-visual-evidence.md",
+        "references/micro-polishing-loop.md",
+        "tools/quality-contract.mjs"
+      ],
+      "trigger": "QA, screenshots, tests, release, handoff",
+      "upstreamOptional": [
+        "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/craft/rubric.md",
+        "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/craft/floor.md",
+        "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/craft/verbs/harden.md"
+      ]
+    },
+    "raea": {
+      "depends": [
+        "verification"
+      ],
+      "files": [
+        "integrations/raea-gamekit/SKILL.md",
+        "integrations/raea-gamekit/UPSTREAM.md",
+        "integrations/raea-gamekit/UPSTREAM.json"
+      ],
+      "trigger": "raea explicitly selected, native renderer or its reference docs",
+      "upstreamOptional": [
+        "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/SKILL.md",
+        "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d.md",
+        "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/games.md",
+        "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/reference/cli.md",
+        "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/reference/sdk.md",
+        "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/plan.md",
+        "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/fingerprint.md"
+      ]
+    },
+    "web3d": {
+      "depends": [
+        "architecture"
+      ],
+      "files": [
+        "references/web3d-adapter.md",
+        "tools/gamekit.mjs",
+        "tools/procedural-gate.mjs"
+      ],
+      "trigger": "browser, Three.js, WebGL, WebGPU"
+    },
+    "audio": {
+      "depends": [],
+      "files": [
+        "references/algorithm-routing.md",
+        "tools/procedural-core.mjs"
+      ],
+      "trigger": "procedural audio, sound feedback, synthesis",
+      "upstreamOptional": [
+        "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/motion/sound.md"
+      ]
+    }
+  }
+}

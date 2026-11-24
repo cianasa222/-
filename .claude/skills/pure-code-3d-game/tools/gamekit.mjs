@@ -92,7 +92,9 @@ function validateConfig() {
     const syntax = spawnSync(process.execPath, ['--check', inside(m.file)], { encoding: 'utf8' });
     assert(syntax.status === 0, `Syntax failed: ${m.file}: ${syntax.stderr}`);
     if (m.kind === 'character') {
-      assert(!/\b(?:BoxGeometry|CapsuleGeometry|makeBoxBody|cubePerson|placeholderHumanoid)\s*\(/.test(c), `Unapproved primitive body in ${m.file}`); // v4.2: CapsuleGeometry assembly is the rubber-person default; visible character bodies must use SDF+smin (see references/sdf-character-method.md). Collision-only capsule proxies must live outside character modules.
+      assert(!/\b(?:makeBoxBody|cubePerson|placeholderHumanoid)\s*\(/.test(c), 'Final placeholder prohibited: '+m.file);
+      const declared = ['stylized','hard-surface'].includes(m.characterGeometry) && typeof m.geometryRationale === 'string' && m.geometryRationale.trim().length >= 12;
+      if (!declared) assert(!/\b(?:BoxGeometry|CapsuleGeometry)\s*\(/.test(c), 'Unapproved primitive body in '+m.file);
     }
   }
   if (exists(inside('quality-contract.json'))) validateContract(readJSON(inside('quality-contract.json')),p);

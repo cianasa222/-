@@ -4,3 +4,5 @@
 - game-ui-research: original GameKit skill; Game UI Database is a website, not an installable SDK. No screenshots mirrored.
 - Cold Smoke remains existing algorithm reference; no asset imports or new mandatory runtime dependencies.
 All three workflows accessible via main SKILL.md and single-get bundle even without GitHub. For standalone Claude Code install, copy each folder under integrations/ containing SKILL.md to .claude/skills/ or ~/.claude/skills/ alongside pure-code-3d-game. Do not duplicate global and project hooks. Agent must follow GameKit code-only rules ahead of external skill defaults.
+
+GameKit 4.4: curated 36 official raea reference files with LICENSE/NOTICE, pinned commit; see integrations/raea-gamekit/UPSTREAM.md. Official full plugin not installed on host. MODULES.json enables selective retrieval.

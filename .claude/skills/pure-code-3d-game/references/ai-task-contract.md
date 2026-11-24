@@ -33,4 +33,4 @@ One AI owns the renderer/core ABI; feature AIs own isolated files and tests. A r
 每个严格纯代码任务必须记录 generatorId、generatorVersion、输入配方/Seed 范围、参数的参考或设计来源、允许修改的文件、真实 GPU 机位、性能和动作回归证据。禁止自行下载或编译预制 GLB/贴图/音频、嵌入动画采样、静默修改模式、引擎、公共 ABI 和验收阈值。静态代码检查只能获得 STRUCTURAL_PASS；真实画面待验则标 VISUAL_PENDING。
 
 ## v4.2 人物任务的截图回路证据（新增）
-人物任务除 v4.1 字段外，必须附：多角度截图（正面 / 侧面 / 背面、特写、运动中）+ 3–10 秒短视频 + 模型自查记录（每轮指出的一处缺陷与改动），每轮只改一处、上限 5 轮；body / cloth / hand 各留 a/b 两档对照。没有回路证据的任务状态不得超出 `VISUAL_PENDING`，`verify` 不得标 `ACCEPTED`。人物交付另须通过“像人”验收门（references/verification-gates.md §3.4）。
+人物任务按环境能力提供实际可得证据；目标画面/视频未验则标 VISUAL_PENDING，交接所需场景、参数、命令和缺口。最后验收采用项目角色配方及 references/verification-gates.md；无固定 5 轮要求。

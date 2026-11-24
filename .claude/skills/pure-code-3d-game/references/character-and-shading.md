@@ -40,6 +40,6 @@ No NaN/Infinity vertices or matrices; valid index bounds and normals; joint weig
 
 v4.1 要求用参数化体积/Loft/Bézier 扫掠逐根做眉毛、睫毛、眼睑、鼻翼、嘴唇——该路线已废止。它是“橡皮人”问题的帮凶：脸部细节越多、恐怖谷越深，而且模型一次生成根本做不到。
 
-v4.2 的人物做法以 references/sdf-character-method.md 为准：身体 = 椭球 / 变截面 tube / 圆角盒 + Quilez 二次多项式 `smin` 熔合（k=0.012–0.08，分部位取值）；比例写成硬常量（1.76 m、头身比约 7.5、肩比髋宽 25%、`LEN`）；约 28 根骨骼 + 半程辅助骨 + 每顶点最多 3 根骨骼指数衰减蒙皮；姿态由双骨骼 IK 求解器算出；加载时以约 13.5 mm 网格烘焙成 mesh；衣服褶皱/缝线/拉链在 fragment shader 里逐像素画；**默认藏脸藏手**（头盔 + 雪镜 + 面罩 + 手套）。
+Cold Smoke 雪装配方见 references/sdf-character-method.md；通用 RigRecipe 和算法路由见 references/rig-motion-kit.md 与 references/algorithm-routing.md。遮面、成人比例、骨数和网格分辨率按项目选择。
 
 单一全局 smooth-SDF 确实不足以完成美观脸部——所以 v4.2 根本不做脸。需要露脸的项目：先过“像人”验收门（references/verification-gates.md §3.4），再经用户明确批准，另立专项；即便如此，眉毛/睫毛/发束的逐根建模也只是可选项，不是默认要求。详见 references/procedural-anatomy-motion.md 与 tools/procedural-core.mjs（后者只有示范级头部/双眉，没有完整骨骼蒙皮和电影级人脸；且默认人物设计不使用它们）。

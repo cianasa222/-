@@ -1,13 +1,13 @@
 {
   "skill": "pure-code-3d-game",
-  "active_version": "4.3.0",
-  "active_manifest_key": "skills/pure-code-3d-game/versions/v4.3.0/MANIFEST.json",
-  "single_get_bundle_key": "skills/pure-code-3d-game/versions/v4.3.0/bundle.json",
-  "bundle_sha256": "0a6012f483d0c448d864d81b04b45376d1dadfcd105e5106d603a40f67169700",
-  "immutable_version_prefix": "skills/pure-code-3d-game/versions/v4.3.0/",
-  "rollback_version_prefix": "skills/pure-code-3d-game/versions/v4.2.0/",
+  "active_version": "4.4.0",
+  "active_manifest_key": "skills/pure-code-3d-game/versions/v4.4.0/MANIFEST.json",
+  "single_get_bundle_key": "skills/pure-code-3d-game/versions/v4.4.0/bundle.json",
+  "bundle_sha256": "9dfa61794b9157ba6777a51ef469946d20566158d653bf5e58c4bb0b583af9ac",
+  "immutable_version_prefix": "skills/pure-code-3d-game/versions/v4.4.0/",
+  "rollback_version_prefix": "skills/pure-code-3d-game/versions/v4.3.0/",
   "validation": {
-    "node_tests": "61/61 historical v4.2.0; not rerun for v4.3.0",
+    "node_tests": "Legacy 61/61 v4.2 historical; Node suite not rerun for v4.4",
     "general_contracts": "2D turn-based and multi-perspective native 3D declarations checked; CLI release exercised with synthetic evidence",
     "web3d_schema1": "legacy regression suite PASS",
     "production_game_validation": "PROJECT-SPECIFIC, NOT RUN",
@@ -19,10 +19,12 @@
     "runtime_network_asset_audit": "REQUIRED_PER_PROJECT",
     "v4_2_0_changes": "Anti-rubber-person method (SDF+smin sculpting, LEN proportions, hide-face design, mandatory screenshot feedback loop max 5 rounds, human-likeness gate 3.4); CapsuleGeometry rejected by gamekit check; v4.1 eyebrow/eyelash-level facial anatomy requirement revoked; complete_3d_character still NOT_IMPLEMENTED (method specified, no character built and verified with it yet)",
     "v4_3_0": "Skill/workflow integration; optional external tools not installed or exercised on host",
-    "final_device_performance": "PENDING"
+    "final_device_performance": "PENDING",
+    "v4_4_0": "18 direct JS assertions passed (rig/IK/weights/module routing); Node suite not run; real GPU and device pending; official curated references mirrored."
   },
   "source_repo_modified": false,
   "game_replication_project_paused": true,
   "github_skill_repo": "cianasa222/-",
-  "github_skill_path": ".claude/skills/pure-code-3d-game"
+  "github_skill_path": ".claude/skills/pure-code-3d-game",
+  "module_index_key": "skills/pure-code-3d-game/versions/v4.4.0/MODULES.json"
 }

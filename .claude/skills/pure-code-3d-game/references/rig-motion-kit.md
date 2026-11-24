@@ -1,0 +1,7 @@
+# RigKit / MotionKit v4.4 通用骨骼参数与动作
+raea characters/animation/games 的可取部分：统一骨骼语义、姿态与约束分离、场景空间手/脚/视线/坐姿目标、状态机、固定输入回放。Anny/MakeHuman 底模、动作捕捉片段、现成权重及 motion matching 数据库不自动导入。可研究参数和求解方法，需检查许可与来源。用数学生成自己的拓扑、骨骼、蒙皮及动作候选。
+RigRecipe: units=m, Y-up, +Z forward, species/profile, dimensions/proportions, joint semantic ID, parent, rest local transform, bone length, axis, rotation limits, symmetry, optional auxiliary bones, bind matrix, max influences, provenance. 可用不同体型、年龄、风格、非人类。tools/rig-kit.mjs 的 buildHumanoid 是 23 骨世界空间关节位置参考，非解剖学标准；输入 height/legRatio/shoulderRatio/hipRatio/armRatio/headRatio 是初始设计假设，可按实测换配方。下游由父关节差/基向量计算局部变换，生成 inverseBind，按需增加手指（每指 MCP/PIP/DIP）、脚趾、面部、辅助扭转骨；不强制固定骨数。
+3D 两骨 IK：d=clamp(|target-root|, |L1-L2|, L1+L2)，余弦定理 along=(L1²-L2²+d²)/(2d)，off=sqrt(L1²-along²)，在 pole 投影平面解肘/膝。solveTwoBone3D 返回 joint/end/reachable/error，处理共线与零距离；生产增加 pole continuity、关节限制、脚底法线、骨骼局部四元数与接触锁。多骨用 FABRIK/CCD、全身 IK/优化，约束优先级与关节限位显式化。
+蒙皮初值 skinWeights 用到骨段的距离、指数衰减、top-k 归一化；生产需骨骼包围区域限制、关节半程辅助骨、权重平滑或热扩散/体素权重，避免隔肢串权；linear blend 或 dual quaternion 按变形质量选，检查 inverseBind、权重和、深弯体积、肩髋穿模。示例不是最终蒙皮。
+Motion intent → authoritative root/controller → gait phase → foot stance lock/swing spline → IK/contact → upper-body aim/grip/look → quaternion blend/spring → skin. 动作原语由速度、步频、步幅、起落时间、重心、加速度及约束生成，转向/上下坡/跳跃/攻击另立状态。纯代码 motion matching 可对程序生成候选计算 cost=w_p*姿态差+w_v*速度差+w_t*轨迹差+w_c*接触差，搜索选姿势并惯性化过渡，不复制录制帧。此匹配与全身 IK 目前是设计方法，不是已实现完整动画引擎。
+数值证据：父子无环、骨长稳定、四元数归一、可达误差、关节限位、足滑、穿透、切换连续性、不同体型/速度/地形、确定性回放。环境能力不足时交接 VISUAL_PENDING；真人近景与高精度衣物仍需真实视觉验收。

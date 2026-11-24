@@ -1,0 +1,152 @@
+{
+  "repo": "shinyobjectz/raea-skills",
+  "commit": "9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add",
+  "license": "Apache-2.0; preserve included notices",
+  "scope": "curated original references, not full official plugin",
+  "files": {
+    "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/LICENSE": {
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "bytes": 11357
+    },
+    "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/docs/HOW-SKILLS-WORK.md": {
+      "sha256": "c9492dd0edaf1e920ac2be55777ffdbc82ebe192f314d5cc1ef45c6fbbb9a698",
+      "bytes": 2608
+    },
+    "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/docs/RULES.md": {
+      "sha256": "94f30e5ca3b8d9c513789bb94055ced963a21612eb0e8e4ff8c9517293cb8e93",
+      "bytes": 2811
+    },
+    "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/docs/SOP.md": {
+      "sha256": "260538f3822d5417c0019316f9266f3057129e4b1c008624a2d1457df1138081",
+      "bytes": 2064
+    },
+    "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d.md": {
+      "sha256": "74e8ebd896fc95d1f29bc590ca518e1221efeef38448c567861d9117a8b1339d",
+      "bytes": 11412
+    },
+    "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/NOTICE": {
+      "sha256": "37dac497e57d6a02676fde74ebf66460be911d23c002bb975a953c743b4f93fd",
+      "bytes": 1674
+    },
+    "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/animation.md": {
+      "sha256": "6e454b8933e651e6cec85eddf9ec8eee160978f75da82d37213c4f297c31ccba",
+      "bytes": 4135
+    },
+    "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/characters.md": {
+      "sha256": "3264d87d4e9e4b5e232a082d23920f6bcfc68e72d70d137b45ac64f1c40620d7",
+      "bytes": 14200
+    },
+    "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/games.md": {
+      "sha256": "c8426cdf7cedaec529d4bcd7968a2298c90a75221a968908fa2d053afd92c827",
+      "bytes": 15689
+    },
+    "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/lights.md": {
+      "sha256": "5f185c5d8502afb81a0d61bf72c5038650bad9877163e4fe858fed6f93a1cf2e",
+      "bytes": 11146
+    },
+    "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/limits.md": {
+      "sha256": "ced4e3e2ec1a0fa3abd31730e02c39ea3851444acfe79e92aa4385faa3bc48ea",
+      "bytes": 10024
+    },
+    "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/liquids.md": {
+      "sha256": "9859ec628a3959bb01216b8931df01b5952a25a68468e6d65e68e48bf9ba19fc",
+      "bytes": 4766
+    },
+    "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/materials.md": {
+      "sha256": "0ba8f761fa689016b2e1c1a8e8c339cc6e26d747b42e25d32c2c694594933399",
+      "bytes": 19797
+    },
+    "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/meshes.md": {
+      "sha256": "018bcb301d85de6badf48f7906e461ec00e746407032e0530b0114082e9301be",
+      "bytes": 14114
+    },
+    "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/plugins.md": {
+      "sha256": "192092f8c34b86faa3b01c0a6aa35d8f074093223df72f61afa859cffcebc1dc",
+      "bytes": 6873
+    },
+    "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/post.md": {
+      "sha256": "fa07a88f7617e0f220a676c3dbaf50db570ecfb291315c70ee3d5ae5637e9242",
+      "bytes": 26893
+    },
+    "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/scene.md": {
+      "sha256": "e9d3f02073551099a2fff00f8406f1dc60eaf2574439209dbc6aa43cc1d82c12",
+      "bytes": 7081
+    },
+    "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/scenes.md": {
+      "sha256": "d433c66dd2f61e12d2f9d31959e0bee3227fcb7a0aa82751c7fdc1218cb7ce53",
+      "bytes": 13887
+    },
+    "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/3d/water.md": {
+      "sha256": "7d7b1ddd188b4badf61dd4b34d500c57a3a3bf7b690287add2cbe8996b7292cf",
+      "bytes": 11345
+    },
+    "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/SKILL.md": {
+      "sha256": "77ca7306126c37a736b060f4277e8ed732c466f6453814daf6a1b0fd54b09ef7",
+      "bytes": 34525
+    },
+    "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/craft/NOTICE": {
+      "sha256": "524802a7af35dd055de99f1e784c1ec23630869ddebe3c2da9ee4654d2c655db",
+      "bytes": 1574
+    },
+    "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/craft/floor.md": {
+      "sha256": "3ce814a92931242cc45e6db27d850831771359e1a0afe6218132c9dbc823a831",
+      "bytes": 6550
+    },
+    "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/craft/modes/play.md": {
+      "sha256": "5d30815c34d067a02784b738d98f72f5375d93904dba8834ca914c3699ddf582",
+      "bytes": 3134
+    },
+    "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/craft/rubric.md": {
+      "sha256": "bf9fed7daa30c985bbb1676ece0a430d95a39f6d287344544ad4859e89fd67e6",
+      "bytes": 5528
+    },
+    "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/craft/verbs/harden.md": {
+      "sha256": "e0a43e8ad2510c749eda7ef81a979272059c60208cde2b6cd1640dc5f0c01c93",
+      "bytes": 1173
+    },
+    "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/craft/verbs/optimize.md": {
+      "sha256": "9ea6890c85552e4d134c82e9f348e485bf1b167f14c0900062318cd70c9eace4",
+      "bytes": 1535
+    },
+    "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/fingerprint.md": {
+      "sha256": "481a5f6ef5a2b5e4b363e173ce883d1a435cf35e4ae7257efade252eec6ffbc6",
+      "bytes": 8266
+    },
+    "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/games.md": {
+      "sha256": "3c5d16daabc79e09d5e50dee3cd7ece12eeb34e6aa014149a4187b8c2023265b",
+      "bytes": 1884
+    },
+    "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/motion/animating.md": {
+      "sha256": "5db99679fd4a1fb1a2356e873e668615ad1d65473bc62519989dde3a4075e445",
+      "bytes": 7427
+    },
+    "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/motion/games.md": {
+      "sha256": "b7e4db1563e449947ff595894adcb260e4ea5e6283d366c56bde1955a2697c17",
+      "bytes": 10588
+    },
+    "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/motion/interface.md": {
+      "sha256": "57faf37af8bafb6041139b8b62038bfdfd6a87dba4d24a0ecf8f45f78e738464",
+      "bytes": 6397
+    },
+    "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/motion/parts.md": {
+      "sha256": "7fb1f77eb6636314cdbc4388e64dc616ea3a5af049e1d4d807dea134964b284a",
+      "bytes": 8940
+    },
+    "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/motion/sound.md": {
+      "sha256": "dfb6df4e792b4e45511a550372beef9505995e62964d369bc55d45a07d56184b",
+      "bytes": 13389
+    },
+    "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/plan.md": {
+      "sha256": "c4f7eb0347056a54ff1765f01e2fef1f7feb12df85be9994ac77c2650884a053",
+      "bytes": 14081
+    },
+    "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/reference/cli.md": {
+      "sha256": "9ef03871354e16534d264fb98af54cc97a9d958ae202e3e77e1e649695aedb67",
+      "bytes": 42144
+    },
+    "upstream/raea-skills/9bdd09701b0ad3ad9b5d82ea5697fdbb03ab5add/skills/raea/reference/sdk.md": {
+      "sha256": "f08dd92094e05da6bcb6393b01e1bb2bbb059ebcd98682df5d694d671a0ec0b4",
+      "bytes": 11650
+    }
+  }
+}
