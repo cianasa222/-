@@ -1,0 +1,15 @@
+# GameplayKit / GameFeelKit / BalanceKit / CreatureKit
+OpenGame reference pin 9efe8ac0a58fd109a511c1f5c8c28fbba06ad85d; independent implementation, not an upstream runtime port.
+Choose a primary loop (puzzle/space pressure, strategy/combo, skill-flow, progression/randomness, sandbox/exploration) with justified secondary loops. Specify meaningful player action, choice, feedback, terminal or continuation, signature mechanic and 3–5 blocking invariants. Do not invent a loss condition for sandbox or idle games. Fast track simple experiments; full track complex 3D, procedural worlds, multilevel, novel physics. Freeze seed/input for comparisons.
+3C profiles discrete UI, realtime 2D/3D, native/VR or hybrid; size touch targets, safe area and FOV by target device; test focus loss, pointer cancel, stuck keys, pause/restart, loading overlay teardown. Actors and camera respect actual collision volumes; smooth wall slide, finite state, telegraph and hitbox clarity. 
+Independent functions in tools/gameplay-kit.mjs:
+- damp: half-life response (seconds), frame-time subdivision; pair with engine collision casts, not standalone camera controller.
+- createInputWindows: coyote/input buffering (100 ms suggested, configurable), one consumption per airborne period; feed authoritative contact and reset on focus loss.
+- hitFeedback: actor-local hit-stop, proportional particles/trauma/gain, real-time UI and buffered inputs; reduced motion and genre calibration.
+- chooseAimTarget: bounded cone/range, caller-supplied actual occlusion and deterministic tie; not a raycast or automatic movement.
+- waveSchedule: deterministic counts, not full spawner/AI; cap budgets and choose locations per project.
+- simulateRoute/sweepRoutes: same shipped rules, injected RNG, bounded ticks and multiple seeds; reference/weak/idle are configurable policies; win/loss/draw/timeout distinct. Record failed seeds, milestones, rewards/minute, strategy dominance, sensitivity. Never fake logic.js.
+- phaseWave/gaitOffsets/squashStretch: diagonal quadruped (LF RF LH RH), tripod (L1 L2 L3 R1 R2 R3), tetrapod (L1–L4 R1–R4), traveling wave and constant volume. Build with RigKit, joint limits, IK/contact, AnimationRuntime; wings use phase lag, fish tail amplitude increases; no external meshes, Mixamo or captured clips. Visual motion is not physics.
+- synthImpact/dbToGain: seeded filtered noise + pitched decaying PCM, envelope. Use code-generated Web Audio/engine mixer, procedural music via audio clock lookahead, gesture unlock, polyphony limits, ducking, mute/background/restart. True peak and listening need measurement.
+- createRuntimeBridge: development-only serializable state/stats, game-validated actions and invariant report. No public privileged debug actions.
+Template candidates: Harbor Skirmish (FPS), Skyline Courier (parkour), Starlight Bastion (waves/upgrades), Tidebreaker (boat/race), Neon Drift (drift), Last Light (light-driven threat). Inspect exact pinned template source/third-party license before independent extraction; not audited ports. Reject pseudo-3D where true 3D required; never import prebuilt media.

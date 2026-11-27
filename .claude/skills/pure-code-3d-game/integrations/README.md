@@ -13,3 +13,6 @@ GameKit 4.7 adds pinned algorithm source registry covering Simple Retarget Tool,
 
 ## Ozz Animation (optional)
 See [upstream pin](ozz-animation/UPSTREAM.md) and [AnimationRuntime](../references/animation-runtime.md). Default JS/native engine path; no server or forced WASM dependency.
+
+## OpenGame (v4.9)
+Pinned reference-only [integration](opengame/UPSTREAM.md); independent gameplay and optional browser QA, no upstream runtime/media.

@@ -1,5 +1,5 @@
 {
-  "version": "4.8.0",
+  "version": "4.9.0",
   "core": [
     "SKILL.md",
     "references/strict-procedural-world.md",
@@ -259,6 +259,40 @@
       ],
       "upstreamOptional": [
         "integrations/ozz-animation/LICENSE.md"
+      ]
+    },
+    "gameplay": {
+      "depends": [
+        "architecture",
+        "registry"
+      ],
+      "trigger": "gameplay, core loop, 3C, camera, input buffer, coyote time, hitstop, aim assist, creature gait, wave, balance, simulation, audio feedback",
+      "files": [
+        "references/gameplay-and-feel.md",
+        "tools/gameplay-kit.mjs",
+        "tests/test_gameplay_kit.mjs"
+      ]
+    },
+    "playtest": {
+      "depends": [
+        "verification",
+        "gameplay"
+      ],
+      "trigger": "playtest, capture, replay, screenshots, browser, regression, runtime hook",
+      "files": [
+        "references/automated-playtest.md",
+        "tools/browser-playtest.mjs"
+      ]
+    },
+    "opengame": {
+      "depends": [
+        "gameplay",
+        "playtest"
+      ],
+      "trigger": "OpenGame, openmotion-game, template reuse",
+      "files": [
+        "integrations/opengame/SKILL.md",
+        "integrations/opengame/UPSTREAM.md"
       ]
     }
   }

@@ -1,5 +1,5 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "policy": "Pinned source index, not vendored code. Inspect exact paths before reuse; preserve license notices. Independently implemented baseline components below are not full upstream ports.",
   "sources": [
     {
@@ -183,6 +183,36 @@
         "compression"
       ],
       "note": "README, license, CMake and four public headers inspected; other paths located. JS baseline independent; native/WASM integration and performance pending; no imported media."
+    },
+    {
+      "id": "opengame",
+      "repo": "nexu-io/opengame",
+      "commit": "9efe8ac0a58fd109a511c1f5c8c28fbba06ad85d",
+      "license": "Apache-2.0 (audit templates separately)",
+      "mode": "reference-only",
+      "paths": [
+        "LICENSE",
+        "README.md",
+        "game-projects.ts",
+        "shared/game-contract.ts",
+        "skills/openmotion-game/references/game-3c-modules.md",
+        "skills/openmotion-game/references/game-feel-craft.md",
+        "skills/openmotion-game/references/game-procedural-animation.md",
+        "skills/openmotion-game/references/game-gates.md",
+        "skills/openmotion-game/references/game-genres.md",
+        "skills/openmotion-game/references/game-flow.md",
+        "skills/openmotion-game/references/game-audio.md",
+        "skills/openmotion-game/references/review-rubric.md"
+      ],
+      "topics": [
+        "3C",
+        "game feel",
+        "simulation",
+        "browser QA",
+        "procedural creature animation",
+        "audio"
+      ],
+      "note": "Independent baselines, not upstream runtime; template ports pending."
     }
   ],
   "components": [
@@ -215,6 +245,18 @@
       "path": "tools/animation-runtime.mjs",
       "status": "direct JS assertions passed",
       "limits": "scalar generated clip, masked blend and FK; no additive, compression, root-motion extraction or Ozz binding"
+    },
+    {
+      "id": "gameplay.math-and-simulation",
+      "path": "tools/gameplay-kit.mjs",
+      "status": "28 direct JS assertions passed",
+      "limits": "No complete physics/controller or production balance validation"
+    },
+    {
+      "id": "verification.browser-playtest",
+      "path": "tools/browser-playtest.mjs",
+      "status": "source implemented; Chrome NOT_RUN",
+      "limits": "Optional local runner, no target device/GPU signoff"
     }
   ]
 }

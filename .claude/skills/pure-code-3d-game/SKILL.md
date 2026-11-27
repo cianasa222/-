@@ -3,7 +3,7 @@ name: pure-code-3d-game
 description: Develop original code-driven games across genres, dimensions, camera modes, engines, input methods and target platforms. Scope the player loop, build a playable slice, validate systems and content, preserve performance and player progress, and ship reproducible builds. Includes optional procedural Web 3D tools for characters, materials, light and shadows.
 ---
 
-# 通用代码游戏开发 · GameKit 4.8
+# 通用代码游戏开发 · GameKit 4.9
 
 保留原技能标识供已有项目定位。通用开发契约支持 2D、2.5D、3D、文字与界面驱动玩法；视角和引擎由项目选定。Node ≥20 只用于开发期契约工具。正式游戏沿用项目语言、引擎、平台构建和测试入口。
 
@@ -78,3 +78,6 @@ node tools/gamekit.mjs verify ./my-game --stage release --evidence evidence/rele
 ## v4.8 轻量动画运行时与 Ozz
 
 涉及骨骼动画采样、混合、FK、性能时加载 animation。默认纯 JS/TS 或现有引擎动画 API；按性能证据选择可选 Ozz C++/WASM 本地计算库，无服务器、无强制依赖、无迁移引擎。AnimationRuntime 提供生成式 clip、插值、掩码混合和层级矩阵参考实现；Ozz 固定源码/许可、适配边界及端到端基准见 references/animation-runtime.md。不得导入预制动画，生成缓存须可复算。Ozz 编译/绑定未实现，不冒充提速。GitHub 为正式版本源；KV 限额时标 KV_SYNC_PENDING，不阻塞发布、不查询 KV；恢复后单独校验同步。
+
+## v4.9 OpenGame：玩法与自动化试玩
+按需加载 gameplay、playtest、opengame；复用独立数学组件、引擎原生能力和真实规则。为实际玩法建立3–5项阻断不变量，种子及行为策略。工具覆盖3C、输入缓冲、相机阻尼、非人形步态、波次模拟、程序音效、开发期状态桥接与可选浏览器测试。禁止以测试替身冒充真实玩法或用 headless 代替真实 GPU/设备/视觉验收。OpenGame 仅固定上游参考，不导入素材、Mixamo、付费网关或 Studio，不限制引擎/单人；保留 Ozz 及 Agent 直连计算。GitHub 正式源，KV 待同步。详见 references/gameplay-and-feel.md、references/automated-playtest.md。

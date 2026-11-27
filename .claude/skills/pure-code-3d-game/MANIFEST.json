@@ -1,17 +1,17 @@
 {
   "name": "pure-code-3d-game",
-  "version": "4.8.0",
-  "generated_at_cst": "2026-11-25",
-  "single_get_bundle_key": "skills/pure-code-3d-game/versions/v4.8.0/bundle.json",
-  "module_index_key": "skills/pure-code-3d-game/versions/v4.8.0/MODULES.json",
-  "bundle_sha256": "ae26c552b813a0a695ee768cd2b98bf730c85587f601a632e5ac750a041bd57a",
-  "source_archive_prefix": "skills/pure-code-3d-game/versions/v4.7.0/",
-  "file_count": 120,
+  "version": "4.9.0",
+  "generated_at_cst": "2026-11-27",
+  "single_get_bundle_key": "skills/pure-code-3d-game/versions/v4.9.0/bundle.json",
+  "module_index_key": "skills/pure-code-3d-game/versions/v4.9.0/MODULES.json",
+  "bundle_sha256": "f44d6ad78fba87b512613f29f62a465156b0ea5adcd5839c04c063280115dba7",
+  "source_archive_prefix": "github:d41349a4897c8ca9797fe8a5b1aef176efa03d70",
+  "file_count": 128,
   "files": {
     "skills/pure-code-3d-game/SKILL.md": {
       "rel": "SKILL.md",
-      "sha256": "f0b007369d3472b4644f4dfc57605b3c21fb235154377c5f70605e3515671866",
-      "bytes": 9612
+      "sha256": "cf15542ed863e92061cb76f918766d1d582433bda3b9c3b20ccfcb2f8b96aee5",
+      "bytes": 10331
     },
     "skills/pure-code-3d-game/examples/general-exploration.json": {
       "rel": "examples/general-exploration.json",
@@ -80,8 +80,8 @@
     },
     "skills/pure-code-3d-game/references/production-flow.md": {
       "rel": "references/production-flow.md",
-      "sha256": "1bc6ed4d9e540b64cf39afa85794bdcc44ef117d3808fefc1d6ec6db9059c3a9",
-      "bytes": 5835
+      "sha256": "86560d9c9abad6160872bc5eb4ef6e11bbd283055102cae75bf971dbcbd2d0bf",
+      "bytes": 6075
     },
     "skills/pure-code-3d-game/references/recipe-schema.md": {
       "rel": "references/recipe-schema.md",
@@ -110,8 +110,8 @@
     },
     "skills/pure-code-3d-game/references/verification-gates.md": {
       "rel": "references/verification-gates.md",
-      "sha256": "d0292256c1fb1916c9a5e7be9b058faac04d9d230cfec7be7b04521d19aa4325",
-      "bytes": 4936
+      "sha256": "076b2f13f386e59e24d1d64eea73246178a7309648facfa4285b70cd309a55ce",
+      "bytes": 5189
     },
     "skills/pure-code-3d-game/references/web3d-adapter.md": {
       "rel": "references/web3d-adapter.md",
@@ -255,8 +255,8 @@
     },
     "skills/pure-code-3d-game/integrations/README.md": {
       "rel": "integrations/README.md",
-      "sha256": "061613bec0cabaf416d7a21b84f753c298d56dc4790fb320f4ddb4e637e47865",
-      "bytes": 1987
+      "sha256": "507b48bab1771fd5b083da3c8ad32b7b51ba5760cdc1b1e446c5a6546c6859ff",
+      "bytes": 2139
     },
     "skills/pure-code-3d-game/references/integration-release-4.3.0.md": {
       "rel": "references/integration-release-4.3.0.md",
@@ -265,8 +265,8 @@
     },
     "skills/pure-code-3d-game/MODULES.json": {
       "rel": "MODULES.json",
-      "sha256": "574483fb5b650302bbd0b22af5345e0c20ce1a4311d837b980fddbddd26d12c4",
-      "bytes": 9262
+      "sha256": "7d9c30235ac6ae73807912579379a85820980b04fb400394ce7ed5133fa8422f",
+      "bytes": 10217
     },
     "skills/pure-code-3d-game/tools/module-router.mjs": {
       "rel": "tools/module-router.mjs",
@@ -530,8 +530,8 @@
     },
     "skills/pure-code-3d-game/ALGORITHMS.json": {
       "rel": "ALGORITHMS.json",
-      "sha256": "1ce8706fc52972134298c063dc78bd98b6445fed409dd529cfcfd7c6258211fb",
-      "bytes": 8040
+      "sha256": "fea70510b3ebc3d0be86d010df1c2d656232341145bafd8adc33deebb8d2951f",
+      "bytes": 9594
     },
     "skills/pure-code-3d-game/tools/motion-kit.mjs": {
       "rel": "tools/motion-kit.mjs",
@@ -607,10 +607,50 @@
       "rel": "integrations/ozz-animation/LICENSE.md",
       "sha256": "3ddd93e9888fe70b9d61675ceb1c4278a579dc67171678f015de114efe815852",
       "bytes": 1183
+    },
+    "skills/pure-code-3d-game/tools/gameplay-kit.mjs": {
+      "rel": "tools/gameplay-kit.mjs",
+      "sha256": "8f4b754c3c33d24da8445a61d253d1f2e78e4675e78977b5773eced97197fc29",
+      "bytes": 5933
+    },
+    "skills/pure-code-3d-game/tests/test_gameplay_kit.mjs": {
+      "rel": "tests/test_gameplay_kit.mjs",
+      "sha256": "d8a4d80237e4f089367b8aab1296546f02ba5a05862ca2d9cc94089e2243077d",
+      "bytes": 2862
+    },
+    "skills/pure-code-3d-game/tools/browser-playtest.mjs": {
+      "rel": "tools/browser-playtest.mjs",
+      "sha256": "21222ef41a4bfcc7f08597ec779c201b9bdcd2b1e90f012864befe66d12d6dea",
+      "bytes": 4495
+    },
+    "skills/pure-code-3d-game/references/gameplay-and-feel.md": {
+      "rel": "references/gameplay-and-feel.md",
+      "sha256": "02398fcf37d0db5ad21a02abfe4fb86c9df42e329e4445ea0243d9597426b2ed",
+      "bytes": 3121
+    },
+    "skills/pure-code-3d-game/references/automated-playtest.md": {
+      "rel": "references/automated-playtest.md",
+      "sha256": "fbf5a3a03ca100e96b350babec22886608c4f9e83f8839ae2b589465904e5800",
+      "bytes": 2007
+    },
+    "skills/pure-code-3d-game/integrations/opengame/UPSTREAM.md": {
+      "rel": "integrations/opengame/UPSTREAM.md",
+      "sha256": "d3820ac7ee61e54dad104ac462a9aac312c1078f6969c3b82c1136f181072083",
+      "bytes": 594
+    },
+    "skills/pure-code-3d-game/integrations/opengame/SKILL.md": {
+      "rel": "integrations/opengame/SKILL.md",
+      "sha256": "a392111e9791aec5912d20a04d3483b99152d03cc079f6d2769abbf9f5a5716a",
+      "bytes": 462
+    },
+    "skills/pure-code-3d-game/references/v4.9-handoff.md": {
+      "rel": "references/v4.9-handoff.md",
+      "sha256": "83e7001ec2f8a3abf9c7b73105c2008d27671440104d401716699b4d18b122e6",
+      "bytes": 806
     }
   },
   "validation": {
-    "node_tests": "Historical v4.2 61/61; full Node suite not rerun for v4.8",
+    "node_tests": "Historical v4.2 61/61; full Node suite not rerun for v4.9",
     "general_contracts": "2D turn-based and multi-perspective native 3D declarations checked; CLI release exercised with synthetic evidence",
     "web3d_schema1": "legacy regression suite PASS",
     "production_game_validation": "PROJECT-SPECIFIC, NOT RUN",
@@ -633,7 +673,10 @@
     "v4_7_0": "24 direct JS assertions passed for independent motion/physics/fixed clock/VFX baselines; 7 pinned source repos indexed; no upstream runtime installed, full Node suite and GPU/device not run",
     "v4_8_0": "24 direct JS assertions passed; Ozz source/API and MIT license verified; native/WASM adapter/build, full Node suite, GPU/device benchmark NOT RUN",
     "ozz_runtime": "OPTIONAL_NOT_BUILT",
-    "kv_sync": "KV_SYNC_PENDING; last confirmed v4.7.0"
+    "kv_sync": "KV_SYNC_PENDING; last confirmed v4.7.0",
+    "v4_9_0": "28 direct JS assertions passed; Node suite and Chrome NOT_RUN",
+    "browser_playtest": "SOURCE_IMPLEMENTED_CHROME_NOT_RUN",
+    "gameplay_templates": "REFERENCE_ONLY_NOT_PORTED"
   },
   "kv_sync_status": "KV_SYNC_PENDING"
 }
